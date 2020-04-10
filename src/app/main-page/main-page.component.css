@@ -1,0 +1,14 @@
+.menu{
+  width: 60%;
+  margin: 0 auto;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu__title{
+  font-family: 'Girassol', cursive;
+  font-size: 4em;
+}

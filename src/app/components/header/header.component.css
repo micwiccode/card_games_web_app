@@ -1,0 +1,40 @@
+.header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 10%;
+  width: 100vw;
+  padding: 1% 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: transparent;
+  font-family: 'Girassol', cursive;
+}
+
+.header__title{
+  cursor: pointer;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header__nav{
+  margin-left: auto;
+  width: 30%;
+  list-style-type: none;
+  font-weight: bold;
+}
+
+.header__nav__link{
+  padding-right: 10%;
+  display: inline-block;
+  float: right;
+}
+
+.header__nav__link a{
+  text-decoration: none;
+  color: #000;
+  cursor: pointer;
+  font-size: 1.1em;
+}
