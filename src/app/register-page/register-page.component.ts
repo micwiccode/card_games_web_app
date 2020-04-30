@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: [
     './register-page.component.css',
     '../../css/button.css',
+    '../../css/menu-error.css',
   ],
 })
 export class RegisterPageComponent implements OnInit {

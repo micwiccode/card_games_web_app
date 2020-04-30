@@ -9,7 +9,8 @@ import { HeaderComponent } from "./components/header/header.component";
 import { RegisterPageComponent } from "./register-page/register-page.component";
 import { LogInPageComponent } from "./log-in-page/log-in-page.component";
 import { MyProfilePageComponent } from "./my-profile-page/my-profile-page.component";
-import { FriendsComponent } from "./friends/friends.component";
+import { FriendsPageComponent } from "./friends-page/friends-page.component";
+import { CreateGamePageComponent } from "./create-game-page/create-game-page.component";
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { FriendsComponent } from "./friends/friends.component";
     RegisterPageComponent,
     LogInPageComponent,
     MyProfilePageComponent,
-    FriendsComponent
+    FriendsPageComponent,
+    CreateGamePageComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],

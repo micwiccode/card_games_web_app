@@ -7,15 +7,6 @@
 
 }
 
-.menu__error{
-  background-color: red;
-  color: white;
-  border-radius: 5px;
-  padding: 10px 30px;
-  margin: 10px;
-  display: none;
-}
-
 .menu__title {
    margin: 10px;
    font-weight: bold;

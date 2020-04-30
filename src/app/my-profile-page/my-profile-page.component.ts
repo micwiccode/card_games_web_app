@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'app-my-profile-page',
-  templateUrl: './my-profile-page.component.html',
+  selector: "app-my-profile-page",
+  templateUrl: "./my-profile-page.component.html",
   styleUrls: [
-    './my-profile-page.component.css',
-    '../../css/button.css',
-  ],
+    "./my-profile-page.component.css",
+    "../../css/button.css",
+    "../../css/menu-error.css"
+  ]
 })
-
 export class MyProfilePageComponent implements OnInit {
-  username: '';
-  email: '';
+  username: "";
+  email: "";
   passwordOld: null;
   passwordNew: null;
   passwordNewRepeat: null;
@@ -21,8 +21,7 @@ export class MyProfilePageComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   changeEmail() {
     this.disableEmail = !this.disableEmail;
@@ -36,7 +35,7 @@ export class MyProfilePageComponent implements OnInit {
     const userUpdateData = {
       email: this.email,
       passwordOld: this.passwordOld,
-      passwordNew: this.passwordNew,
+      passwordNew: this.passwordNew
     };
   }
 }

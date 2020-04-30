@@ -7,15 +7,6 @@
   justify-content: center;
 }
 
-.menu__error{
-  background-color: black;
-  color: white;
-  border-radius: 5px;
-  padding: 10px 30px;
-  margin-bottom: 20px;
-  display: none;
-}
-
 .menu__input{
   border:none;
   border-radius: 30px;

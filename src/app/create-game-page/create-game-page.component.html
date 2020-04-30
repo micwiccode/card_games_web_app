@@ -1,0 +1,26 @@
+<div class="menu">
+  <p class="menu__title">Stwórz grę</p>
+  <div class="menu__error"></div>
+  <form class="menu__form" (submit)="createRoomSubmit()">
+    <input
+      class="menu__form__input"
+      type="text"
+      [(ngModel)]="roomName"
+      name="roomName"
+      placeholder="Nazwa pokoju"
+    />
+    <select [(ngModel)]="selectedNumber" class="menu__form__input" name="maxPlayers" required>
+      <option value="" selected hidden disabled>Podaj max liczbę graczy</option>
+      <option *ngFor="let number of maxPlayers" value="{{number}}">{{number}}</option>
+    </select>
+    <input
+      class="menu__form__input"
+      type="password"
+      [(ngModel)]="password"
+      name="password"
+      placeholder="Hasło (opcjonalnie)"
+    />
+    <input class="button" type="submit" value="Stwórz grę" />
+  </form>
+  <button class="button" routerLink="/">Powrót</button>
+</div>
