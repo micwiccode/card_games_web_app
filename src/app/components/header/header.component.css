@@ -19,6 +19,10 @@
   transform: translateX(-50%);
 }
 
+.header__title:focus{
+  outline: none;
+}
+
 .header__nav{
   margin-left: auto;
   width: 30%;

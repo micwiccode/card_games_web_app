@@ -11,12 +11,15 @@ import { Router } from "@angular/router";
   ]
 })
 export class LogInPageComponent implements OnInit {
+  link: string;
   username: string;
   password: string;
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.link = this.router.url;
+  }
 
   onLoginSubmit() {
     const user = {

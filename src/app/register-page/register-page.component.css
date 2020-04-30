@@ -19,3 +19,8 @@
   font-weight: bolder;
   font-size: .8em;
 }
+
+.menu__title{
+  font-family: 'Girassol', cursive;
+  font-size: 4em;
+}
