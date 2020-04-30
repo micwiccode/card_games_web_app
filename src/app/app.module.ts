@@ -9,6 +9,7 @@ import { HeaderComponent } from "./components/header/header.component";
 import { RegisterPageComponent } from "./register-page/register-page.component";
 import { LogInPageComponent } from "./log-in-page/log-in-page.component";
 import { MyProfilePageComponent } from "./my-profile-page/my-profile-page.component";
+import { FriendsComponent } from "./friends/friends.component";
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { MyProfilePageComponent } from "./my-profile-page/my-profile-page.compon
     HeaderComponent,
     RegisterPageComponent,
     LogInPageComponent,
-    MyProfilePageComponent
+    MyProfilePageComponent,
+    FriendsComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],

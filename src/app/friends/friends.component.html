@@ -1,0 +1,76 @@
+<div class="menu">
+  <div class="menu_friends">
+    <div class="menu_friends_box">
+      <p class="menu__title">Znajomi:</p>
+      <div *ngIf="friends.length === 0; then noFirends; else haveFriends"></div>
+      <ng-template #noFirends>
+        <p class="menu__info">Nie masz jeszcze żadnych znajomych :(</p>
+      </ng-template>
+      <ng-template #haveFriends>
+        <div class="menu__friend" *ngFor="let friend of friends">
+          <p class="menu__friend__name">{{ friend.name }}</p>
+          <button class="menu__friend__btn" (click)="removeFriend(friend.id)">
+            X
+          </button>
+        </div>
+      </ng-template>
+    </div>
+    <div class="menu_friends_box">
+      <p class="menu__title">Zaproszenia do znajomych:</p>
+      <div
+        *ngIf="
+          friendRequests.length === 0;
+          then noFirendRequests;
+          else haveFriendRequests
+        "
+      ></div>
+      <ng-template #noFirendRequests>
+        <p class="menu__info">Nie masz żadnych zaproszeń :(</p>
+      </ng-template>
+      <ng-template #haveFriendRequests>
+        <div class="menu__friend" *ngFor="let friendRequest of friendRequests">
+          <p class="menu__friend__name">{{ friendRequest.senderName }}</p>
+          <div class="menu__friend__buttons">
+            <button
+              class="menu__friend__request_btn menu__friend__request_btn--reject"
+              (click)="rejectFriendRequest(friendRequest.id)"
+            >
+              Odrzuć
+            </button>
+            <button
+              class="menu__friend__request_btn"
+              (click)="acceptFriendRequest(friendRequest.id)"
+            >
+              Akceptuj
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <button class="button" (click)="showFriendRequestBox()">
+    Dodaj znajomego
+  </button>
+  <form
+    [hidden]="!isSendFriendRequestBoxVisible"
+    (ngSubmit)="sendFriendRequest()"
+  >
+    <div class="menu__friend_request_box">
+    <input
+      class="menu__input"
+      type="text"
+      [(ngModel)]="friendName"
+      name="friendName"
+      placeholder="Podaj nazwę użytkownika..."
+    />
+    <input
+      value="Zaproś"
+      type="submit"
+      class="button"
+    />
+    </div>
+  </form>
+  <div class="menu__error"></div>
+  <button class="button" routerLink="/profile">Powrót</button>
+</div>
+
