@@ -1,0 +1,8 @@
+<form (submit)="onRegisterSubmit()" class="menu">
+  <div class="menu__error"></div>
+  <input class="menu__input" type="text" [(ngModel)]="username" name="username" placeholder="Nazwa uzytkownika">
+  <input class="menu__input" type="text" [(ngModel)]="email" name="email" placeholder="Login (email)">
+  <input class="menu__input" type="password" [(ngModel)]="password" name="password" placeholder="Hasło">
+  <input class="menu__input" type="password" [(ngModel)]="passwordRepeat" name="passwordRepeat" placeholder="Powtórz hasło">
+  <input class="button" type="submit" value="Zarejestruj">
+</form>
