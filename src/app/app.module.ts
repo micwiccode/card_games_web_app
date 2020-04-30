@@ -11,6 +11,7 @@ import { LogInPageComponent } from "./log-in-page/log-in-page.component";
 import { MyProfilePageComponent } from "./my-profile-page/my-profile-page.component";
 import { FriendsPageComponent } from "./friends-page/friends-page.component";
 import { CreateGamePageComponent } from "./create-game-page/create-game-page.component";
+import { Page404Component } from "./page404/page404.component";
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { CreateGamePageComponent } from "./create-game-page/create-game-page.com
     LogInPageComponent,
     MyProfilePageComponent,
     FriendsPageComponent,
-    CreateGamePageComponent
+    CreateGamePageComponent,
+    Page404Component
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
