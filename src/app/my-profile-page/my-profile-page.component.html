@@ -1,0 +1,86 @@
+<div class="menu">
+  <p class="menu__title">Twój profil</p>
+  <p class="menu__subtitle">Użytkownik: {{ username }}</p>
+  <div class="menu__error"></div>
+  <form class="menu__form" (submit)="onUserSubmit()">
+    <div class="menu__form__inputs">
+      <div class="menu__form__label">
+        <label class="menu__form__label__text" for="emial">Email</label>
+        <input
+          class="menu__form__label__input"
+          type="text"
+          id="emial"
+          name="emial"
+          [(ngModel)]="email"
+          [disabled]="disableEmail"
+        />
+        <img
+          class="menu__form__label__btn"
+          (click)="changeEmail()"
+          src="../../assets/img/icon.png"
+        />
+      </div>
+      <div class="menu__form__label">
+        <label class="menu__form__label__text" for="old_password"
+          >Stare hasło</label
+        >
+        <input
+          class="menu__form__label__input"
+          type="text"
+          id="old_password"
+          name="username"
+          placeholder="Wpisz stare hasło..."
+          [(ngModel)]="passwordOld"
+          [disabled]="disablePassword"
+        />
+        <img
+          class="menu__form__label__btn"
+          (click)="changePassword()"
+          src="../../assets/img/icon.png"
+        />
+      </div>
+      <div class="menu__form__label">
+        <label class="menu__form__label__text" for="new_password"
+          >Nowe hasło</label
+        >
+        <input
+          class="menu__form__label__input"
+          type="password"
+          id="new_password"
+          name="password"
+          placeholder="Wpisz nowe hasło..."
+          [(ngModel)]="passwordNew"
+          [disabled]="disablePassword"
+        />
+        <img
+          class="menu__form__label__btn"
+          (click)="changePassword()"
+          src="../../assets/img/icon.png"
+        />
+      </div>
+      <div class="menu__form__label">
+        <label class="menu__form__label__text" for="repeat_password"
+          >Powtórz hasło</label
+        >
+        <input
+          class="menu__form__label__input"
+          type="password"
+          id="repeat_password"
+          name="passwordRepeat"
+          placeholder="Powtórz hasło..."
+          [(ngModel)]="passwordNewRepeat"
+          [disabled]="disablePassword"
+        />
+        <img
+          class="menu__form__label__btn"
+          (click)="changePassword()"
+          src="../../assets/img/icon.png"
+        />
+      </div>
+    </div>
+    <input type="submit" class="button" value="Edytuj i zapisz" />
+  </form>
+  <button class="button" routerLink="/friends">Znajomi</button>
+  <button class="button" routerLink="/statistics">Moje statystyki</button>
+  <button class="button" routerLink="/">Powrót</button>
+</div>
