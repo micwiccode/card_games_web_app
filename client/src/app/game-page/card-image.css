@@ -1,0 +1,11 @@
+.card__image {
+  width: 120px;
+}
+
+.card__image__rotated {
+  height: 120px;
+}
+
+.card__image:hover {
+  filter: invert(10%);
+}

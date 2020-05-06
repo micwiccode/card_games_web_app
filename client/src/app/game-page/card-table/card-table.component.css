@@ -1,0 +1,9 @@
+.table {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.card__image {
+  margin: 20px;
+}
