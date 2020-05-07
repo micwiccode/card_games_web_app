@@ -1,7 +1,6 @@
-  <div class="container">
-    <div class="card__row" [ngStyle]="{'grid-template-columns': 'repeat('+(numberOfCards - 1)+', 16px) 120px'}">
-      <img class="card__image" *ngFor="let n of ' '.repeat(numberOfCards).split(''); let i = index"
-        [ngStyle]="{'grid-column': ''+(i+1), 'z-index': ''+i}" src="../../../assets/img/card_back.png">
-    </div>
-  </div>
+<div class="card__grid" [ngStyle]="gridStyle()">
+  <img [class]="isVertical ? 'card__image__rotated' : 'card__image'" *ngFor="let n of ' '.repeat(numberOfCards).split(''); let i = index"
+    [ngStyle]="cardStyle(i)"
+    [src]="isVertical ? '../../../assets/img/card_back_rotated.png' : '../../../assets/img/card_back.png'">
+</div>
   

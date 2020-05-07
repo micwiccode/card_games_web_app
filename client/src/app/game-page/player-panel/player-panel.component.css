@@ -1,13 +1,3 @@
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .card__row {    
   display: grid;
 }  
-
-.card__image {
-  grid-row: 1;
-}

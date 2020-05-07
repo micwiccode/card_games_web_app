@@ -1,5 +1,10 @@
+.page {
+  display: grid;
+  grid-template-columns: 6fr 1fr;
+  column-gap: 20px;
+}
+
 .game {
-  margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   grid-template-rows: 1fr 3fr 1fr;
@@ -7,8 +12,8 @@
   row-gap: 20px;
 }
 
-.score_board {
-  width: 10%;
+.score__board {
+  
 }
 
 .top__player {
