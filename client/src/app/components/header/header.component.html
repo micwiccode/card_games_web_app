@@ -1,5 +1,5 @@
 <div class="header">
-  <div *ngIf="link === '/' || link ==='/login' || link === '/register' ; then noLogo else logo"></div>
+  <div *ngIf="link === '/' || link ==='/login' || link === '/register' || link ==='/game'; then noLogo else logo"></div>
   <ng-template #noLogo></ng-template>
   <ng-template #logo>
     <h1 class="header__title" routerLink="/">Card Games</h1>

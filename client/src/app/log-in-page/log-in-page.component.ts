@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { ValidateService } from "../services/validate.service";
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: "app-log-in-page",
@@ -15,7 +17,11 @@ export class LogInPageComponent implements OnInit {
   username: string;
   password: string;
 
-  constructor(private router: Router) {}
+  constructor(
+    private validateService: ValidateService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.link = this.router.url;
@@ -26,5 +32,27 @@ export class LogInPageComponent implements OnInit {
       username: this.username,
       password: this.password
     };
+    // @ts-ignore
+    const errorLabel: HTMLElement = document.querySelector(
+      ".menu__error"
+    ) as HTMLElement;
+
+    const validateResponse = this.validateService.validateLogin(user);
+
+    if (validateResponse.isValid) {
+      this.authService.logIn(user).subscribe(data => {
+        const result = data.toString();
+        if (result === "true") {
+          this.authService.storeUserData(this.username);
+          this.router.navigate(["/"]);
+        } else {
+          errorLabel.style.display = "block";
+          errorLabel.textContent = result;
+        }
+      });
+    } else {
+      errorLabel.style.display = "block";
+      errorLabel.textContent = validateResponse.msg;
+    }
   }
 }
