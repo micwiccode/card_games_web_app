@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { ValidateService } from "../services/validate.service";
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: "app-register-page",
@@ -17,11 +19,16 @@ export class RegisterPageComponent implements OnInit {
   password: string;
   passwordRepeat: string;
 
-  constructor(private router: Router) {}
+  constructor(
+    private validateService: ValidateService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.link = this.router.url;
   }
+
   onRegisterSubmit() {
     const newUser = {
       username: this.username,
@@ -32,5 +39,27 @@ export class RegisterPageComponent implements OnInit {
     const errorLabel: HTMLElement = document.querySelector(
       ".menu__error"
     ) as HTMLElement;
+
+    const validateResponse = this.validateService.validateRegister(
+      newUser,
+      this.passwordRepeat
+    );
+
+    if (validateResponse.isValid) {
+      this.authService.register(newUser).subscribe(data => {
+        // @ts-ignore
+        if (data.data === true) {
+          this.authService.storeUserData(this.username);
+          this.router.navigate(["/"]);
+        } else {
+          errorLabel.style.display = "block";
+          // @ts-ignore
+          errorLabel.textContent = data.error;
+        }
+      });
+    } else {
+      errorLabel.style.display = "block";
+      errorLabel.textContent = validateResponse.msg;
+    }
   }
 }

@@ -1,0 +1,42 @@
+<div class="menu">
+  <p class="menu__title">Zagraj z innymi</p>
+  <h5 class="menu__subtitle">Dostępne pokoje:</h5>
+  <div *ngIf="roomsList.length > 0; then rooms; else noRooms"></div>
+  <ng-template #rooms>
+    <div *ngFor="let room of roomsList">
+      <div class="menu__list__room" (click)="toggleRoom(room.id)">
+        <p>{{ room.name }}</p>
+        <div class="room__info_box">
+          <div *ngIf="room.password !== null">
+            <img
+              class="room__info_box_img"
+              src="../../assets/img/lockIcon.png"
+              alt="lock"
+            />
+          </div>
+          <p>{{ room.peopleInRoom }}/{{ room.maxPeople }}</p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #noRooms>
+    <p>Wygląda na to że nie ma żadnych dostępnych pokoi</p>
+  </ng-template>
+  <button class="button" (click)="checkRoomPassword()">Graj</button>
+  <div class="menu__error"></div>
+  <form [hidden]="!isPasswordBoxVisible" (ngSubmit)="checkPassword()">
+    <div class="menu__password_box">
+      <input
+        class="menu__input"
+        type="password"
+        [(ngModel)]="targetRoomPassword"
+        name="targetRoomPassword"
+        placeholder="Podaj hasło..."
+      />
+      <input value="Wejdź" type="submit" class="button" />
+    </div>
+  </form>
+  <h5>lub stwórz własny</h5>
+  <button class="button" routerLink="/createGame">Stwórz grę</button>
+  <button class="button" routerLink="/">Powrót</button>
+</div>

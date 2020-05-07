@@ -7,6 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ScoreBoardComponent implements OnInit {
 
+  players = [
+    {name: 'Pierwszy', score: 231},
+    {name: 'Drugi', score: 92},
+    {name: 'Trzeci', score: 2},
+    {name: 'Czwarty', score: 873}
+  ]
+
   constructor() { }
 
   ngOnInit(): void {

@@ -1,1 +1,9 @@
-<p>score-board works!</p>
+<h2>Wyniki:</h2>
+<div class="scores" *ngFor="let player of players">
+    <p>
+        {{player.name}}
+    </p>
+    <p>
+        {{player.score}}
+    </p>
+</div>

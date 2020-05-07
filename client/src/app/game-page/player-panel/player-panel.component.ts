@@ -9,7 +9,7 @@ import { Card } from '../card';
 })
 export class PlayerPanelComponent implements OnInit {
   gameStarted: boolean;
-  cards: Card[];
+  cards: Card[] = [];
   selectedCard: Card;
 
   constructor(private gameService: GameService) { }
