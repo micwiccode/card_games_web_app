@@ -1,5 +1,6 @@
-import { Component, OnInit, DoCheck } from "@angular/core";
+import {Component, OnInit, DoCheck, Input} from "@angular/core";
 import { Router } from "@angular/router";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
   selector: "app-header",
@@ -7,12 +8,18 @@ import { Router } from "@angular/router";
   styleUrls: ["./header.component.css"]
 })
 export class HeaderComponent implements OnInit, DoCheck {
+  @Input() isLogged: boolean;
   link: string;
-  constructor(public router: Router) {}
+
+  constructor(private authService: AuthService, public router: Router) {}
 
   ngOnInit(): void {}
 
   ngDoCheck(): void {
     this.link = this.router.url;
+  }
+
+  onLogOutClick() {
+    this.authService.logOut();
   }
 }

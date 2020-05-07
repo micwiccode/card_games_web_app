@@ -5,9 +5,22 @@
     <h1 class="header__title" routerLink="/">Card Games</h1>
   </ng-template>
   <ul class="header__nav">
+    <div *ngIf="isLogged; then loggedUserBlock; else guestBlock"></div>
+    <ng-template #loggedUserBlock>
       <li class="header__nav__link">
-        <a routerLink="/register">Zarejestruj się</a>
+        <a class="link" routerLink="/" (click)="onLogOutClick()">Wyloguj się</a>
       </li>
-      <li class="header__nav__link"><a routerLink="/login">Zaloguj się</a></li>
+      <li class="header__nav__link">
+        <a class="link" routerLink="/profile">Twój profil</a>
+      </li>
+    </ng-template>
+    <ng-template #guestBlock>
+      <li class="header__nav__link">
+        <a class="link" routerLink="/register">Zarejestruj się</a>
+      </li>
+      <li class="header__nav__link">
+        <a class="link" routerLink="/login">Zaloguj się</a>
+      </li>
+    </ng-template>
   </ul>
 </div>
