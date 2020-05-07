@@ -18,11 +18,14 @@ import { CardTableComponent } from "./game-page/card-table/card-table.component"
 import { OpponentPanelComponent } from "./game-page/opponent-panel/opponent-panel.component";
 import { OpponentPanelVerticalComponent } from "./game-page/opponent-panel-vertical/opponent-panel-vertical.component";
 import { Page404Component } from "./page404/page404.component";
+import { RoomsPageComponent } from "./rooms-page/rooms-page.component";
 //Services
 import { AuthGuardService } from "./services/auth-guard.service";
 import { ValidateService } from "./services/validate.service";
 import { UserService } from "./services/user.service";
 import { AuthService } from "./services/auth.service";
+import { RoomsService } from "./services/rooms.service";
+import { FriendsService } from "./services/friends.service";
 
 @NgModule({
   declarations: [
@@ -39,10 +42,18 @@ import { AuthService } from "./services/auth.service";
     PlayerPanelComponent,
     CardTableComponent,
     OpponentPanelComponent,
-    OpponentPanelVerticalComponent
+    OpponentPanelVerticalComponent,
+    RoomsPageComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
-  providers: [AuthGuardService, ValidateService, UserService, AuthService],
+  providers: [
+    AuthGuardService,
+    ValidateService,
+    UserService,
+    AuthService,
+    RoomsService,
+    FriendsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

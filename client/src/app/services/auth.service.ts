@@ -13,7 +13,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router:Router) {}
 
   register(user) {
-    return this.http.post('http://localhost:8000/register', user, { headers: this.header }).pipe();
+    return this.http.post('/register', user, { headers: this.header }).pipe();
   }
 
   logIn(user) {
@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   logOut() {
-    this.http.post('http://localhost:8000/logout', {});
+    this.http.post('/logout', {});
     localStorage.clear();
     this.router.navigate(['login']);
     this.username = null;
