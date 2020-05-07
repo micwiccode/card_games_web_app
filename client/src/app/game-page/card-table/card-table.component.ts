@@ -9,6 +9,7 @@ import { Card } from '../card';
 })
 export class CardTableComponent implements OnInit {
   lastPlayedCard: Card;
+  currentlyDisplayedArrowClass: string = 'arrow__right';
 
   constructor(private gameService: GameService) { }
 

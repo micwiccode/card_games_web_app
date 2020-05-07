@@ -14,10 +14,14 @@
 .top__player {
   grid-row: 1;
   grid-column: 2;
+  align-self: end;
+  justify-self: center;
 }
 .bottom__player {
   grid-row: 3;
   grid-column: 2;
+  align-self: start;
+  justify-self: center;
 }
 
 .left__player {
@@ -25,19 +29,17 @@
   grid-column: 1;
   transform: rotate(180deg);
   align-self: center;
-  justify-self: center;
+  justify-self: end;
 }
 
 .right__player {
   grid-row: 2;
   grid-column: 3;
   align-self: center;
-  justify-self: center;
+  justify-self: start;
 }
 
 .middle {
   grid-row: 2;
   grid-column: 2;
-  align-self: center;
-  justify-self: center;
 }
