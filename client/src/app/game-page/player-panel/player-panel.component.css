@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card__row {
+  display: grid;
+}
+
+.card__image {
+  grid-row: 1;
+  cursor: pointer;
+  transition: transform .3s ease-in-out;
+}
+
+.card__image:hover{
+  transform: translateY(-20px);
+}

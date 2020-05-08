@@ -1,6 +1,6 @@
 <form (submit)="onLoginSubmit()" class="menu">
   <div *ngIf="link === '/' || link === '/login' || link === '/register'">
-    <h1 class="menu__title">Card Games</h1>
+    <h1 class="menu__title" routerLink="/">Card Games</h1>
   </div>
   <div class="menu__error"></div>
   <input

@@ -1,0 +1,4 @@
+<div class="card__row" [ngStyle]="{'grid-template-columns': 'repeat('+(cards.length - 1) +', 16px) 120px'}">
+  <img class="card__image" *ngFor="let card of cards; let i = index"
+    [ngStyle]="{'grid-column': +(i+1), 'z-index': +i}" [src]="card.image" (click)="playCard(card)">
+</div>
