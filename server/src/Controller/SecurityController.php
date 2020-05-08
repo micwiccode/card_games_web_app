@@ -58,7 +58,7 @@ class SecurityController extends AbstractController
         try {
             $user = $userService->registerUser($content->username, $content->email, $content->password);
         }catch (MissingMandatoryParametersException $exception){
-            return new JsonResponse(null, $exception->getMessage());
+            return new MyJsonResponse(null, $exception->getMessage());
         }
 
         try {

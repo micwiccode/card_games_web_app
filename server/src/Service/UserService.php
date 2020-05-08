@@ -32,7 +32,7 @@ class UserService
     public function registerUser($username, $email, $password){
         $user = new User();
 
-        if ($username || $email || $password){
+        if (empty($username) || empty($email) || empty($password)){
             throw new MissingMandatoryParametersException('Nie zostały podane wszystkie parametry');
         }
         $user->setUsername($username)
