@@ -18,7 +18,7 @@ Init database:
 
 `php bin/console doctrine:fixtures:load`
 
-`php server:start`
+`symfony server:start`
 
 Database will be created in: http://localhost/phpmyadmin/index.php
 
