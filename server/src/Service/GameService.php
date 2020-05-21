@@ -1,0 +1,147 @@
+<?php
+
+
+namespace App\Service;
+
+
+use App\Entity\Room;
+use App\Entity\User;
+use App\Utils\Card\Card;
+use App\Utils\Card\SuitDictionary;
+use App\Utils\Card\ValueDictionary;
+use App\Utils\Game\Macao;
+
+class GameService
+{
+
+    public function __construct()
+    {
+
+    }
+
+    public function startGame(Room $room, $gameType){
+        $room->setIsGameRunning(true);
+        $room->setCurrentDeck($this->createDeck());
+        $room->setUsedDeck([]);
+        $room->getUsersInRoom()[0]->setIsNow(true);
+        $room->setGameType($gameType);
+        foreach ($room->getUsersInRoom() as $user){
+            $cards = [];
+            for ($i=0; $i<5; $i++){
+                $deck = $room->getCurrentDeck();
+                $cards[] = array_pop($deck);
+                $room->setCurrentDeck($deck);
+            }
+            $user->setCards($cards);
+        }
+    }
+
+    public function createDeck()
+    {
+        $deck = [];
+        foreach (SuitDictionary::getSuits() as $suit){
+            foreach (ValueDictionary::getValues() as $value){
+                $deck[] = new Card($suit, $value);
+            }
+        }
+        shuffle($deck);
+        return $deck;
+    }
+
+    public function playCards(Room $room, User $user, array $cards){
+        $room->addUsedCards($cards);
+        $user->removeCards($cards);
+        $counter = 0;
+        $action = null;
+        foreach ($cards as $card){
+            $action = Macao::actionCard($card);
+            if (in_array($action->type, [
+                Macao::DRAW,
+                Macao::STOP
+            ])){
+                $counter+=$action->content;
+            }
+
+        }
+
+        $action->content = $counter;
+        if ($action->type==Macao::DRAW){
+            $room->setDraw($room->getDraw()+$action->content);
+        }elseif($action->type==Macao::STOP){
+            $room->setStay($room->getStay()+$action->content);
+        }
+        return $action;
+
+    }
+
+    public function drawCards(Room $room, User $user, int $howMany){
+        $deck = $room->getCurrentDeck();
+        $newCards = [];
+        if (count($deck)>=$howMany)
+        {
+            for ($i=0; $i<$howMany; $i++){
+                $newCards[] = array_pop($deck);
+            }
+        }else{
+            $cardsLeft  = count($deck);
+            for ($i=0; $i<$cardsLeft; $i++){
+                $newCards[] = array_pop($deck);
+            }
+            $oldDeck = $room->getUsedDeck();
+            shuffle($oldDeck);
+            $deck = $oldDeck;
+            $room->setUsedDeck([]);
+            for ($i=$cardsLeft; $i<$howMany; $i++){
+                $newCards[] = array_pop($deck);
+            }
+        }
+        $room->setCurrentDeck($deck);
+        $user->addCards($newCards);
+        return $newCards;
+    }
+
+    public function checkIfEnd(Room $room, User $user){
+        if (count($user->getCards())==0){
+            $room->setIsGameRunning(false);
+            return true;
+        }
+        return false;
+    }
+
+    public function nextUser(Room $room){
+        $users = $room->getUsersInRoom();
+        for ($i = 0; $i<count($users); $i++){
+            if ($users[$i]->getIsNow()){
+                $users[$i]->setIsNow(false);
+                if ($i==count($users)-1){
+                    $users[0]->setIsNow(true);
+                    return $users[0];
+                }
+                else{
+                    $users[$i+1]->setIsNow(true);
+                    return $users[$i+1];
+                }
+            }
+
+        }
+        return null;
+    }
+    public function previousUser(Room $room){
+        $users = $room->getUsersInRoom();
+        for ($i = 0; $i<count($users); $i++){
+            if ($users[$i]->getIsNow()){
+                $users[$i]->setIsNow(false);
+                if ($i==0){
+                    $users[count($users)-1]->setIsNow(true);
+                    return $users[count($users)-1];
+                }
+                else{
+                    $users[$i-1]->setIsNow(true);
+                    return $users[$i-1];
+                }
+            }
+
+        }
+        return null;
+    }
+}

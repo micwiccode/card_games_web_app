@@ -5,9 +5,11 @@ namespace App\Service;
 
 
 use App\Entity\Room;
+use App\Entity\User;
+use App\Utils\Struct\CardActionStruct;
+use App\Utils\Struct\UserInGameResponseStruct;
 use App\Utils\Struct\PlayerResponseStruct;
 use App\Utils\Struct\UserResponseStruct;
-use App\Utils\Struct\WordResponseStruct;
 use Symfony\Component\Mercure\PublisherInterface;
 use Symfony\Component\Mercure\Update;
 
@@ -42,48 +44,31 @@ class PublisherService
     }
 
     public function startGame(Room $room){
-        $topic = self::ROOM_TOPIC. $room->getId();
-        $data = ['word' => WordResponseStruct::mapFromWord($room->getGame()->getWord())];
-        $this->publish($topic, json_encode($data));
-    }
-
-    public function updateWheel(Room $room, $angle)
-    {
         $topic = self::GAME_TOPIC . $room->getId();
-        $data = ['angle' => $angle];
-        $this->publish($topic, json_encode($data));
-    }
-
-    public function updateLetter(Room $room, $letter)
-    {
-        $topic = self::GAME_TOPIC . $room->getId();
-        $data = ['letter' => $letter];
-        $this->publish($topic, json_encode($data));
-
-    }
-
-    public function isWordGuessed(Room $room, $guessed)
-    {
-        $topic = self::GAME_TOPIC . $room->getId();
-        $data = ['guessed' => $guessed];
-        $this->publish($topic, json_encode($data));
-
-    }
-
-    public function updateWord(Room $room, $word)
-    {
-        $topic = self::GAME_TOPIC . $room->getId();
-        $data = ['word' => $word];
-        $this->publish($topic, json_encode($data));
-    }
-
-    public function updatePoints(Room $room)
-    {
-        $topic = self::GAME_TOPIC . $room->getId();
-        $data['points'] = [];
-        foreach ($room->getGame()->getPlayers() as $player) {
-            $data['points'][] = PlayerResponseStruct::mapFromPlayer($player);
+        $data['start'] = [];
+        foreach ($room->getUsersInRoom() as $user){
+            $data['start']['cards'][] = UserInGameResponseStruct::mapFromUser($user);
         }
+        $data['start']['turn'] = UserResponseStruct::mapFromUser($room->getCurrentPlayer());
+        $this->publish($topic, json_encode($data));
+    }
+
+    public function playCard(Room $room, CardActionStruct $actionStruct, bool $isEnd = false){
+        $topic = self::GAME_TOPIC . $room->getId();
+        $data['play'] = ['action' => $actionStruct, 'isEnd' => $isEnd];
+        $this->publish($topic, json_encode($data));
+    }
+
+    public function drawCards(Room $room, User $user, int $howMany)
+    {
+        $topic = self::GAME_TOPIC . $room->getId();
+        $data['draw'] = ['userId' => $user->getId(), 'username' => $user->getUsername(), 'newCards' => $howMany];
+        $this->publish($topic, json_encode($data));
+    }
+
+    public function nextUser(Room $room, User $user){
+        $topic = self::GAME_TOPIC . $room->getId();
+        $data['next'] = ['userId' => $user->getId(),'username' => $user->getUsername()];
         $this->publish($topic, json_encode($data));
     }
 

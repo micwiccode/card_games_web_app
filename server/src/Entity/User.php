@@ -62,11 +62,6 @@ class User implements UserInterface
     private $friendsWithMe;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Player", mappedBy="userId", orphanRemoval=true)
-     */
-    private $gamesPlayed;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\FriendRequest", mappedBy="friend")
      */
     private $friendRequests;
@@ -76,16 +71,31 @@ class User implements UserInterface
      */
     private $room;
 
+
     /**
      * @ORM\Column(type="boolean")
      */
     private $isRoomAdmin = false;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $cards = [];
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isNow = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $stop= 0;
+
     public function __construct()
     {
         $this->myFriends = new ArrayCollection();
         $this->friendsWithMe = new ArrayCollection();
-        $this->gamesPlayed = new ArrayCollection();
         $this->friendRequests = new ArrayCollection();
     }
 
@@ -236,37 +246,6 @@ class User implements UserInterface
 
 
     /**
-     * @return Collection|Player[]
-     */
-    public function getGamesPlayed(): Collection
-    {
-        return $this->gamesPlayed;
-    }
-
-    public function addGamesPlayed(Player $gamesPlayed): self
-    {
-        if (!$this->gamesPlayed->contains($gamesPlayed)) {
-            $this->gamesPlayed[] = $gamesPlayed;
-            $gamesPlayed->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGamesPlayed(Player $gamesPlayed): self
-    {
-        if ($this->gamesPlayed->contains($gamesPlayed)) {
-            $this->gamesPlayed->removeElement($gamesPlayed);
-            // set the owning side to null (unless already changed)
-            if ($gamesPlayed->getUser() === $this) {
-                $gamesPlayed->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|FriendRequest[]
      */
     public function getFriendRequests(): Collection
@@ -319,5 +298,51 @@ class User implements UserInterface
         $this->isRoomAdmin = $isRoomAdmin;
 
         return $this;
+    }
+
+    public function getCards(): ?array
+    {
+        return $this->cards;
+    }
+
+    public function setCards(?array $cards): self
+    {
+        $this->cards = $cards;
+
+        return $this;
+    }
+
+    public function getIsNow(): ?bool
+    {
+        return $this->isNow;
+    }
+
+    public function setIsNow(bool $isNow): self
+    {
+        $this->isNow = $isNow;
+
+        return $this;
+    }
+
+    public function getStop(): ?int
+    {
+        return $this->stop;
+    }
+
+    public function setStop(int $stop): self
+    {
+        $this->stop = $stop;
+
+        return $this;
+    }
+
+    public function removeCards(array $cards)
+    {
+        $this->cards = array_diff($this->cards, $cards);
+    }
+
+    public function addCards(array $newCards)
+    {
+        $this->cards = array_merge($this->cards, $newCards);
     }
 }

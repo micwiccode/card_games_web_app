@@ -39,6 +39,36 @@ class Room
      */
     private $usersInRoom;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $currentDeck = [];
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $usedDeck = [];
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $draw = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $stay= 0 ;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isGameRunning = 0;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $gameType;
+
     public function __construct()
     {
         $this->usersInRoom = new ArrayCollection();
@@ -114,6 +144,93 @@ class Room
                 $usersInRoom->setRoom(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCurrentDeck(): ?array
+    {
+        return $this->currentDeck;
+    }
+
+    public function setCurrentDeck(?array $currentDeck): self
+    {
+        $this->currentDeck = $currentDeck;
+
+        return $this;
+    }
+
+    public function getUsedDeck(): ?array
+    {
+        return $this->usedDeck;
+    }
+
+    public function setUsedDeck(?array $usedDeck): self
+    {
+        $this->usedDeck = $usedDeck;
+
+        return $this;
+    }
+
+    public function addUsedCards(array $usedCards){
+
+        $this->usedDeck = array_merge($this->usedDeck, $usedCards);
+    }
+
+    public function getDraw(): ?int
+    {
+        return $this->draw;
+    }
+
+    public function setDraw(int $draw): self
+    {
+        $this->draw = $draw;
+
+        return $this;
+    }
+
+    public function getStay(): ?int
+    {
+        return $this->stay;
+    }
+
+    public function setStay(int $stay): self
+    {
+        $this->stay = $stay;
+
+        return $this;
+    }
+
+    public function getIsGameRunning(): ?bool
+    {
+        return $this->isGameRunning;
+    }
+
+    public function setIsGameRunning(bool $isGameRunning): self
+    {
+        $this->isGameRunning = $isGameRunning;
+
+        return $this;
+    }
+
+    public function getCurrentPlayer()
+    {
+        foreach ($this->getUsersInRoom() as $user) {
+            if ($user->getIsNow())
+                return $user;
+        }
+        return null;
+
+    }
+
+    public function getGameType(): ?string
+    {
+        return $this->gameType;
+    }
+
+    public function setGameType(?string $gameType): self
+    {
+        $this->gameType = $gameType;
 
         return $this;
     }
