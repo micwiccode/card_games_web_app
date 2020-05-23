@@ -17,14 +17,18 @@ security:
         main:
             anonymous: lazy
             provider: app_user_provider
+            json_login:
+                check_path: /login
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
             guard:
                 authenticators:
-                    - App\Security\UserAuthenticator
-                entry_point: App\Security\UserAuthenticator
+                        - lexik_jwt_authentication.jwt_token_authenticator
+                entry_point: lexik_jwt_authentication.jwt_token_authenticator
             logout:
                 path: /logout
-        test:
             http_basic: ~
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
