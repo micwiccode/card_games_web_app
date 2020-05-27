@@ -71,8 +71,13 @@ class RoomController extends AbstractController
         /** @var Room $room */
         $room = $this->em->getRepository(Room::class)->find($content->roomId);
         $response = $this->roomService->enterRoom($room);
-        $this->publisherService->updatePeopleInRoom($room);
-        return new MyJsonResponse($response);
+        $this->em->flush();
+        if ($response){
+            $this->publisherService->updatePeopleInRoom($room);
+            return new MyJsonResponse($response);
+        }else{
+            return new MyJsonResponse(null, "Pokój jest pełny");
+        }
     }
 
     /**

@@ -22,7 +22,7 @@ class ValueDictionary
 
     public const NINE = '9';
 
-    public const TEN = 'T';
+    public const TEN = '0';
 
     public const JACK = 'J';
 
