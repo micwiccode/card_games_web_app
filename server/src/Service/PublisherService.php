@@ -35,11 +35,12 @@ class PublisherService
     public function updatePeopleInRoom(Room $room)
     {
         $topic = self::ROOM_TOPIC . $room->getId();
-        $data = $room->getUsersInRoom();
+        $data['users'] = [];
         foreach ($room->getUsersInRoom() as $user) {
-            $data[] = UserResponseStruct::mapFromUser($user);
+            $data['users'][] = UserResponseStruct::mapFromUser($user);
         }
         $this->publish($topic, json_encode($data));
+        return $data;
 
     }
 
