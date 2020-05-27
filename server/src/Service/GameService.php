@@ -28,12 +28,20 @@ class GameService
         foreach ($room->getUsersInRoom() as $user){
             $cards = [];
             for ($i=0; $i<5; $i++){
-                $deck = $room->getCurrentDeck();
-                $cards[] = array_pop($deck);
-                $room->setCurrentDeck($deck);
+                $cards[] = $room->drawCard();
             }
             $user->setCards($cards);
         }
+
+
+        $card = $room->drawCard();
+        while (in_array($card->value, ValueDictionary::ACTION_VALUES)){
+            $room->addUsedCards([$card]);
+            $card = $room->drawCard();
+        }
+
+        $room->setCurrentCard($room->drawCard());
+
     }
 
     public function createDeck()
@@ -51,6 +59,7 @@ class GameService
     public function playCards(Room $room, User $user, array $cards){
         $room->addUsedCards($cards);
         $user->removeCards($cards);
+        $room->setCurrentCard($cards[count($cards)-1]);
         $counter = 0;
         $action = null;
         foreach ($cards as $card){
@@ -80,19 +89,19 @@ class GameService
         if (count($deck)>=$howMany)
         {
             for ($i=0; $i<$howMany; $i++){
-                $newCards[] = array_pop($deck);
+                $newCards[] = $room->drawCard();
             }
         }else{
             $cardsLeft  = count($deck);
             for ($i=0; $i<$cardsLeft; $i++){
-                $newCards[] = array_pop($deck);
+                $newCards[] = $room->drawCard();
             }
             $oldDeck = $room->getUsedDeck();
             shuffle($oldDeck);
             $deck = $oldDeck;
             $room->setUsedDeck([]);
             for ($i=$cardsLeft; $i<$howMany; $i++){
-                $newCards[] = array_pop($deck);
+                $newCards[] = $room->drawCard();
             }
         }
         $room->setCurrentDeck($deck);

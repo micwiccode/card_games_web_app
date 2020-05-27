@@ -12,7 +12,6 @@ class Card
     public $suit;
 
 
-
     /**
      * Card constructor.
      * @param $suit

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Utils\Card\Card;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -68,6 +69,12 @@ class Room
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $gameType;
+
+    /**
+     * @var Card $currentCard
+     * @ORM\Column(type="object", nullable=true)
+     */
+    private $currentCard;
 
     public function __construct()
     {
@@ -234,4 +241,21 @@ class Room
 
         return $this;
     }
+
+    public function drawCard(): Card{
+        return array_pop($this->currentDeck);
+    }
+
+    public function getCurrentCard(): Card
+    {
+        return $this->currentCard;
+    }
+
+    public function setCurrentCard(Card $currentCard): self
+    {
+        $this->currentCard = $currentCard;
+
+        return $this;
+    }
+
 }

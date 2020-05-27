@@ -30,6 +30,7 @@ class GameServiceTest extends TestCase
         $this->service->startGame($room, Game::MACAU);
         $this->assertTrue($room->getIsGameRunning());
         $this->assertCount(42, $room->getCurrentDeck());
+        var_dump($room->getCurrentDeck());
         $this->assertCount(5, $user1->getCards());
         $this->assertCount(5, $user2->getCards());
 

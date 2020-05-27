@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Utils\Struct\CardActionStruct;
+use App\Utils\Struct\CardsResponseStruct;
 use App\Utils\Struct\UserInGameResponseStruct;
 use App\Utils\Struct\PlayerResponseStruct;
 use App\Utils\Struct\UserResponseStruct;
@@ -51,6 +52,7 @@ class PublisherService
             $data['start']['cards'][] = UserInGameResponseStruct::mapFromUser($user);
         }
         $data['start']['turn'] = UserResponseStruct::mapFromUser($room->getCurrentPlayer());
+        $data['start']['startCard'] = $room->getCurrentCard()->__toString();
         $this->publish($topic, json_encode($data));
     }
 
