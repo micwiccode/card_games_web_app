@@ -99,6 +99,7 @@ class RoomController extends AbstractController
      */
     public function exitRoom(){
         $room = $this->roomService->exitRoom();
+        $this->em->flush();
         $this->publisherService->updatePeopleInRoom($room);
         return new MyJsonResponse(true);
     }
