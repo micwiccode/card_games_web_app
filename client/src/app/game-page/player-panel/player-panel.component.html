@@ -15,14 +15,15 @@
         *ngFor="let card of cards; let i = index"
         [ngStyle]="{ 'grid-column': +(i + 1), 'z-index': +i }"
         [src]="card.image"
-        (click)="playCard(card)"
+        (click)="chooseCard(card.value, $event)"
       />
     </div>
   </div>
   <div class="control_panel">
     <p class="control_panel__info">Ruch gracza: {{ turn.userName }}</p>
     <p class="control_panel__info">Informcja o akcji</p>
+    <p *ngIf="!isPossibleMoveFlag" class="control_panel__info">Brak możliwości ruchu dobierz kartę</p>
     <button class="button">Wykonaj akcję</button>
-    <button class="button">Zagraj</button>
+    <button class="button" (click)="playCards()">Zagraj karty</button>
   </div>
 </div>

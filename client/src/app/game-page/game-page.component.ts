@@ -18,7 +18,6 @@ export class GamePageComponent implements OnInit {
   roomID = null;
   userName = null;
   userID = null;
-  opponentsDecks: Deck[] = [];
 
   constructor(
     private gameService: GameService,
@@ -58,18 +57,15 @@ export class GamePageComponent implements OnInit {
           this.gameService.initGame(incomingData, this.userID)
         }
         if (incomingData.play !== undefined){
-
+          this.gameService.initRound(incomingData)
         }
         if (incomingData.draw !== undefined){
-
+          this.gameService.iniDraw(incomingData)
         }
         if (incomingData.next !== undefined){
-
+          this.gameService.initNextPlayer(incomingData)
         }
-
       });
-
-
   }
 
   initWebSocketRoom() {

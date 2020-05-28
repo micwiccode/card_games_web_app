@@ -44,6 +44,9 @@ export class GameService {
   );
   currentTableCard$ = this.currentTableCard.asObservable();
 
+  private isPossibleMoveFlag = new BehaviorSubject<boolean>(true);
+  isPossibleMoveFlag$ = this.isPossibleMoveFlag.asObservable();
+
   roomID: string;
   userID = null;
 
@@ -142,7 +145,6 @@ export class GameService {
       )
       .pipe()
       .subscribe(data => {
-        console.log(data);
         const cards: Card[] = [];
         // @ts-ignore
         data.data.cards.forEach(cardAlias => {
@@ -153,14 +155,58 @@ export class GameService {
           cards.push(card);
         });
         this.addCardToDeck(cards);
+        if (!this.isPossibleMove()) this.nextPlayer();
       });
   }
 
+  playCards(cardsAliasList: string[]) {
+    console.log(cardsAliasList);
+    return this.http
+      .post(
+        `${environment.API_URL}/room/${this.roomID}/playCards`,
+        { cards: cardsAliasList },
+        { headers: this.header }
+      )
+      .pipe()
+      .subscribe();
+  }
+
   addCardToDeck(cardsToAdd: Card[]) {
-    console.log(this.playerDeck.value.cards.concat(cardsToAdd));
-    const deck = this.playerDeck.next({
+    this.playerDeck.next({
       ...this.playerDeck.value,
       cards: this.playerDeck.value.cards.concat(cardsToAdd)
     });
+  }
+
+  isCardValid(
+    selectedCardAlias: string,
+    lastCardAlias: string = this.currentTableCard.value.value
+  ) {
+    const figure = selectedCardAlias[0];
+    const color = selectedCardAlias[1];
+    return lastCardAlias.includes(figure) || lastCardAlias.includes(color);
+  }
+
+  isPossibleMove() {
+    let isPossible = false;
+    const currentTableCardAlias = this.currentTableCard.value.value;
+    const figure = currentTableCardAlias[0];
+    const color = currentTableCardAlias[1];
+    const userCards = this.playerDeck.value.cards;
+    userCards.forEach(card => {
+      if (card.value.includes(figure) || card.value.includes(color)) {
+        isPossible = true;
+      }
+    });
+    return isPossible;
+  }
+
+  nextPlayer() {
+    return this.http
+      .post(`${environment.API_URL}/room/${this.roomID}/nextPlayer`, {
+        headers: this.header
+      })
+      .pipe()
+      .subscribe();
   }
 }
