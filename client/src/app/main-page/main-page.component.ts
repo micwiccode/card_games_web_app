@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DoCheck, Input } from "@angular/core";
 
 @Component({
-  selector: 'app-main-page',
-  templateUrl: './main-page.component.html',
-  styleUrls: ['../../css/button.css','./main-page.component.css']
+  selector: "app-main-page",
+  templateUrl: "./main-page.component.html",
+  styleUrls: ["../../css/button.css", "./main-page.component.css"]
 })
-export class MainPageComponent implements OnInit {
+export class MainPageComponent implements DoCheck {
+  @Input() isLogged: boolean;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngDoCheck(): void {
+    this.isLogged = localStorage.getItem("username") !== null;
   }
-
 }

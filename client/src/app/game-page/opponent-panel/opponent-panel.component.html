@@ -1,6 +1,24 @@
-<div class="card__grid" [ngStyle]="gridStyle()">
-  <img [class]="isVertical ? 'card__image__rotated' : 'card__image'" *ngFor="let n of ' '.repeat(numberOfCards).split(''); let i = index"
-    [ngStyle]="cardStyle(i)"
-    [src]="isVertical ? '../../../assets/img/card_back_rotated.png' : '../../../assets/img/card_back.png'">
+<div *ngIf="opponentDeck !== undefined" [ngStyle]="flexStyle()">
+  <p *ngIf="!isVertical" class="player_name">{{ opponentDeck.userName }}</p>
+  <div class="card__grid" [ngStyle]="gridStyle()">
+    <p *ngIf="isVertical" class="player_name">{{ opponentDeck.userName }}</p>
+    <img
+      [class]="isVertical ? 'card__image__rotated' : 'card__image'"
+      *ngFor="
+        let n of ' '.repeat(opponentDeck.numberOfCards).split('');
+        let i = index
+      "
+      [ngStyle]="cardStyle(i)"
+      [src]="
+        isVertical
+          ? '../../../assets/img/card_back_rotated.png'
+          : '../../../assets/img/card_back.png'
+      "
+    />
+  </div>
+  <img
+    class="arrow__image"
+    [ngStyle]="arrowStyle()"
+    src="../assets/img/arrow.png"
+  />
 </div>
-  

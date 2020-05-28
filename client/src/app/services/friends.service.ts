@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -7,22 +8,23 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class FriendsService {
   header = new HttpHeaders({
     'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
   });
   constructor(private http: HttpClient) {}
 
   getFriends() {
-    return this.http.get('/friendList').pipe();
+    return this.http.get(`${environment.API_URL}/friendList`).pipe();
   }
 
   addFriend(friend) {
     return this.http
-      .post('/addFriend', friend, { headers: this.header })
+      .post(`${environment.API_URL}/addFriend`, friend, { headers: this.header })
       .pipe();
   }
 
   deleteFriend(friend) {
     return this.http
-      .post('/removeFriend', friend, {
+      .post(`${environment.API_URL}/removeFriend`, friend, {
         headers: this.header,
       })
       .pipe();
@@ -30,13 +32,13 @@ export class FriendsService {
 
   getFriendRequest() {
     return this.http
-      .get('/friendRequestList', { headers: this.header })
+      .get(`${environment.API_URL}/friendRequestList`, { headers: this.header })
       .pipe();
   }
 
   acceptFriendRequest(friend) {
     return this.http
-      .post('/acceptFriendRequest', friend, {
+      .post(`${environment.API_URL}/acceptFriendRequest`, friend, {
         headers: this.header,
       })
       .pipe();
@@ -44,7 +46,7 @@ export class FriendsService {
 
   sendFriendRequest(friend) {
     return this.http
-      .post('/sendFriendRequest', friend, {
+      .post(`${environment.API_URL}/sendFriendRequest`, friend, {
         headers: this.header,
       })
       .pipe();
@@ -52,7 +54,7 @@ export class FriendsService {
 
   rejectFriendRequest(friend) {
     return this.http
-      .post('/rejectFriendRequest', friend, {
+      .post(`${environment.API_URL}/rejectFriendRequest`, friend, {
         headers: this.header,
       })
       .pipe();

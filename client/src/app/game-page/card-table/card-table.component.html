@@ -1,11 +1,9 @@
 <div class="grid">
-    <img [ngClass]="'arrow__image ' + currentlyDisplayedArrowClass" src="../assets/img/arrow.png">
-    <h1 class="title">Card Games</h1>
-
+    <h1 class="title">Makao</h1>
     <div class="table">
-        <img class="card__image" src="../assets/img/card_back.png" (click)="drawCard()">
-        <img class="card__image" *ngIf="lastPlayedCard !== undefined" [src]="lastPlayedCard.image">
-        <img class="card__image" *ngIf="lastPlayedCard === undefined" src="../assets/img/card_blank.png">
+        <img class="card__image" src="../assets/img/card_back.png" (click)="drawCards()">
+        <img class="card__image" *ngIf="currentTableCard !== undefined" [src]="currentTableCard.image">
+        <img class="card__image" *ngIf="currentTableCard === undefined" src="../assets/img/card_blank.png">
     </div>
 </div>
 

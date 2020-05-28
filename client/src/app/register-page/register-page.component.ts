@@ -47,18 +47,19 @@ export class RegisterPageComponent implements OnInit {
 
     if (validateResponse.isValid) {
       this.authService.register(newUser).subscribe(data => {
+        console.log(data)
         // @ts-ignore
-        if (data.data === true) {
-          this.authService.storeUserData(this.username);
-          this.router.navigate(["/"]);
+        const token = data.token;
+        if (token) {
+          this.authService.auth(token);
         } else {
-          errorLabel.style.display = "block";
+          errorLabel.style.display = 'block';
           // @ts-ignore
           errorLabel.textContent = data.error;
         }
       });
     } else {
-      errorLabel.style.display = "block";
+      errorLabel.style.display = 'block';
       errorLabel.textContent = validateResponse.msg;
     }
   }

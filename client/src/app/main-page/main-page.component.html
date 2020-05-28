@@ -1,8 +1,13 @@
 <div class="menu">
   <h1 class="menu__title">Card Games</h1>
-  <button class="button" routerLink="/game">Graj</button>
-  <button class="button" routerLink="/createGame">Stwórz grę</button>
-  <button class="button" routerLink="/rooms">Pokoje</button>
-  <button class="button" routerLink="/friends">Znajomi</button>
-  <button class="button" routerLink="/profile">Twój profil</button>
+  <div *ngIf="isLogged; then loggedUserBlock; else guestBlock"></div>
+  <ng-template #loggedUserBlock>
+    <button class="button" routerLink="/rooms">Graj</button>
+    <button class="button" routerLink="/createGame">Stwórz grę</button>
+    <button class="button" routerLink="/profile">Twój profil</button>
+  </ng-template>
+  <ng-template #guestBlock>
+    <button class="button" routerLink="/login">Zaloguj się</button>
+    <button class="button" routerLink="/register">Zarejestruj</button>
+  </ng-template>
 </div>

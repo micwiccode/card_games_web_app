@@ -1,6 +1,19 @@
-.container {
+.grid{
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid__center{
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+}
+
+.control_panel{
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
@@ -17,3 +30,18 @@
 .card__image:hover{
   transform: translateY(-20px);
 }
+
+.control_panel__info{
+  font-size: 1.1em;
+}
+
+.button{
+  font-size: 1em;
+  font-weight: normal;
+  padding: 10px;
+}
+
+.arrow__bottom {
+  transform: rotate(180deg);
+}
+
