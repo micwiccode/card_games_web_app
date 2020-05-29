@@ -59,7 +59,8 @@ class GameService
     public function playCards(Room $room, User $user, array $cards){
         $room->addUsedCards($cards);
         $user->removeCards($cards);
-        $room->setCurrentCard($cards[count($cards)-1]);
+        $card = Card::getFromAlias($cards[count($cards)-1]);
+        $room->setCurrentCard($card);
         $counter = 0;
         $action = null;
         foreach ($cards as $card){
