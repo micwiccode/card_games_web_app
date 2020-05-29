@@ -17,6 +17,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 60%;
 }
 
 .menu__form__input{
@@ -25,7 +26,8 @@
   background-color: #fff;
   color: #000;
   padding: 16px 14px;
-  min-width: 400px;
+  min-width: 200px;
+  width: 80%;
   margin-bottom: 20px;
   font-family: 'Montserrat', sans-serif;
   font-weight: bolder;
@@ -34,4 +36,16 @@
 
 select:invalid {
   color: gray;
+}
+
+@media only screen and (max-width:1100px){
+  .menu{
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width:600px){
+  .menu__form{
+    width: 100%;
+  }
 }

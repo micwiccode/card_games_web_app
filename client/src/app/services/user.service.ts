@@ -1,27 +1,42 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  header = new HttpHeaders({
-    'Content-Type': 'application/json',
-  });
+
   constructor(private http: HttpClient) {}
 
-  getUser() {
-    return this.http
-      .get('/getUser', { headers: this.header })
-      .pipe();
+  getUser(token = undefined) {
+    if (token !== undefined) {
+      return this.http
+        .get(`${environment.API_URL}/getUser`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+        .pipe();
+    } else {
+      return this.http
+        .get(`${environment.API_URL}/getUser`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+        .pipe();
+    }
   }
 
   updateUser(user) {
-    const header = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
     return this.http
-      .put('/updateUser', user, { headers: this.header })
+      .put(`${environment.API_URL}/updateUser`, user, { headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        } })
       .pipe();
   }
 }

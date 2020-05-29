@@ -1,4 +1,29 @@
-<div class="card__row" [ngStyle]="{'grid-template-columns': 'repeat('+(cards.length - 1) +', 16px) 120px'}">
-  <img class="card__image" *ngFor="let card of cards; let i = index"
-    [ngStyle]="{'grid-column': +(i+1), 'z-index': +i}" [src]="card.image" (click)="playCard(card)">
+<div class="grid">
+  <div></div>
+  <div class="grid__center">
+    <img [hidden]="!isUserTurn" class="arrow__image arrow__bottom" src="../assets/img/arrow.png">
+    <p class="player_name">{{ userName }}</p>
+    <div
+      class="card__row"
+      [ngStyle]="{
+        'grid-template-columns':
+          'repeat(' + (cards.length - 1) + ', 16px) 120px'
+      }"
+    >
+      <img
+        class="card__image"
+        *ngFor="let card of cards; let i = index"
+        [ngStyle]="{ 'grid-column': +(i + 1), 'z-index': +i }"
+        [src]="card.image"
+        (click)="chooseCard(card.value, $event)"
+      />
+    </div>
+  </div>
+  <div class="control_panel">
+    <p class="control_panel__info">Ruch gracza: {{ turn.userName }}</p>
+    <p class="control_panel__info">Informcja o akcji</p>
+    <p *ngIf="!isPossibleMoveFlag" class="control_panel__info">Brak możliwości ruchu dobierz kartę</p>
+    <button class="button">Wykonaj akcję</button>
+    <button class="button" (click)="playCards()">Zagraj karty</button>
+  </div>
 </div>

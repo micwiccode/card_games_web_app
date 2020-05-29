@@ -1,26 +1,58 @@
 <div class="header">
-  <div *ngIf="link === '/' || link ==='/login' || link === '/register' || link ==='/game'; then noLogo else logo"></div>
+  <div
+    *ngIf="
+      link === '/' ||
+        link === '/login' ||
+        link === '/register' ||
+        link === '/game';
+      then noLogo;
+      else logo
+    "
+  ></div>
   <ng-template #noLogo></ng-template>
   <ng-template #logo>
     <h1 class="header__title" routerLink="/">Card Games</h1>
   </ng-template>
-  <ul class="header__nav">
+
+  <ul
+    *ngIf="link !== '/game'"
+    class="header__nav"
+    [ngClass]="{ 'header__nav--active': isSideMenuActive === true }"
+  >
     <div *ngIf="isLogged; then loggedUserBlock; else guestBlock"></div>
     <ng-template #loggedUserBlock>
       <li class="header__nav__link">
-        <a class="link" routerLink="/" (click)="onLogOutClick()">Wyloguj się</a>
+        <a
+          class="link"
+          (click)="activateSideMenu()"
+          routerLink="/"
+          (click)="onLogOutClick()"
+          >Wyloguj się</a
+        >
       </li>
       <li class="header__nav__link">
-        <a class="link" routerLink="/profile">Twój profil</a>
+        <a class="link" (click)="activateSideMenu()" routerLink="/profile"
+          >Twój profil</a
+        >
       </li>
     </ng-template>
     <ng-template #guestBlock>
       <li class="header__nav__link">
-        <a class="link" routerLink="/register">Zarejestruj się</a>
+        <a class="link" (click)="activateSideMenu()" routerLink="/register"
+          >Zarejestruj się</a
+        >
       </li>
       <li class="header__nav__link">
-        <a class="link" routerLink="/login">Zaloguj się</a>
+        <a class="link" (click)="activateSideMenu()" routerLink="/login"
+          >Zaloguj się</a
+        >
       </li>
     </ng-template>
   </ul>
+
+  <button *ngIf="link !== '/game'" class="hamburger" (click)="activateSideMenu()">
+    <span class="hamburger__icon">
+      <span class="hamburger__line"></span>
+    </span>
+  </button>
 </div>

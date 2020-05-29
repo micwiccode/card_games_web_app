@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {RoomsService} from "../../services/rooms.service";
 
 @Component({
   selector: 'app-score-board',
@@ -14,9 +15,13 @@ export class ScoreBoardComponent implements OnInit {
     {name: 'Czwarty', score: 873}
   ]
 
-  constructor() { }
+  constructor(private roomsService:RoomsService) { }
 
   ngOnInit(): void {
+  }
+
+  exitGame(){
+    this.roomsService.exitRoom().subscribe()
   }
 
 }

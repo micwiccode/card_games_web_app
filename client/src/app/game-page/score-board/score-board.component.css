@@ -1,11 +1,20 @@
 p {
-  padding-right: 20px; 
+  padding-right: 20px;
   font-size: 20px;
 }
-
-
 
 .scores {
   display: flex;
   justify-content: space-between;
 }
+
+.exit_btn{
+  padding-top: 30px;
+  font-family: "Girassol", cursive;
+  font-weight: bolder;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+
+

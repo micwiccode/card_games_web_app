@@ -1,12 +1,20 @@
-<div class="page"  *ngIf="gameStarted">
+<div class="page" *ngIf="!waitingForStart">
     <div class="game">
-        <app-opponent-panel class="top__player"></app-opponent-panel>
-        <app-opponent-panel vertical="true" class="left__player"></app-opponent-panel>
-        <app-opponent-panel vertical="true" class="right__player"></app-opponent-panel>
+        <app-opponent-panel [deckPosition]="0" class="top__player"></app-opponent-panel>
+        <app-opponent-panel [deckPosition]="1" vertical="true" class="left__player"></app-opponent-panel>
+        <app-opponent-panel [deckPosition]="2" vertical="true" class="right__player"></app-opponent-panel>
         <app-player-panel class="bottom__player"></app-player-panel>
         <app-card-table class="middle"></app-card-table>
     </div>
     <div class="score__board">
         <app-score-board></app-score-board>
     </div>
+</div>
+
+<div *ngIf="waitingForStart === true">
+  <app-loading-spinner-game
+    [playersListQueue]="playersListQueue"
+    (messageEvent)="startGame()"
+    [isGameAdmin]="isGameAdmin"
+  ></app-loading-spinner-game>
 </div>

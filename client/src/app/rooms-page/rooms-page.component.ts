@@ -55,7 +55,7 @@ export class RoomsPageComponent implements OnInit {
         } else {
           // @ts-ignore
           localStorage.setItem('roomID', this.currentRoomId);
-          this.router.navigate(['rooms']);
+          this.router.navigate(['game']);
           this.errorLabel.style.display = 'none';
         }
       });

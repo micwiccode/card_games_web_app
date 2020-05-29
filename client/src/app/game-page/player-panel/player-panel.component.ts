@@ -1,28 +1,66 @@
-import { Component, OnInit } from '@angular/core';
-import { GameService } from '../../services/game.service';
-import { Card } from '../card';
+import { Component, OnInit } from "@angular/core";
+import { GameService } from "../../services/game.service";
+import { Card } from "../card";
+import { Turn } from "../turn";
 
 @Component({
-  selector: 'app-player-panel',
-  templateUrl: './player-panel.component.html',
-  styleUrls: ['../../../css/button.css', './player-panel.component.css', '../card-image.css']
+  selector: "app-player-panel",
+  templateUrl: "./player-panel.component.html",
+  styleUrls: [
+    "../../../css/button.css",
+    "./player-panel.component.css",
+    "../deck.css",
+    "../card-image.css",
+    "../arrow.css"
+  ]
 })
 export class PlayerPanelComponent implements OnInit {
-  gameStarted: boolean;
   cards: Card[] = [];
-  selectedCard: Card;
+  userName: string = null;
+  isUserTurn: boolean = false;
+  turn: Turn;
+  currentTableCard: Card;
+  isPossibleMoveFlag: boolean = true;
+  selectedCardsAliasList: string[] = [];
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService) {}
 
   ngOnInit(): void {
-    this.gameService.playerCards$.subscribe(cards =>{
-      this.cards = cards;
-      console.log(cards);
+    this.gameService.playerDeck$.subscribe(deck => {
+      this.cards = deck.cards;
+      this.userName = deck.userName;
+      this.isUserTurn = deck.isUserTurn;
     });
+    this.gameService.turn$.subscribe(turn => {
+      this.turn = turn;
+    });
+    this.gameService.currentTableCard$.subscribe(
+      card => (this.currentTableCard = card)
+    );
+    this.gameService.isPossibleMoveFlag$.subscribe(
+      isPossibleMoveFlag => (this.isPossibleMoveFlag = isPossibleMoveFlag)
+    );
   }
 
-  playCard(card: Card) {
-    this.gameService.playCard(card);
+  chooseCard(cardAlias: string, event: any) {
+    const cardAliasIndex = this.selectedCardsAliasList.indexOf(cardAlias);
+    if (cardAliasIndex === -1) {
+      if (
+        this.gameService.isCardValid(
+          cardAlias,
+          this.selectedCardsAliasList[this.selectedCardsAliasList.length - 1]
+        )
+      ) {
+        event.target.classList.add("card__image--selected");
+        this.selectedCardsAliasList.push(cardAlias);
+      }
+    } else {
+      event.target.classList.remove("card__image--selected");
+      this.selectedCardsAliasList.splice(cardAliasIndex, 1);
+    }
   }
-  
+
+  playCards(){
+    this.gameService.playCards(this.selectedCardsAliasList)
+  }
 }

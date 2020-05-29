@@ -1,4 +1,4 @@
-import {Component, OnInit, DoCheck, Input} from "@angular/core";
+import { Component, OnInit, DoCheck, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 
@@ -10,6 +10,7 @@ import { AuthService } from "../../services/auth.service";
 export class HeaderComponent implements OnInit, DoCheck {
   @Input() isLogged: boolean;
   link: string;
+  isSideMenuActive: boolean = false;
 
   constructor(private authService: AuthService, public router: Router) {}
 
@@ -20,6 +21,10 @@ export class HeaderComponent implements OnInit, DoCheck {
   }
 
   onLogOutClick() {
-    this.authService.logOut();
+    this.authService.logOut().subscribe();
+  }
+
+  activateSideMenu() {
+    this.isSideMenuActive = !this.isSideMenuActive;
   }
 }

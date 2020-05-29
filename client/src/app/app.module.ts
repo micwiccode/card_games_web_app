@@ -1,5 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 //Components
 import { AppRoutingModule } from "./app-routing.module";
 import { FormsModule } from "@angular/forms";
@@ -18,6 +20,8 @@ import { CardTableComponent } from "./game-page/card-table/card-table.component"
 import { OpponentPanelComponent } from "./game-page/opponent-panel/opponent-panel.component";
 import { Page404Component } from "./page404/page404.component";
 import { RoomsPageComponent } from "./rooms-page/rooms-page.component";
+import { LoadingSpinnerComponent } from "./components/loading-spinner/loading-spinner.component";
+import { LoadingSpinnerGameComponent } from "./components/loading-spinner-game/loading-spinner-game.component";
 //Services
 import { AuthGuardService } from "./services/auth-guard.service";
 import { ValidateService } from "./services/validate.service";
@@ -25,7 +29,8 @@ import { UserService } from "./services/user.service";
 import { AuthService } from "./services/auth.service";
 import { RoomsService } from "./services/rooms.service";
 import { FriendsService } from "./services/friends.service";
-import { ScoreBoardComponent } from './game-page/score-board/score-board.component';
+import { ScoreBoardComponent } from "./game-page/score-board/score-board.component";
+import {SseService} from "./services/sse-service.service";
 
 @NgModule({
   declarations: [
@@ -43,16 +48,26 @@ import { ScoreBoardComponent } from './game-page/score-board/score-board.compone
     CardTableComponent,
     OpponentPanelComponent,
     ScoreBoardComponent,
-    RoomsPageComponent
+    RoomsPageComponent,
+    LoadingSpinnerGameComponent,
+    LoadingSpinnerComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule
+  ],
   providers: [
     AuthGuardService,
     ValidateService,
     UserService,
     AuthService,
     RoomsService,
-    FriendsService
+    FriendsService,
+    SseService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,26 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { GameService } from '../../services/game.service';
-import { Card } from '../card';
+import { Component, OnInit } from "@angular/core";
+import { GameService } from "../../services/game.service";
+import { Card } from "../card";
 
 @Component({
-  selector: 'app-card-table',
-  templateUrl: './card-table.component.html',
-  styleUrls: ['./card-table.component.css', '../card-image.css']
+  selector: "app-card-table",
+  templateUrl: "./card-table.component.html",
+  styleUrls: ["./card-table.component.css", "../card-image.css"]
 })
 export class CardTableComponent implements OnInit {
-  lastPlayedCard: Card;
-  currentlyDisplayedArrowClass: string = 'arrow__right';
+  currentTableCard: Card;
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService) {}
 
   ngOnInit(): void {
-    this.gameService.lastPlayedCard$.subscribe(
-      card => this.lastPlayedCard = card
-    )
+    this.gameService.currentTableCard$.subscribe(
+      card => (this.currentTableCard = card)
+    );
   }
 
-  drawCard() {
-    this.gameService.drawCard();
+  drawCards() {
+      this.gameService.drawCards(1);
   }
-
 }

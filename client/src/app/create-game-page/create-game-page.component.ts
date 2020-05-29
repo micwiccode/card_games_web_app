@@ -41,7 +41,7 @@ export class CreateGamePageComponent implements OnInit {
         if (data.error === null) {
           // @ts-ignore
           localStorage.setItem("roomID", data.data.id);
-          this.router.navigate(["/rooms"]);
+          this.router.navigate(["game"]);
         } else {
           errorLabel.style.display = "block";
           // @ts-ignore
