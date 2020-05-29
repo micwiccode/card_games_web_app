@@ -74,11 +74,11 @@ class GameService
 
         }
 
-        $action->content = $counter;
+        $action->content = $counter+$room->getDraw()+$room->getStay();
         if ($action->type==Macao::DRAW){
-            $room->setDraw($room->getDraw()+$action->content);
+            $room->setDraw($action->content);
         }elseif($action->type==Macao::STOP){
-            $room->setStay($room->getStay()+$action->content);
+            $room->setStay($action->content);
         }
         return $action;
 
@@ -87,6 +87,8 @@ class GameService
     public function drawCards(Room $room, User $user, int $howMany){
         $deck = $room->getCurrentDeck();
         $newCards = [];
+        $room->setDraw(0);
+        $room->setStay(0);
         if (count($deck)>=$howMany)
         {
             for ($i=0; $i<$howMany; $i++){
