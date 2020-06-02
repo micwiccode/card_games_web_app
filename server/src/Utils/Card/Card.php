@@ -17,7 +17,7 @@ class Card
      * @param $suit
      * @param $value
      */
-    public function __construct($suit, $value)
+    public function __construct($value, $suit)
     {
         $this->suit = $suit;
         $this->value = $value;
