@@ -68,9 +68,10 @@ class GameController extends AbstractController
         $room = $this->getRoom($id);
         $content = json_decode($request->getContent());
         $cards = $content->cards;
+        $cardRequest = $content->request;
         /** @var User $user */
         $user = $this->getUser();
-        $action = $this->gameService->playCards($room, $user, $cards);
+        $action = $this->gameService->playCards($room, $user, $cards, $cardRequest);
         $this->em->flush();
         if ($action->type = Macao::DRAW_PREVIOUS){
             $nextUserAction = $this->gameService->previousUser($room);

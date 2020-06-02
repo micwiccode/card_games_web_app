@@ -30,7 +30,7 @@ class Card
 
     public static function getFromAlias(string $cardAlias)
     {
-        $aliasArray = str_split('', $cardAlias);
+        $aliasArray = str_split($cardAlias);
         return new Card($aliasArray[0], $aliasArray[1]);
     }
 
