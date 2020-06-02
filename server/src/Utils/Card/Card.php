@@ -17,7 +17,7 @@ class Card
      * @param $suit
      * @param $value
      */
-    public function __construct($value, $suit)
+    public function __construct($suit, $value)
     {
         $this->suit = $suit;
         $this->value = $value;
@@ -31,7 +31,7 @@ class Card
     public static function getFromAlias(string $cardAlias)
     {
         $aliasArray = str_split($cardAlias);
-        return new Card($aliasArray[0], $aliasArray[1]);
+        return new Card($aliasArray[1], $aliasArray[0]);
     }
 
 
