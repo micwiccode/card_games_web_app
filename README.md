@@ -22,6 +22,9 @@ Init database:
 
 Database will be created in: http://localhost/phpmyadmin/index.php
 
-To run Angular with server use proxy and type
-`npm start` instead of `ng serve`
+To run Angular `ng serve`
+
+Mercure:
+`mercure/mercure --jwt-key='WheelOfFortune' --addr='localhost:3000' --allow-anonymous --cors-allowed-origins='*'`
+
 

@@ -56,7 +56,7 @@ class GameService
         return $deck;
     }
 
-    public function playCards(Room $room, User $user, array $cards){
+    public function playCards(Room $room, User $user, array $cards, $choose){
         $room->addUsedCards($cards);
         $user->removeCards($cards);
         $card = Card::getFromAlias($cards[count($cards)-1]);
@@ -64,7 +64,7 @@ class GameService
         $counter = 0;
         $action = null;
         foreach ($cards as $card){
-            $action = Macao::actionCard($card);
+            $action = Macao::actionCard($card, $choose);
             if (in_array($action->type, [
                 Macao::DRAW,
                 Macao::STOP
