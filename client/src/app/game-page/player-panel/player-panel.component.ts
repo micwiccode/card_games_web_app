@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { GameService } from "../../services/game.service";
-import { Card } from "../card";
+import { Card } from "../Card";
 import { Turn } from "../turn";
+import { Action } from "../Action";
 
 @Component({
   selector: "app-player-panel",
@@ -22,6 +23,9 @@ export class PlayerPanelComponent implements OnInit {
   currentTableCard: Card;
   isPossibleMoveFlag: boolean = true;
   selectedCardsAliasList: string[] = [];
+  currentAction: Action = null;
+  isTableCardTaken: boolean = false;
+  isQuestion: any = null;
 
   constructor(private gameService: GameService) {}
 
@@ -40,6 +44,12 @@ export class PlayerPanelComponent implements OnInit {
     this.gameService.isPossibleMoveFlag$.subscribe(
       isPossibleMoveFlag => (this.isPossibleMoveFlag = isPossibleMoveFlag)
     );
+    this.gameService.currentAction$.subscribe(
+      currentAction => (this.currentAction = currentAction)
+    );
+    this.gameService.isTableCardTaken$.subscribe(
+      isTableCardTaken => (this.isTableCardTaken = isTableCardTaken)
+    );
   }
 
   chooseCard(cardAlias: string, event: any) {
@@ -48,7 +58,8 @@ export class PlayerPanelComponent implements OnInit {
       if (
         this.gameService.isCardValid(
           cardAlias,
-          this.selectedCardsAliasList[this.selectedCardsAliasList.length - 1]
+          this.selectedCardsAliasList[this.selectedCardsAliasList.length - 1],
+          this.currentAction
         )
       ) {
         event.target.classList.add("card__image--selected");
@@ -60,7 +71,20 @@ export class PlayerPanelComponent implements OnInit {
     }
   }
 
-  playCards(){
-    this.gameService.playCards(this.selectedCardsAliasList)
+  playCards() {
+    if (this.selectedCardsAliasList.length > 0) {
+      if(this.selectedCardsAliasList[this.selectedCardsAliasList.length-1][0] === 'J'){
+        this.isQuestion = 'J'
+      }
+      else if(this.selectedCardsAliasList[this.selectedCardsAliasList.length-1][0] === 'A')
+      {
+        this.isQuestion = 'A'
+      }
+      else this.gameService.playCards(this.selectedCardsAliasList);
+    }
+  }
+
+  answerQuestion(){
+
   }
 }

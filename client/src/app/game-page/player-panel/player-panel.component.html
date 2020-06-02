@@ -27,3 +27,25 @@
     <button class="button" (click)="playCards()">Zagraj karty</button>
   </div>
 </div>
+
+<div *ngIf="isQuestion === 'J'">
+  <div class="game_question">
+    <div class="game_question__inner">
+      <h2>Czego żadasz?</h2>
+      <button class="game__question__btn" (click)="answerQuestion()">
+        Potwierdź
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isQuestion === 'A'">
+  <div class="game_question">
+    <div class="game_question__inner">
+      <h2>Czego żadasz?</h2>
+      <button class="game__question__btn" (click)="answerQuestion()">
+        Potwierdź
+      </button>
+    </div>
+  </div>
+</div>

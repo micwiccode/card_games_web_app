@@ -1,12 +1,13 @@
 import { Injectable, NgZone } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { map } from "rxjs/operators";
-import { Card } from "../game-page/card";
+import { Card } from "../game-page/Card";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { environment } from "../../environments/environment";
 import { SseService } from "./sse-service.service";
-import { Deck } from "../game-page/deck";
+import { Deck } from "../game-page/Deck";
 import { Turn } from "../game-page/turn";
+import { Action } from "../game-page/Action";
 
 @Injectable({
   providedIn: "root"
@@ -17,35 +18,28 @@ export class GameService {
     Authorization: `Bearer ${localStorage.getItem("token")}`
   });
 
-  private playerDeck = new BehaviorSubject<Deck>(
-    new (class implements Deck {
-      cards: Card[];
-      isUserTurn: boolean = true;
-      numberOfCards: number;
-      userID: number;
-      userName: string;
-    })()
-  );
+  private playerDeck = new BehaviorSubject<Deck>(null);
   playerDeck$ = this.playerDeck.asObservable();
+
   private opponentsDecks = new BehaviorSubject<Deck[]>([]);
   opponentsDecks$ = this.opponentsDecks.asObservable();
-  private turn = new BehaviorSubject<Turn>(
-    new (class implements Turn {
-      id: number;
-      userName: string;
-    })()
-  );
+
+  private turn = new BehaviorSubject<Turn>(null);
   turn$ = this.turn.asObservable();
-  private currentTableCard = new BehaviorSubject<Card>(
-    new (class implements Card {
-      value: string;
-      image: string;
-    })()
-  );
+  private currentTableCard = new BehaviorSubject<Card>(null);
   currentTableCard$ = this.currentTableCard.asObservable();
 
   private isPossibleMoveFlag = new BehaviorSubject<boolean>(true);
   isPossibleMoveFlag$ = this.isPossibleMoveFlag.asObservable();
+
+  private currentAction = new BehaviorSubject<Action>(null);
+  currentAction$ = this.currentAction.asObservable();
+
+  private isEnd = new BehaviorSubject<boolean>(false);
+  isEnd$ = this.isEnd.asObservable();
+
+  private isTableCardTaken = new BehaviorSubject<boolean>(false);
+  isTableCardTaken$ = this.isTableCardTaken.asObservable();
 
   roomID: string;
   userID = null;
@@ -80,13 +74,13 @@ export class GameService {
   }
 
   initGame(incomingData, userID) {
-    const decks = incomingData.start.cards;
+    const decks = incomingData.cards;
     const turn: Turn = {
-      id: incomingData.start.turn.id,
-      userName: incomingData.start.turn.username
+      id: incomingData.turn.id,
+      userName: incomingData.turn.username
     };
     this.turn.next(turn);
-    const startCard = incomingData.start.startCard;
+    const startCard = incomingData.startCard;
     const currentTableCard: Card = {
       value: startCard,
       image: `https://deckofcardsapi.com/static/img/${startCard}.png`
@@ -100,6 +94,29 @@ export class GameService {
     });
     this.initPlayerDeck(playerDeck, turn.id);
     this.initOpponentsDeck(opponentsDecks, turn.id);
+  }
+
+  initRound(incomingData) {
+    if (this.isEnd !== incomingData.isEnd) this.isEnd = incomingData.isEnd;
+    if (incomingData.action.target === this.userID) {
+      this.currentAction.next(incomingData.action);
+    }
+  }
+
+  initDraw(incomingData) {
+    const opponentsDecks: Deck[] = this.opponentsDecks.value;
+    const userDeck: Deck = opponentsDecks.find(deck => {
+      deck.userID = incomingData.userId;
+    });
+    if (userDeck) {
+      userDeck.numberOfCards += incomingData.newCards;
+      this.opponentsDecks.next(opponentsDecks);
+    }
+  }
+
+  initNextPlayer(incomingData) {
+    this.turn.next(incomingData.userId);
+    if (incomingData.userId === this.userID) this.resetTableCard();
   }
 
   initPlayerDeck(playerDeck, turnPlayerID) {
@@ -155,12 +172,12 @@ export class GameService {
           cards.push(card);
         });
         this.addCardToDeck(cards);
-        if (!this.isPossibleMove()) this.nextPlayer();
+        this.isPossibleMove();
       });
   }
 
   playCards(cardsAliasList: string[]) {
-    console.log(cardsAliasList);
+    console.log(cardsAliasList)
     return this.http
       .post(
         `${environment.API_URL}/room/${this.roomID}/playCards`,
@@ -180,11 +197,20 @@ export class GameService {
 
   isCardValid(
     selectedCardAlias: string,
-    lastCardAlias: string = this.currentTableCard.value.value
+    lastCardAlias: string = this.currentTableCard.value.value,
+    currentAction: Action
   ) {
     const figure = selectedCardAlias[0];
     const color = selectedCardAlias[1];
-    return lastCardAlias.includes(figure) || lastCardAlias.includes(color);
+    // if (currentAction.type === "Draw")
+    //   return figure === "2" || figure === "3" || figure === "K";
+    // else if (currentAction.type === "Stop") return figure === "4";
+    // else if (currentAction.type === "Request")
+    //   return figure === currentAction.content;
+    // else if (currentAction.type === "Color change")
+    //   return figure === currentAction.content;
+    // else
+      return lastCardAlias.includes(figure) || lastCardAlias.includes(color);
   }
 
   isPossibleMove() {
@@ -198,7 +224,7 @@ export class GameService {
         isPossible = true;
       }
     });
-    return isPossible;
+    this.isPossibleMoveFlag.next(isPossible);
   }
 
   nextPlayer() {
@@ -208,5 +234,13 @@ export class GameService {
       })
       .pipe()
       .subscribe();
+  }
+
+  setTableCardAsTaken() {
+    this.isTableCardTaken.next(true);
+  }
+
+  resetTableCard() {
+    this.isTableCardTaken.next(false);
   }
 }

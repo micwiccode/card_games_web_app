@@ -3,8 +3,8 @@ import { GameService } from "../services/game.service";
 import { UserService } from "../services/user.service";
 import { RoomsService } from "../services/rooms.service";
 import { environment } from "../../environments/environment";
-import { Deck } from "./deck";
-import { Card } from "./card";
+import { Deck } from "./Deck";
+import { Card } from "./Card";
 
 @Component({
   selector: "app-game-page",
@@ -18,6 +18,7 @@ export class GamePageComponent implements OnInit {
   roomID = null;
   userName = null;
   userID = null;
+  isEnd = false;
 
   constructor(
     private gameService: GameService,
@@ -42,28 +43,31 @@ export class GamePageComponent implements OnInit {
     });
     this.initWebSocketRoom();
     this.initWebSocketGame();
+    this.gameService.isEnd$.subscribe(isEnd => (this.isEnd = isEnd));
   }
+
   initWebSocketGame() {
-    this.gameService.getServerSendEvent(
-      `${environment.MERCURE_URL}/.well-known/mercure?topic=gameInfo/${this.roomID}`
-    )
+    this.gameService
+      .getServerSendEvent(
+        `${environment.MERCURE_URL}/.well-known/mercure?topic=gameInfo/${this.roomID}`
+      )
       .subscribe(data => {
         // @ts-ignore
         const incomingData = JSON.parse(data.data);
-        console.log('game');
+        console.log("game");
         console.log(incomingData);
         if (incomingData.start !== undefined) {
-          this.closeSpinner()
-          this.gameService.initGame(incomingData, this.userID)
+          this.closeSpinner();
+          this.gameService.initGame(incomingData.start, this.userID);
         }
-        if (incomingData.play !== undefined){
-          this.gameService.initRound(incomingData)
+        if (incomingData.play !== undefined) {
+          this.gameService.initRound(incomingData.play);
         }
-        if (incomingData.draw !== undefined){
-          this.gameService.iniDraw(incomingData)
+        if (incomingData.draw !== undefined) {
+          this.gameService.initDraw(incomingData.draw);
         }
-        if (incomingData.next !== undefined){
-          this.gameService.initNextPlayer(incomingData)
+        if (incomingData.next !== undefined) {
+          this.gameService.initNextPlayer(incomingData.next);
         }
       });
   }
@@ -76,7 +80,7 @@ export class GamePageComponent implements OnInit {
       .subscribe(data => {
         // @ts-ignore
         const incomingData = JSON.parse(data.data);
-        console.log('room');
+        console.log("room");
         console.log(incomingData);
         if (this.isGameAdmin === false && this.waitingForStart === true) {
           if (incomingData.start !== undefined) {
@@ -96,7 +100,11 @@ export class GamePageComponent implements OnInit {
     });
   }
 
-  closeSpinner(){
-    this.waitingForStart = false
+  closeSpinner() {
+    this.waitingForStart = false;
+  }
+
+  exitGame(){
+    this.roomsService.exitRoom().subscribe()
   }
 }

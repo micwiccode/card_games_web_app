@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { GameService } from "../../services/game.service";
-import { Card } from "../card";
+import { Card } from "../Card";
 
 @Component({
   selector: "app-card-table",
@@ -19,6 +19,7 @@ export class CardTableComponent implements OnInit {
   }
 
   drawCards() {
-      this.gameService.drawCards(1);
+    this.gameService.setTableCardAsTaken();
+    this.gameService.drawCards(1);
   }
 }

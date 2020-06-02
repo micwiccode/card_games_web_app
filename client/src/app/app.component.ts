@@ -6,7 +6,7 @@ import {Component, DoCheck} from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements DoCheck {
-  isLogged: boolean;
+  isLogged: boolean = false;
 
   constructor() {}
 

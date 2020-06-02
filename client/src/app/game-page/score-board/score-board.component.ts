@@ -17,11 +17,9 @@ export class ScoreBoardComponent implements OnInit {
 
   constructor(private roomsService:RoomsService) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   exitGame(){
     this.roomsService.exitRoom().subscribe()
   }
-
 }
