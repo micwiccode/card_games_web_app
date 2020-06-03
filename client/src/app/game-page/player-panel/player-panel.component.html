@@ -1,7 +1,11 @@
 <div class="grid">
   <div></div>
   <div class="grid__center">
-    <img [hidden]="!isUserTurn" class="arrow__image arrow__bottom" src="../assets/img/arrow.png">
+    <img
+      [hidden]="!isUserTurn"
+      class="arrow__image arrow__bottom"
+      src="../assets/img/arrow.png"
+    />
     <p class="player_name">{{ userName }}</p>
     <div
       class="card__row"
@@ -21,9 +25,44 @@
   </div>
   <div class="control_panel">
     <p class="control_panel__info">Ruch gracza: {{ turn.userName }}</p>
-    <p class="control_panel__info">Informcja o akcji</p>
-    <p *ngIf="!isPossibleMoveFlag" class="control_panel__info">Brak możliwości ruchu dobierz kartę</p>
-    <button class="button">Wykonaj akcję</button>
+    <p *ngIf="currentAction !== null" class="control_panel__info">
+      {{ currentAction.text }}
+    </p>
+    <div *ngIf="currentAction !== null">
+      <button
+        *ngIf="
+          currentAction.type === 'Draw' ||
+          currentAction.type === 'Draw previous'
+        "
+        class="button"
+        (click)="makeAction()"
+      >
+        Wykonaj akcję dobierania
+      </button>
+      <button
+        *ngIf="isTableCardTaken || currentAction.type === 'Stop'"
+        class="button"
+        (click)="nextPlayer()"
+      >
+        Stój
+      </button>
+    </div>
+    <p *ngIf="!isPossibleMoveFlag" class="control_panel__info">
+      Brak możliwości ruchu
+    </p>
+    <p
+      *ngIf="!isPossibleMoveFlag && !isTableCardTaken"
+      class="control_panel__info"
+    >
+      Dobierz kartę
+    </p>
     <button class="button" (click)="playCards()">Zagraj karty</button>
   </div>
+</div>
+
+<div *ngIf="isDemand === true">
+  <app-demand-view
+    [demandVersion]="demandVersion"
+    (messageEvent)="getDemandAnswer($event)"
+  ></app-demand-view>
 </div>

@@ -4,7 +4,17 @@ import { Injectable } from "@angular/core";
   providedIn: "root"
 })
 export class SseService{
-  getEventSource(url: string): EventSource {
-    return new EventSource(url);
+  private eventSourceList: EventSource[] = [];
+
+  getEventSource(url): EventSource {
+    const eventSource = new EventSource(url);
+    this.eventSourceList.push(eventSource);
+    return eventSource;
+  }
+
+  closeEventSources(): void {
+    this.eventSourceList.forEach(es =>{
+      es.close()
+    })
   }
 }

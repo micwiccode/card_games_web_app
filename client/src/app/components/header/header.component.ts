@@ -8,7 +8,7 @@ import { AuthService } from "../../services/auth.service";
   styleUrls: ["./header.component.css"]
 })
 export class HeaderComponent implements OnInit, DoCheck {
-  @Input() isLogged: boolean;
+  @Input() isLogged: boolean = false;
   link: string;
   isSideMenuActive: boolean = false;
 
@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit, DoCheck {
   }
 
   onLogOutClick() {
-    this.authService.logOut().subscribe();
+    this.authService.logOut();
   }
 
   activateSideMenu() {

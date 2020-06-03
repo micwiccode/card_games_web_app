@@ -36,14 +36,16 @@
 }
 
 .control_panel__info{
-  font-size: 1.1em;
+  font-size: 1em;
   margin: 0;
+  text-align: center;
 }
 
 .button{
-  font-size: 1em;
+  font-size: 0.9em;
   font-weight: normal;
-  padding: 10px;
+  padding: 5px;
+  min-width: 150px;
 }
 
 .arrow__bottom {

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { GameService } from "../../services/game.service";
-import { Deck } from "../deck";
+import { Deck } from "../Deck";
 
 @Component({
   selector: "app-opponent-panel",

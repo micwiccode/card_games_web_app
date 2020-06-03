@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { GameService } from "../../services/game.service";
-import { Card } from "../card";
+import { Card } from "../Card";
 import { Turn } from "../turn";
+import { Action } from "../Action";
 
 @Component({
   selector: "app-player-panel",
@@ -22,6 +23,10 @@ export class PlayerPanelComponent implements OnInit {
   currentTableCard: Card;
   isPossibleMoveFlag: boolean = true;
   selectedCardsAliasList: string[] = [];
+  currentAction: Action = null;
+  isTableCardTaken: boolean = false;
+  isDemand: boolean = false;
+  demandVersion: string = null;
 
   constructor(private gameService: GameService) {}
 
@@ -40,6 +45,12 @@ export class PlayerPanelComponent implements OnInit {
     this.gameService.isPossibleMoveFlag$.subscribe(
       isPossibleMoveFlag => (this.isPossibleMoveFlag = isPossibleMoveFlag)
     );
+    this.gameService.currentAction$.subscribe(
+      currentAction => (this.currentAction = currentAction)
+    );
+    this.gameService.isTableCardTaken$.subscribe(
+      isTableCardTaken => (this.isTableCardTaken = isTableCardTaken)
+    );
   }
 
   chooseCard(cardAlias: string, event: any) {
@@ -48,7 +59,8 @@ export class PlayerPanelComponent implements OnInit {
       if (
         this.gameService.isCardValid(
           cardAlias,
-          this.selectedCardsAliasList[this.selectedCardsAliasList.length - 1]
+          this.selectedCardsAliasList[this.selectedCardsAliasList.length - 1],
+          this.currentAction
         )
       ) {
         event.target.classList.add("card__image--selected");
@@ -60,7 +72,50 @@ export class PlayerPanelComponent implements OnInit {
     }
   }
 
-  playCards(){
-    this.gameService.playCards(this.selectedCardsAliasList)
+  nextPlayer(){
+    this.gameService.nextPlayer();
+  }
+
+  makeAction() {
+    console.log("akcja: " + this.currentAction.type);
+    console.log("akcja: " + this.currentAction.content);
+    if (this.currentAction.type === "Draw") {
+      this.gameService.drawCards(parseInt(this.currentAction.content));
+    } else if (
+      this.currentAction.type === "Stop" ||
+      this.currentAction.type === "Request" ||
+      this.currentAction.type === "Color change"
+    ) {
+    }
+    else{
+      this.gameService.nextPlayer();
+    }
+    this.gameService.makeActionDone();
+  }
+
+  playCards() {
+    if (this.selectedCardsAliasList.length > 0) {
+      if (
+        this.selectedCardsAliasList[
+          this.selectedCardsAliasList.length - 1
+        ][0] === "J"
+      ) {
+        this.demandVersion = "J";
+        this.isDemand = true;
+      } else if (
+        this.selectedCardsAliasList[
+          this.selectedCardsAliasList.length - 1
+        ][0] === "A"
+      ) {
+        this.demandVersion = "A";
+        this.isDemand = true;
+      } else this.gameService.playCards(this.selectedCardsAliasList, null);
+    }
+  }
+
+  getDemandAnswer(demandValue: string) {
+    this.isDemand = false;
+    this.demandVersion = null;
+    this.gameService.playCards(this.selectedCardsAliasList, demandValue);
   }
 }
