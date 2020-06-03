@@ -73,7 +73,7 @@ class GameController extends AbstractController
         $user = $this->getUser();
         $action = $this->gameService->playCards($room, $user, $cards, $cardRequest);
         $this->em->flush();
-        if ($action->type = Macao::DRAW_PREVIOUS){
+        if ($action->type == Macao::DRAW_PREVIOUS){
             $nextUserAction = $this->gameService->previousUser($room);
         }else{
             $nextUserAction = $this->gameService->nextUser($room);
