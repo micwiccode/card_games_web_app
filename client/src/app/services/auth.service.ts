@@ -36,19 +36,21 @@ export class AuthService {
   }
 
   logOut() {
-    localStorage.clear();
     this.router.navigate(["login"]);
     this.username = null;
-    return this.http.post(
-      `${environment.API_URL}/logout`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+    this.http
+      .post(
+        `${environment.API_URL}/logout`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
         }
-      }
-    );
+      )
+      .subscribe();
+    localStorage.clear();
   }
 
   auth(token) {

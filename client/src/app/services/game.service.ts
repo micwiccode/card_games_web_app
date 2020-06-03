@@ -1,8 +1,7 @@
 import { Injectable, NgZone } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { map } from "rxjs/operators";
 import { Card } from "../game-page/Card";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { environment } from "../../environments/environment";
 import { SseService } from "./sse-service.service";
 import { Deck } from "../game-page/Deck";
@@ -66,6 +65,10 @@ export class GameService {
     });
   }
 
+  closeServerSendEvents() {
+    this.sseService.closeEventSources();
+  }
+
   startGame() {
     this.roomID = localStorage.getItem("roomID");
     return this.http
@@ -99,6 +102,9 @@ export class GameService {
   initRound(incomingData) {
     if (this.isEnd !== incomingData.isEnd) this.isEnd = incomingData.isEnd;
     if (incomingData.action.target === this.userID) {
+      if (incomingData.action.type === "Nothing") {
+        this.currentAction.next(null);
+      }
       this.currentAction.next(incomingData.action);
     }
   }
@@ -136,6 +142,7 @@ export class GameService {
       cards: cards
     };
     this.playerDeck.next(deck);
+    this.isPossibleMove();
   }
 
   initOpponentsDeck(opponentsDecks, turnPlayerID) {
@@ -154,38 +161,65 @@ export class GameService {
   }
 
   drawCards(cardsNumber: number) {
-    return this.http
-      .post(
-        `${environment.API_URL}/room/${this.roomID}/drawCards`,
-        { cardsNumber },
-        { headers: this.header }
-      )
-      .pipe()
-      .subscribe(data => {
-        const cards: Card[] = [];
-        // @ts-ignore
-        data.data.cards.forEach(cardAlias => {
-          const card: Card = {
-            value: cardAlias,
-            image: `https://deckofcardsapi.com/static/img/${cardAlias}.png`
-          };
-          cards.push(card);
-        });
-        this.addCardToDeck(cards);
-        this.isPossibleMove();
-      });
+    if (this.currentAction.value !== null) {
+      const actionType = this.currentAction.value.type;
+      if (actionType === "Request" || actionType === "Color change") {
+        return this.http
+          .post(
+            `${environment.API_URL}/room/${this.roomID}/drawCards`,
+            { cardsNumber },
+            { headers: this.header }
+          )
+          .pipe()
+          .subscribe(data => {
+            const cards: Card[] = [];
+            // @ts-ignore
+            data.data.cards.forEach(cardAlias => {
+              const card: Card = {
+                value: cardAlias,
+                image: `https://deckofcardsapi.com/static/img/${cardAlias}.png`
+              };
+              cards.push(card);
+            });
+            this.addCardToDeck(cards);
+            this.isPossibleMove();
+          });
+      }
+    }
   }
 
-  playCards(cardsAliasList: string[]) {
-    console.log(cardsAliasList)
-    return this.http
+  makeActionDone() {
+    this.currentAction.next(null);
+  }
+
+  playCards(cardsAliasList: string[], demandValue: string) {
+    console.log(cardsAliasList);
+    console.log(demandValue);
+    this.http
       .post(
         `${environment.API_URL}/room/${this.roomID}/playCards`,
-        { cards: cardsAliasList },
+        { cards: cardsAliasList, request: demandValue },
         { headers: this.header }
       )
       .pipe()
       .subscribe();
+    this.removeCardsFromDeck(cardsAliasList);
+    this.nextPlayer();
+  }
+
+  removeCardsFromDeck(cardsAliasList: string[]) {
+    const playerDeck: Deck = this.playerDeck.value;
+    const playerCards: Card[] = playerDeck.cards;
+    const newPlayerCards: Card[] = [];
+    playerCards.forEach(card => {
+      if (!cardsAliasList.includes(card.value)) {
+        newPlayerCards.push(card);
+      }
+    });
+    this.playerDeck.next({
+      ...playerDeck,
+      cards: newPlayerCards
+    });
   }
 
   addCardToDeck(cardsToAdd: Card[]) {
@@ -197,20 +231,38 @@ export class GameService {
 
   isCardValid(
     selectedCardAlias: string,
-    lastCardAlias: string = this.currentTableCard.value.value,
+    lastCardAlias: string,
     currentAction: Action
   ) {
     const figure = selectedCardAlias[0];
     const color = selectedCardAlias[1];
-    // if (currentAction.type === "Draw")
-    //   return figure === "2" || figure === "3" || figure === "K";
-    // else if (currentAction.type === "Stop") return figure === "4";
-    // else if (currentAction.type === "Request")
-    //   return figure === currentAction.content;
-    // else if (currentAction.type === "Color change")
-    //   return figure === currentAction.content;
-    // else
-      return lastCardAlias.includes(figure) || lastCardAlias.includes(color);
+    if(lastCardAlias === undefined){
+      lastCardAlias = this.currentTableCard.value.value
+      if (currentAction === null)
+        return lastCardAlias.includes(figure) || lastCardAlias.includes(color);
+      if (currentAction.type === "Draw") {
+        if (figure === selectedCardAlias[0] && figure === "K") {
+          return color === "S" || color === "H";
+        } else {
+          return (
+            figure === lastCardAlias[0] ||
+            (color === lastCardAlias[1] && (figure === "2" || figure === "3"))
+          );
+        }
+      } else if (currentAction.type === "Stop") return figure === "4";
+      else if (currentAction.type === "Request")
+        return figure === currentAction.content;
+      else if (currentAction.type === "Color change")
+        return color === currentAction.content;
+      else if (currentAction.type === "Draw previous")
+        return (
+          selectedCardAlias === "KH" ||
+          selectedCardAlias === "2S" ||
+          selectedCardAlias === "3S"
+        );
+      else return figure === lastCardAlias[0] || color === lastCardAlias[1];
+    }
+    else return figure === lastCardAlias[0];
   }
 
   isPossibleMove() {

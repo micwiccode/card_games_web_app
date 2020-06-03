@@ -1,25 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import {RoomsService} from "../../services/rooms.service";
+import { Component, OnInit } from "@angular/core";
+import { RoomsService } from "../../services/rooms.service";
+import { GameService } from "../../services/game.service";
 
 @Component({
-  selector: 'app-score-board',
-  templateUrl: './score-board.component.html',
-  styleUrls: ['./score-board.component.css']
+  selector: "app-score-board",
+  templateUrl: "./score-board.component.html",
+  styleUrls: ["./score-board.component.css"]
 })
 export class ScoreBoardComponent implements OnInit {
 
-  players = [
-    {name: 'Pierwszy', score: 231},
-    {name: 'Drugi', score: 92},
-    {name: 'Trzeci', score: 2},
-    {name: 'Czwarty', score: 873}
-  ]
-
-  constructor(private roomsService:RoomsService) { }
+  constructor(
+    private roomsService: RoomsService,
+    private gameService: GameService
+  ) {}
 
   ngOnInit(): void {}
 
-  exitGame(){
-    this.roomsService.exitRoom().subscribe()
+  exitGame() {
+    this.roomsService.exitRoom().subscribe();
+    this.gameService.closeServerSendEvents();
   }
 }

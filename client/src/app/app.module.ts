@@ -22,6 +22,7 @@ import { Page404Component } from "./page404/page404.component";
 import { RoomsPageComponent } from "./rooms-page/rooms-page.component";
 import { LoadingSpinnerComponent } from "./components/loading-spinner/loading-spinner.component";
 import { LoadingSpinnerGameComponent } from "./components/loading-spinner-game/loading-spinner-game.component";
+import { DemandViewComponent } from "./game-page/demand-view/demand-view.component";
 //Services
 import { AuthGuardService } from "./services/auth-guard.service";
 import { ValidateService } from "./services/validate.service";
@@ -30,7 +31,7 @@ import { AuthService } from "./services/auth.service";
 import { RoomsService } from "./services/rooms.service";
 import { FriendsService } from "./services/friends.service";
 import { ScoreBoardComponent } from "./game-page/score-board/score-board.component";
-import {SseService} from "./services/sse-service.service";
+import { SseService } from "./services/sse-service.service";
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import {SseService} from "./services/sse-service.service";
     ScoreBoardComponent,
     RoomsPageComponent,
     LoadingSpinnerGameComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    DemandViewComponent
   ],
   imports: [
     BrowserModule,

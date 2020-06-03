@@ -1,0 +1,133 @@
+<div *ngIf="demandVersion === 'J'">
+  <div class="game_question">
+    <div class="game_question__inner">
+      <h2>Czego żadasz?</h2>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandFigure"
+          name="demandFigure"
+          value="5"
+          id="5"
+          [checked]="true"
+          (change)="changeDemandFigure($event.target)"
+        />
+        <label for="5">5</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandFigure"
+          name="demandFigure"
+          value="6"
+          id="6"
+          (change)="changeDemandFigure($event.target)"
+        />
+        <label for="6">6</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandFigure"
+          name="demandFigure"
+          value="7"
+          id="7"
+          (change)="changeDemandFigure($event.target)"
+        />
+        <label for="7">7</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandFigure"
+          name="demandFigure"
+          value="8"
+          id="8"
+          (change)="changeDemandFigure($event.target)"
+        />
+        <label for="8">8</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandFigure"
+          name="demandFigure"
+          value="9"
+          id="9"
+          (change)="changeDemandFigure($event.target)"
+        />
+        <label for="diamonds">9</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandFigure"
+          id="0"
+          name="demandFigure"
+          value="0"
+          (change)="changeDemandFigure($event.target)"
+        />
+        <label for="0">0</label>
+      </div>
+      <button class="button" (click)="answerQuestion()">
+        Potwierdź
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="demandVersion === 'A'">
+  <div class="game_question">
+    <div class="game_question__inner">
+      <h2>Czego żadasz?</h2>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandColor"
+          id="clubs"
+          name="demandColor"
+          value="C"
+          [checked]="true"
+          (change)="changeDemandFigure($event.target)"
+        />
+        <label for="clubs">Trefl</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandColor"
+          id="diamonds"
+          name="demandColor"
+          value="D"
+          (change)="changeDemandColor($event.target)"
+        />
+        <label for="diamonds">Karo</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandColor"
+          id="hearts"
+          name="demandColor"
+          value="H"
+          (change)="changeDemandColor($event.target)"
+        />
+        <label for="hearts">Kier</label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          [(ngModel)]="demandColor"
+          id="spades"
+          name="demandColor"
+          value="S"
+          (change)="changeDemandColor($event.target)"
+        />
+        <label for="spades">Pik</label>
+      </div>
+      <button class="button" (click)="answerQuestion()">
+        Potwierdź
+      </button>
+    </div>
+  </div>
+</div>

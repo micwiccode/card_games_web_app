@@ -1,0 +1,34 @@
+.game_question{
+  width: 100%;
+  height: 100%;
+  background-color: rgba(8, 8, 21, 0.8);
+  z-index: 10000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.game_question__inner{
+  position: relative;
+  top: 0;
+  left: 0;
+  transform: translateY(10px);
+  margin: 0 auto;
+  width: 50%;
+  height: 60%;
+  background-color: #f1eaea;
+  color: black;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 110000;
+  font-weight: bolder;
+  font-size: 1.1em;
+}
+

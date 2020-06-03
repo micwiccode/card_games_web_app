@@ -25,7 +25,8 @@ export class PlayerPanelComponent implements OnInit {
   selectedCardsAliasList: string[] = [];
   currentAction: Action = null;
   isTableCardTaken: boolean = false;
-  isQuestion: any = null;
+  isDemand: boolean = false;
+  demandVersion: string = null;
 
   constructor(private gameService: GameService) {}
 
@@ -71,20 +72,50 @@ export class PlayerPanelComponent implements OnInit {
     }
   }
 
+  nextPlayer(){
+    this.gameService.nextPlayer();
+  }
+
+  makeAction() {
+    console.log("akcja: " + this.currentAction.type);
+    console.log("akcja: " + this.currentAction.content);
+    if (this.currentAction.type === "Draw") {
+      this.gameService.drawCards(parseInt(this.currentAction.content));
+    } else if (
+      this.currentAction.type === "Stop" ||
+      this.currentAction.type === "Request" ||
+      this.currentAction.type === "Color change"
+    ) {
+    }
+    else{
+      this.gameService.nextPlayer();
+    }
+    this.gameService.makeActionDone();
+  }
+
   playCards() {
     if (this.selectedCardsAliasList.length > 0) {
-      if(this.selectedCardsAliasList[this.selectedCardsAliasList.length-1][0] === 'J'){
-        this.isQuestion = 'J'
-      }
-      else if(this.selectedCardsAliasList[this.selectedCardsAliasList.length-1][0] === 'A')
-      {
-        this.isQuestion = 'A'
-      }
-      else this.gameService.playCards(this.selectedCardsAliasList);
+      if (
+        this.selectedCardsAliasList[
+          this.selectedCardsAliasList.length - 1
+        ][0] === "J"
+      ) {
+        this.demandVersion = "J";
+        this.isDemand = true;
+      } else if (
+        this.selectedCardsAliasList[
+          this.selectedCardsAliasList.length - 1
+        ][0] === "A"
+      ) {
+        this.demandVersion = "A";
+        this.isDemand = true;
+      } else this.gameService.playCards(this.selectedCardsAliasList, null);
     }
   }
 
-  answerQuestion(){
-
+  getDemandAnswer(demandValue: string) {
+    this.isDemand = false;
+    this.demandVersion = null;
+    this.gameService.playCards(this.selectedCardsAliasList, demandValue);
   }
 }
