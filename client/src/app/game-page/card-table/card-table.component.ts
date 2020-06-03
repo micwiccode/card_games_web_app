@@ -19,7 +19,6 @@ export class CardTableComponent implements OnInit {
   }
 
   drawCards() {
-    this.gameService.setTableCardAsTaken();
     this.gameService.drawCards(1);
   }
 }

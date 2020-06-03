@@ -57,8 +57,9 @@ export class GamePageComponent implements OnInit {
         console.log("game");
         console.log(incomingData);
         if (incomingData.start !== undefined) {
-          this.closeSpinner();
+          this.gameService.initStart();
           this.gameService.initGame(incomingData.start, this.userID);
+          this.closeSpinner();
         }
         if (incomingData.play !== undefined) {
           this.gameService.initRound(incomingData.play);
@@ -85,6 +86,7 @@ export class GamePageComponent implements OnInit {
         if (this.isGameAdmin === false && this.waitingForStart === true) {
           if (incomingData.start !== undefined) {
             this.waitingForStart = false;
+            this.gameService.initStart();
           }
         }
         if (incomingData.users !== undefined) {
