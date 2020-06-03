@@ -58,7 +58,7 @@ class PublisherService
 
     public function playCard(Room $room, CardActionStruct $actionStruct, bool $isEnd = false){
         $topic = self::GAME_TOPIC . $room->getId();
-        $data['play'] = ['action' => $actionStruct, 'isEnd' => $isEnd];
+        $data['play'] = ['action' => $actionStruct, 'isEnd' => $isEnd, 'topCard' => $room->getCurrentCard()->__toString()];
         $this->publish($topic, json_encode($data));
     }
 

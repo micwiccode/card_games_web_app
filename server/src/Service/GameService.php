@@ -40,7 +40,7 @@ class GameService
             $card = $room->drawCard();
         }
 
-        $room->setCurrentCard($room->drawCard());
+        $room->setCurrentCard($card);
 
     }
 
