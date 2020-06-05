@@ -16,8 +16,8 @@ use Symfony\Component\Mercure\Update;
 
 class PublisherService
 {
-    const GAME_TOPIC = "gameInfo/";
-    const ROOM_TOPIC = "roomInfo/";
+    const GAME_TOPIC = "gameInfoCards/";
+    const ROOM_TOPIC = "roomInfoCards/";
     private $publisher;
 
     public function __construct(PublisherInterface $publisher)
@@ -56,9 +56,9 @@ class PublisherService
         $this->publish($topic, json_encode($data));
     }
 
-    public function playCard(Room $room, CardActionStruct $actionStruct, bool $isEnd = false){
+    public function playCard(Room $room, CardActionStruct $actionStruct, User $user, int $howMany, bool $isEnd = false){
         $topic = self::GAME_TOPIC . $room->getId();
-        $data['play'] = ['action' => $actionStruct, 'isEnd' => $isEnd, 'topCard' => $room->getCurrentCard()->__toString()];
+        $data['play'] = ['action' => $actionStruct, 'isEnd' => $isEnd, 'topCard' => $room->getCurrentCard()->__toString(), 'userId' => $user->getId(), 'username' => $user->getUsername(), 'playedCards' => $howMany];
         $this->publish($topic, json_encode($data));
     }
 

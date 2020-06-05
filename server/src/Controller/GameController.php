@@ -51,7 +51,7 @@ class GameController extends AbstractController
     public function startGame($id)
     {
         $room = $this->getRoom($id);
-        $this->gameService->startGame($room, Game::MACAU);
+        $this->gameService->startGame($room, Game::MACAO);
         $this->em->flush();
         $this->publisherService->startGame($room);
         return new MyJsonResponse(true);
@@ -80,9 +80,9 @@ class GameController extends AbstractController
         }
         $action->target = UserInGameResponseStruct::mapFromUser($nextUserAction);
         if ($this->gameService->checkIfEnd($room, $user)){
-            $this->publisherService->playCard($room, $action, true);
+            $this->publisherService->playCard($room, $action, $user, count($cards),true);
         }else{
-            $this->publisherService->playCard($room, $action);
+            $this->publisherService->playCard($room, $action, $user, count($cards));
         }
 
         return new MyJsonResponse(true);

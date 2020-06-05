@@ -27,7 +27,7 @@ class GameServiceTest extends TestCase
         $user2 = new User();
         $room->addUsersInRoom($user1);
         $room->addUsersInRoom($user2);
-        $this->service->startGame($room, Game::MACAU);
+        $this->service->startGame($room, Game::MACAO);
         $this->assertTrue($room->getIsGameRunning());
         $this->assertCount(42, $room->getCurrentDeck());
         var_dump($room->getCurrentDeck());
