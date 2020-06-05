@@ -25,6 +25,7 @@ export class GameService {
 
   private turn = new BehaviorSubject<Turn>(null);
   turn$ = this.turn.asObservable();
+
   private currentTableCard = new BehaviorSubject<Card>(null);
   currentTableCard$ = this.currentTableCard.asObservable();
 
@@ -41,7 +42,7 @@ export class GameService {
   isTableCardTaken$ = this.isTableCardTaken.asObservable();
 
   roomID: string;
-  userID = null;
+  userID: number = null;
 
   constructor(
     private http: HttpClient,
@@ -70,13 +71,18 @@ export class GameService {
   }
 
   startGame() {
-    this.roomID = localStorage.getItem("roomID");
+    this.initStart();
     return this.http
       .post(`${environment.API_URL}/room/${this.roomID}/start`, this.header)
       .pipe();
   }
 
+  initStart() {
+    this.roomID = localStorage.getItem("roomID");
+  }
+
   initGame(incomingData, userID) {
+    this.userID = userID;
     const decks = incomingData.cards;
     const turn: Turn = {
       id: incomingData.turn.id,
@@ -84,11 +90,7 @@ export class GameService {
     };
     this.turn.next(turn);
     const startCard = incomingData.startCard;
-    const currentTableCard: Card = {
-      value: startCard,
-      image: `https://deckofcardsapi.com/static/img/${startCard}.png`
-    };
-    this.currentTableCard.next(currentTableCard);
+    this.changeTableCard(startCard);
     let playerDeck = null;
     let opponentsDecks = [];
     decks.forEach(deck => {
@@ -100,29 +102,38 @@ export class GameService {
   }
 
   initRound(incomingData) {
+    this.changeTableCard(incomingData.topCard);
     if (this.isEnd !== incomingData.isEnd) this.isEnd = incomingData.isEnd;
     if (incomingData.action.target === this.userID) {
       if (incomingData.action.type === "Nothing") {
         this.currentAction.next(null);
+      } else {
+        this.currentAction.next(incomingData.action);
+        console.log("nowa akcja");
       }
-      this.currentAction.next(incomingData.action);
     }
   }
 
   initDraw(incomingData) {
     const opponentsDecks: Deck[] = this.opponentsDecks.value;
-    const userDeck: Deck = opponentsDecks.find(deck => {
-      deck.userID = incomingData.userId;
+    opponentsDecks.forEach(deck => {
+      if ((deck.userID = incomingData.userId)) {
+        deck.numberOfCards += incomingData.newCards;
+      }
     });
-    if (userDeck) {
-      userDeck.numberOfCards += incomingData.newCards;
-      this.opponentsDecks.next(opponentsDecks);
-    }
   }
 
   initNextPlayer(incomingData) {
-    this.turn.next(incomingData.userId);
-    if (incomingData.userId === this.userID) this.resetTableCard();
+    const nextUserId = incomingData.userId;
+    const newTurn: Turn = {
+      id: nextUserId,
+      userName: incomingData.username
+    };
+    this.turn.next(newTurn);
+    this.changeArrowPosition(nextUserId);
+    if (nextUserId === this.userID) {
+      this.resetTableCard();
+    }
   }
 
   initPlayerDeck(playerDeck, turnPlayerID) {
@@ -160,31 +171,69 @@ export class GameService {
     this.opponentsDecks.next(oppDecks);
   }
 
+  changeTableCard(tableCardAlias: string) {
+    this.currentTableCard.next({
+      value: tableCardAlias,
+      image: `https://deckofcardsapi.com/static/img/${tableCardAlias}.png`
+    });
+  }
+
+  changeArrowPosition(nextUserId: number) {
+    const opponentsDecks: Deck[] = this.opponentsDecks.value;
+    const oppDecks: Deck[] = [];
+    opponentsDecks.forEach(deck => {
+      const currentOpponentDeck: Deck = {
+        ...deck,
+        isUserTurn: nextUserId === deck.userID
+      };
+      oppDecks.push(currentOpponentDeck);
+    });
+    this.opponentsDecks.next(oppDecks);
+    const playerDeck: Deck = this.playerDeck.value;
+    const deck: Deck = {
+      ...playerDeck,
+      isUserTurn: playerDeck.userID === nextUserId
+    };
+    this.playerDeck.next(deck);
+  }
+
   drawCards(cardsNumber: number) {
-    if (this.currentAction.value !== null) {
-      const actionType = this.currentAction.value.type;
-      if (actionType === "Request" || actionType === "Color change") {
-        return this.http
-          .post(
-            `${environment.API_URL}/room/${this.roomID}/drawCards`,
-            { cardsNumber },
-            { headers: this.header }
-          )
-          .pipe()
-          .subscribe(data => {
-            const cards: Card[] = [];
-            // @ts-ignore
-            data.data.cards.forEach(cardAlias => {
-              const card: Card = {
-                value: cardAlias,
-                image: `https://deckofcardsapi.com/static/img/${cardAlias}.png`
-              };
-              cards.push(card);
-            });
-            this.addCardToDeck(cards);
-            this.isPossibleMove();
+    if (this.canDrawCard()) {
+      this.setTableCardAsTaken();
+      return this.http
+        .post(
+          `${environment.API_URL}/room/${this.roomID}/drawCards`,
+          { cardsNumber },
+          { headers: this.header }
+        )
+        .pipe()
+        .subscribe(data => {
+          const cards: Card[] = [];
+          // @ts-ignore
+          data.data.cards.forEach(cardAlias => {
+            const card: Card = {
+              value: cardAlias,
+              image: `https://deckofcardsapi.com/static/img/${cardAlias}.png`
+            };
+            cards.push(card);
           });
-      }
+          this.addCardToDeck(cards);
+          this.isPossibleMove();
+        });
+    }
+  }
+
+  canDrawCard(): boolean {
+    if (this.turn.value.id !== this.userID) return false;
+    if (this.isTableCardTaken.value === true) return false;
+    if (this.currentAction.value === null) return true;
+    else {
+      const actionType = this.currentAction.value.type;
+      return !(
+        actionType === "Draw" ||
+        actionType === "Stop" ||
+        actionType === "Draw previous"
+      );
     }
   }
 
@@ -236,8 +285,8 @@ export class GameService {
   ) {
     const figure = selectedCardAlias[0];
     const color = selectedCardAlias[1];
-    if(lastCardAlias === undefined){
-      lastCardAlias = this.currentTableCard.value.value
+    if (lastCardAlias === undefined) {
+      lastCardAlias = this.currentTableCard.value.value;
       if (currentAction === null)
         return lastCardAlias.includes(figure) || lastCardAlias.includes(color);
       if (currentAction.type === "Draw") {
@@ -261,8 +310,7 @@ export class GameService {
           selectedCardAlias === "3S"
         );
       else return figure === lastCardAlias[0] || color === lastCardAlias[1];
-    }
-    else return figure === lastCardAlias[0];
+    } else return figure === lastCardAlias[0];
   }
 
   isPossibleMove() {
@@ -281,7 +329,7 @@ export class GameService {
 
   nextPlayer() {
     return this.http
-      .post(`${environment.API_URL}/room/${this.roomID}/nextPlayer`, {
+      .post(`${environment.API_URL}/room/${this.roomID}/nextUser`, {
         headers: this.header
       })
       .pipe()

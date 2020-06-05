@@ -109,7 +109,10 @@ export class PlayerPanelComponent implements OnInit {
       ) {
         this.demandVersion = "A";
         this.isDemand = true;
-      } else this.gameService.playCards(this.selectedCardsAliasList, null);
+      } else {
+        this.gameService.playCards(this.selectedCardsAliasList, null);
+        this.selectedCardsAliasList = [];
+      }
     }
   }
 
