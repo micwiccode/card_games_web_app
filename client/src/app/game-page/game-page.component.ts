@@ -49,7 +49,7 @@ export class GamePageComponent implements OnInit {
   initWebSocketGame() {
     this.gameService
       .getServerSendEvent(
-        `${environment.MERCURE_URL}/.well-known/mercure?topic=gameInfo/${this.roomID}`
+        `${environment.MERCURE_URL}/.well-known/mercure?topic=gameInfoCards/${this.roomID}`
       )
       .subscribe(data => {
         // @ts-ignore
@@ -76,7 +76,7 @@ export class GamePageComponent implements OnInit {
   initWebSocketRoom() {
     this.gameService
       .getServerSendEvent(
-        `${environment.MERCURE_URL}/.well-known/mercure?topic=roomInfo/${this.roomID}`
+        `${environment.MERCURE_URL}/.well-known/mercure?topic=roomInfoCards/${this.roomID}`
       )
       .subscribe(data => {
         // @ts-ignore
