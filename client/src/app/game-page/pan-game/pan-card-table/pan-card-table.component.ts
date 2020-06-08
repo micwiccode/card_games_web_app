@@ -1,24 +1,24 @@
 import { Component, OnInit } from "@angular/core";
-import { GameService } from "../../../services/game.service";
 import { Card } from "../../Card";
+import {PanGameService} from "../../../services/pan-game.service";
 
 @Component({
-  selector: "app-card-table",
-  templateUrl: "./card-table.component.html",
-  styleUrls: ["./card-table.component.css", "../../card-image.css"]
+  selector: "app-pan-card-table",
+  templateUrl: "./pan-card-table.component.html",
+  styleUrls: ["./pan-card-table.component.css", "../../card-image.css"]
 })
-export class CardTableComponent implements OnInit {
+export class PanCardTableComponent implements OnInit {
   currentTableCard: Card;
 
-  constructor(private gameService: GameService) {}
+  constructor(private panGameService: PanGameService) {}
 
   ngOnInit(): void {
-    this.gameService.currentTableCard$.subscribe(
+    this.panGameService.currentTableCard$.subscribe(
       card => (this.currentTableCard = card)
     );
   }
 
   drawCards() {
-    this.gameService.drawCards(1);
+    this.panGameService.drawCards(1);
   }
 }

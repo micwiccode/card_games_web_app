@@ -1,14 +1,49 @@
 <div class="page" *ngIf="!waitingForStart">
+  <div *ngIf="gameType === 'Macao'; then macao; else pan"></div>
+  <ng-template #macao>
     <div class="game">
-        <app-opponent-panel [deckPosition]="0" class="top__player"></app-opponent-panel>
-        <app-opponent-panel [deckPosition]="1" vertical="true" class="left__player"></app-opponent-panel>
-        <app-opponent-panel [deckPosition]="2" vertical="true" class="right__player"></app-opponent-panel>
-        <app-player-panel class="bottom__player"></app-player-panel>
-        <app-card-table class="middle"></app-card-table>
+      <app-macao-opponent-panel
+        [deckPosition]="0"
+        class="top__player"
+      ></app-macao-opponent-panel>
+      <app-macao-opponent-panel
+        [deckPosition]="1"
+        vertical="true"
+        class="left__player"
+      ></app-macao-opponent-panel>
+      <app-macao-opponent-panel
+        [deckPosition]="2"
+        vertical="true"
+        class="right__player"
+      ></app-macao-opponent-panel>
+      <app-macao-player-panel class="bottom__player"></app-macao-player-panel>
+      <app-macao-card-table class="middle"></app-macao-card-table>
     </div>
-    <div class="score__board">
-        <app-score-board></app-score-board>
+  </ng-template>
+
+  <ng-template #pan>
+    <div class="game">
+      <app-pan-opponent-panel
+        [deckPosition]="0"
+        class="top__player"
+      ></app-pan-opponent-panel>
+      <app-pan-opponent-panel
+        [deckPosition]="1"
+        vertical="true"
+        class="left__player"
+      ></app-pan-opponent-panel>
+      <app-pan-opponent-panel
+        [deckPosition]="2"
+        vertical="true"
+        class="right__player"
+      ></app-pan-opponent-panel>
+      <app-pan-player-panel class="bottom__player"></app-pan-player-panel>
+      <app-pan-card-table class="middle"></app-pan-card-table>
     </div>
+  </ng-template>
+  <div class="score__board">
+    <app-score-board></app-score-board>
+  </div>
 </div>
 
 <div *ngIf="waitingForStart === true">

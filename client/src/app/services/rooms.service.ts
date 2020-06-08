@@ -14,7 +14,7 @@ export class RoomsService {
       .get(`${environment.API_URL}/roomList`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
         }
       })
       .pipe();
@@ -25,7 +25,7 @@ export class RoomsService {
       .post(`${environment.API_URL}/createRoom`, room, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
         }
       })
       .pipe();
@@ -36,7 +36,7 @@ export class RoomsService {
       .post(`${environment.API_URL}/enterRoom`, room, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
         }
       })
       .pipe();
@@ -47,7 +47,7 @@ export class RoomsService {
       .get(`${environment.API_URL}/room/${roomId}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
         }
       })
       .pipe();
@@ -62,7 +62,7 @@ export class RoomsService {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
           }
         }
       )

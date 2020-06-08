@@ -5,11 +5,11 @@ import { Turn } from "../../turn";
 import { Action } from "../../Action";
 
 @Component({
-  selector: "app-demand-view",
-  templateUrl: "./makao-demand-view.component.html",
-  styleUrls: ["../../../../css/button.css", "./makao-demand-view.component.css"]
+  selector: "app-macao-demand-view",
+  templateUrl: "./macao-demand-view.component.html",
+  styleUrls: ["../../../../css/button.css", "./macao-demand-view.component.css"]
 })
-export class MakaoDemandViewComponent implements OnInit {
+export class MacaoDemandViewComponent implements OnInit {
   @Input() demandVersion: string = null;
   @Output() messageEvent = new EventEmitter<string>();
   demandFigure: string = "5";

@@ -7,11 +7,12 @@ import { SseService } from "./sse-service.service";
 import { Deck } from "../game-page/Deck";
 import { Turn } from "../game-page/turn";
 import { Action } from "../game-page/Action";
+import {GameService} from "./game.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class PanGameService {
+export class MacaoGameService {
   header = new HttpHeaders({
     "Content-Type": "application/json",
     Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
@@ -19,9 +20,6 @@ export class PanGameService {
 
   private playerDeck = new BehaviorSubject<Deck>(null);
   playerDeck$ = this.playerDeck.asObservable();
-
-  private opponentsDecks = new BehaviorSubject<Deck[]>([]);
-  opponentsDecks$ = this.opponentsDecks.asObservable();
 
   private turn = new BehaviorSubject<Turn>(null);
   turn$ = this.turn.asObservable();
@@ -41,13 +39,16 @@ export class PanGameService {
   private isTableCardTaken = new BehaviorSubject<boolean>(false);
   isTableCardTaken$ = this.isTableCardTaken.asObservable();
 
+  private opponentsDecks = new BehaviorSubject<Deck[]>([]);
+  opponentsDecks$ = this.opponentsDecks.asObservable();
+
   roomID: string;
   userID: number = null;
 
   constructor(
     private http: HttpClient,
     private sseService: SseService,
-    private zone: NgZone
+    private zone: NgZone,
   ) {}
 
   getServerSendEvent(url: string) {
@@ -66,10 +67,6 @@ export class PanGameService {
     });
   }
 
-  closeServerSendEvents() {
-    this.sseService.closeEventSources();
-  }
-
   startGame() {
     this.initStart();
     return this.http
@@ -82,6 +79,7 @@ export class PanGameService {
   }
 
   initGame(incomingData, userID) {
+    console.log('start')
     this.userID = userID;
     const decks = incomingData.cards;
     const turn: Turn = {

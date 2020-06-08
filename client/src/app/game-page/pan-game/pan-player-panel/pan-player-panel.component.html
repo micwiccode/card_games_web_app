@@ -59,10 +59,3 @@
     <button class="button" (click)="playCards()">Zagraj karty</button>
   </div>
 </div>
-
-<div *ngIf="isDemand === true">
-  <app-macao-demand-view
-    [demandVersion]="demandVersion"
-    (messageEvent)="getDemandAnswer($event)"
-  ></app-macao-demand-view>
-</div>

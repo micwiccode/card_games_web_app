@@ -1,24 +1,24 @@
 import { Component, OnInit } from "@angular/core";
-import { GameService } from "../../../services/game.service";
 import { Card } from "../../Card";
+import {MacaoGameService} from "../../../services/macao-game.service";
 
 @Component({
-  selector: "app-card-table",
-  templateUrl: "./makao-card-table.component.html",
-  styleUrls: ["./makao-card-table.component.css", "../../card-image.css"]
+  selector: "app-macao-card-table",
+  templateUrl: "./macao-card-table.component.html",
+  styleUrls: ["./macao-card-table.component.css", "../../card-image.css"]
 })
-export class MakaoCardTableComponent implements OnInit {
+export class MacaoCardTableComponent implements OnInit {
   currentTableCard: Card;
 
-  constructor(private gameService: GameService) {}
+  constructor(private macaoGameService: MacaoGameService) {}
 
   ngOnInit(): void {
-    this.gameService.currentTableCard$.subscribe(
+    this.macaoGameService.currentTableCard$.subscribe(
       card => (this.currentTableCard = card)
     );
   }
 
   drawCards() {
-    this.gameService.drawCards(1);
+    this.macaoGameService.drawCards(1);
   }
 }

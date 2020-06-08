@@ -1,16 +1,17 @@
-import {Component, DoCheck} from '@angular/core';
+import { Component, DoCheck } from "@angular/core";
+import { AuthService } from "./services/auth.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements DoCheck {
   isLogged: boolean = false;
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   ngDoCheck(): void {
-    this.isLogged = localStorage.getItem('username') !== null;
+    this.isLogged = this.authService.checkIsLogged();
   }
 }

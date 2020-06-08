@@ -1,21 +1,21 @@
 import { Component, OnInit } from "@angular/core";
-import { GameService } from "../../../services/game.service";
 import { Card } from "../../Card";
 import { Turn } from "../../turn";
 import { Action } from "../../Action";
+import {MacaoGameService} from "../../../services/macao-game.service";
 
 @Component({
-  selector: "app-player-panel",
-  templateUrl: "./makao-player-panel.component.html",
+  selector: "app-macao-player-panel",
+  templateUrl: "./macao-player-panel.component.html",
   styleUrls: [
     "../../../../css/button.css",
-    "./makao-player-panel.component.css",
-    "../deck.css",
-    "../card-image.css",
-    "../arrow.css"
+    "./macao-player-panel.component.css",
+    "../../deck.css",
+    "../../card-image.css",
+    "../../arrow.css"
   ]
 })
-export class MakaoPlayerPanelComponent implements OnInit {
+export class MacaoPlayerPanelComponent implements OnInit {
   cards: Card[] = [];
   userName: string = null;
   isUserTurn: boolean = false;
@@ -28,27 +28,27 @@ export class MakaoPlayerPanelComponent implements OnInit {
   isDemand: boolean = false;
   demandVersion: string = null;
 
-  constructor(private gameService: GameService) {}
+  constructor(private macaoGameService: MacaoGameService) {}
 
   ngOnInit(): void {
-    this.gameService.playerDeck$.subscribe(deck => {
+    this.macaoGameService.playerDeck$.subscribe(deck => {
       this.cards = deck.cards;
       this.userName = deck.userName;
       this.isUserTurn = deck.isUserTurn;
     });
-    this.gameService.turn$.subscribe(turn => {
+    this.macaoGameService.turn$.subscribe(turn => {
       this.turn = turn;
     });
-    this.gameService.currentTableCard$.subscribe(
+    this.macaoGameService.currentTableCard$.subscribe(
       card => (this.currentTableCard = card)
     );
-    this.gameService.isPossibleMoveFlag$.subscribe(
+    this.macaoGameService.isPossibleMoveFlag$.subscribe(
       isPossibleMoveFlag => (this.isPossibleMoveFlag = isPossibleMoveFlag)
     );
-    this.gameService.currentAction$.subscribe(
+    this.macaoGameService.currentAction$.subscribe(
       currentAction => (this.currentAction = currentAction)
     );
-    this.gameService.isTableCardTaken$.subscribe(
+    this.macaoGameService.isTableCardTaken$.subscribe(
       isTableCardTaken => (this.isTableCardTaken = isTableCardTaken)
     );
   }
@@ -57,7 +57,7 @@ export class MakaoPlayerPanelComponent implements OnInit {
     const cardAliasIndex = this.selectedCardsAliasList.indexOf(cardAlias);
     if (cardAliasIndex === -1) {
       if (
-        this.gameService.isCardValid(
+        this.macaoGameService.isCardValid(
           cardAlias,
           this.selectedCardsAliasList[this.selectedCardsAliasList.length - 1],
           this.currentAction
@@ -73,14 +73,14 @@ export class MakaoPlayerPanelComponent implements OnInit {
   }
 
   nextPlayer(){
-    this.gameService.nextPlayer();
+    this.macaoGameService.nextPlayer();
   }
 
   makeAction() {
     console.log("akcja: " + this.currentAction.type);
     console.log("akcja: " + this.currentAction.content);
     if (this.currentAction.type === "Draw") {
-      this.gameService.drawCards(parseInt(this.currentAction.content));
+      this.macaoGameService.drawCards(parseInt(this.currentAction.content));
     } else if (
       this.currentAction.type === "Stop" ||
       this.currentAction.type === "Request" ||
@@ -88,9 +88,9 @@ export class MakaoPlayerPanelComponent implements OnInit {
     ) {
     }
     else{
-      this.gameService.nextPlayer();
+      this.macaoGameService.nextPlayer();
     }
-    this.gameService.makeActionDone();
+    this.macaoGameService.makeActionDone();
   }
 
   playCards() {
@@ -110,7 +110,7 @@ export class MakaoPlayerPanelComponent implements OnInit {
         this.demandVersion = "A";
         this.isDemand = true;
       } else {
-        this.gameService.playCards(this.selectedCardsAliasList, null);
+        this.macaoGameService.playCards(this.selectedCardsAliasList, null);
         this.selectedCardsAliasList = [];
       }
     }
@@ -119,6 +119,6 @@ export class MakaoPlayerPanelComponent implements OnInit {
   getDemandAnswer(demandValue: string) {
     this.isDemand = false;
     this.demandVersion = null;
-    this.gameService.playCards(this.selectedCardsAliasList, demandValue);
+    this.macaoGameService.playCards(this.selectedCardsAliasList, demandValue);
   }
 }

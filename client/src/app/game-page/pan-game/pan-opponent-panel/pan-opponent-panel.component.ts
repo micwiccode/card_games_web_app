@@ -1,18 +1,18 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { Deck } from "../../Deck";
-import {MacaoGameService} from "../../../services/macao-game.service";
+import { PanGameService } from "../../../services/pan-game.service";
 
 @Component({
-  selector: "app-macao-opponent-panel",
-  templateUrl: "./macao-opponent-panel.component.html",
+  selector: "app-pan-opponent-panel",
+  templateUrl: "./pan-opponent-panel.component.html",
   styleUrls: [
-    "./macao-opponent-panel.component.css",
+    "./pan-opponent-panel.component.css",
     "../../card-image.css",
     "../../deck.css",
     "../../arrow.css"
   ]
 })
-export class MacaoOpponentPanelComponent implements OnInit {
+export class PanOpponentPanelComponent implements OnInit {
   @Input("vertical") isVertical: boolean = false;
   @Input() deckPosition: number;
   opponentDeck: Deck;
@@ -52,10 +52,10 @@ export class MacaoOpponentPanelComponent implements OnInit {
     } else return { display: "none" };
   }
 
-  constructor(private macaoGameService: MacaoGameService) {}
+  constructor(private panGameService: PanGameService) {}
 
   ngOnInit(): void {
-    this.macaoGameService.opponentsDecks$.subscribe(opponentsDecks => {
+    this.panGameService.opponentsDecks$.subscribe(opponentsDecks => {
       this.opponentDeck = opponentsDecks[this.deckPosition];
       this.gridStyle();
     });

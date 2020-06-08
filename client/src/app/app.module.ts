@@ -15,14 +15,16 @@ import { MyProfilePageComponent } from "./my-profile-page/my-profile-page.compon
 import { FriendsPageComponent } from "./friends-page/friends-page.component";
 import { CreateGamePageComponent } from "./create-game-page/create-game-page.component";
 import { GamePageComponent } from "./game-page/game-page.component";
-import { PlayerPanelComponent } from "./game-page/player-panel/player-panel.component";
-import { CardTableComponent } from "./game-page/card-table/card-table.component";
-import { OpponentPanelComponent } from "./game-page/opponent-panel/opponent-panel.component";
+import { MacaoPlayerPanelComponent } from "./game-page/macao-game/macao-player-panel/macao-player-panel.component";
+import { MacaoOpponentPanelComponent } from "./game-page/macao-game/macao-opponent-panel/macao-opponent-panel.component";
 import { Page404Component } from "./page404/page404.component";
 import { RoomsPageComponent } from "./rooms-page/rooms-page.component";
 import { LoadingSpinnerComponent } from "./components/loading-spinner/loading-spinner.component";
 import { LoadingSpinnerGameComponent } from "./components/loading-spinner-game/loading-spinner-game.component";
-import { DemandViewComponent } from "./game-page/demand-view/demand-view.component";
+import {
+  MacaoDemandViewComponent,
+} from "./game-page/macao-game/macao-demand-view/macao-demand-view.component";
+
 //Services
 import { AuthGuardService } from "./services/auth-guard.service";
 import { ValidateService } from "./services/validate.service";
@@ -32,6 +34,12 @@ import { RoomsService } from "./services/rooms.service";
 import { FriendsService } from "./services/friends.service";
 import { ScoreBoardComponent } from "./game-page/score-board/score-board.component";
 import { SseService } from "./services/sse-service.service";
+import {PanPlayerPanelComponent} from "./game-page/pan-game/pan-player-panel/pan-player-panel.component";
+import {PanCardTableComponent} from "./game-page/pan-game/pan-card-table/pan-card-table.component";
+import {MacaoGameService} from "./services/macao-game.service";
+import {PanGameService} from "./services/pan-game.service";
+import {MacaoCardTableComponent} from "./game-page/macao-game/macao-card-table/macao-card-table.component";
+import {PanOpponentPanelComponent} from "./game-page/pan-game/pan-opponent-panel/pan-opponent-panel.component";
 
 @NgModule({
   declarations: [
@@ -45,14 +53,18 @@ import { SseService } from "./services/sse-service.service";
     CreateGamePageComponent,
     GamePageComponent,
     Page404Component,
-    PlayerPanelComponent,
-    CardTableComponent,
-    OpponentPanelComponent,
+    MacaoOpponentPanelComponent,
     ScoreBoardComponent,
     RoomsPageComponent,
     LoadingSpinnerGameComponent,
     LoadingSpinnerComponent,
-    DemandViewComponent
+    MacaoPlayerPanelComponent,
+    MacaoCardTableComponent,
+    MacaoDemandViewComponent,
+    PanPlayerPanelComponent,
+    PanCardTableComponent,
+    PanOpponentPanelComponent,
+    MacaoOpponentPanelComponent
   ],
   imports: [
     BrowserModule,
@@ -69,7 +81,9 @@ import { SseService } from "./services/sse-service.service";
     AuthService,
     RoomsService,
     FriendsService,
-    SseService
+    SseService,
+    MacaoGameService,
+    PanGameService
   ],
   bootstrap: [AppComponent]
 })
