@@ -1,21 +1,21 @@
 import { Component, OnInit } from "@angular/core";
-import { GameService } from "../../services/game.service";
-import { Card } from "../Card";
-import { Turn } from "../turn";
-import { Action } from "../Action";
+import { GameService } from "../../../services/game.service";
+import { Card } from "../../Card";
+import { Turn } from "../../turn";
+import { Action } from "../../Action";
 
 @Component({
   selector: "app-player-panel",
-  templateUrl: "./player-panel.component.html",
+  templateUrl: "./makao-player-panel.component.html",
   styleUrls: [
-    "../../../css/button.css",
-    "./player-panel.component.css",
+    "../../../../css/button.css",
+    "./makao-player-panel.component.css",
     "../deck.css",
     "../card-image.css",
     "../arrow.css"
   ]
 })
-export class PlayerPanelComponent implements OnInit {
+export class MakaoPlayerPanelComponent implements OnInit {
   cards: Card[] = [];
   userName: string = null;
   isUserTurn: boolean = false;
