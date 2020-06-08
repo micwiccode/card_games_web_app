@@ -53,6 +53,18 @@ class ValueDictionary
         ];
     }
 
+    public static function getShortDeckValues()
+    {
+        return [
+            self::NINE,
+            self::TEN,
+            self::JACK,
+            self::QUEEN,
+            self::KING,
+            self::ACE
+        ];
+    }
+
     public static function getPolishRepresentation(string $value){
         switch ($value){
             case self::TEN: return "10";

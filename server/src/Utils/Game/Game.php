@@ -9,7 +9,8 @@ use App\Utils\Struct\CardActionStruct;
 
 interface Game
 {
-    public const MACAU = "Macau";
+    public const MACAO = "Macao";
+    public const PAN = "Pan";
     public static function actionCard(string $cardAlias): CardActionStruct;
 
 

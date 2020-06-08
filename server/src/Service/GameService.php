@@ -56,6 +56,17 @@ class GameService
         return $deck;
     }
 
+    public function createShortDeck(){
+        $deck = [];
+        foreach (SuitDictionary::getSuits() as $suit){
+            foreach (ValueDictionary::getShortDeckValues() as $value){
+                $deck[] = new Card($suit, $value);
+            }
+        }
+        shuffle($deck);
+        return $deck;
+    }
+
     public function playCards(Room $room, User $user, array $cards, $choose){
         $room->addUsedCards($cards);
         $user->removeCards($cards);

@@ -44,7 +44,7 @@ class Macao implements Game
             case ValueDictionary::TWO: $action = self::actionOnTwo();break;
             default: $action = null;
         }
-        $action->text = self::createText($action->text, $action->content);
+        $action->text = self::createText($action->type, $action->content);
         return $action;
     }
 
@@ -74,6 +74,7 @@ class Macao implements Game
                 return printf("Żądanie: %s", $polishValue);
             }
         }
+        return "";
     }
 
 
