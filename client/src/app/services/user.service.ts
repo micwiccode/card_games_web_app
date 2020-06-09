@@ -24,7 +24,7 @@ export class UserService {
         .get(`${environment.API_URL}/getUser`, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`,
           },
         })
         .pipe();
@@ -35,7 +35,7 @@ export class UserService {
     return this.http
       .put(`${environment.API_URL}/updateUser`, user, { headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
         } })
       .pipe();
   }

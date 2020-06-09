@@ -47,7 +47,6 @@ export class RegisterPageComponent implements OnInit {
 
     if (validateResponse.isValid) {
       this.authService.register(newUser).subscribe(data => {
-        console.log(data)
         // @ts-ignore
         const token = data.token;
         if (token) {

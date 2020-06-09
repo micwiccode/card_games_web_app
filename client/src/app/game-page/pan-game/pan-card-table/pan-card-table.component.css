@@ -1,0 +1,40 @@
+.flex {
+  max-height: 100%;
+  max-width: 100%;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-family: "Girassol", cursive;
+  margin: 0;
+  text-align: center;
+}
+
+.table {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.card__image {
+  margin: 20px;
+}
+
+.card__image:first-child{
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 950px){
+  .grid {
+    grid-template-columns: 80px 200px 80px;
+    grid-template-rows: 1fr 2fr 1fr;
+  }
+
+  .card__image {
+    margin: 5px;
+  }
+}

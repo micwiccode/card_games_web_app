@@ -12,6 +12,7 @@ export class AuthService {
   header = new HttpHeaders({
     "Content-Type": "application/json"
   });
+  TTL: number = 7200000;
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -30,6 +31,32 @@ export class AuthService {
       .pipe();
   }
 
+  auth(token) {
+    this.storeToken(token, () => {
+      this.getUser(token);
+    });
+  }
+
+  storeToken(token, callback) {
+    const tokenObj = {tokenValue: token, expiryTime: new Date().getTime() + this.TTL}
+    localStorage.setItem('token', JSON.stringify(tokenObj));
+    callback();
+  }
+
+  checkIsLogged(){
+    const tokenString = localStorage.getItem('token');
+    if (!tokenString) {
+      return false;
+    }
+    const token = JSON.parse(tokenString)
+    const nowTime = new Date()
+    if (nowTime.getTime() > token.expiryTime) {
+      localStorage.removeItem('token')
+      return false
+    }
+    return true;
+  }
+
   storeUserData(username) {
     localStorage.setItem("username", username);
     this.username = username;
@@ -45,23 +72,12 @@ export class AuthService {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
           }
         }
       )
       .subscribe();
     localStorage.clear();
-  }
-
-  auth(token) {
-    this.storeToken(token, () => {
-      this.getUser(token);
-    });
-  }
-
-  storeToken(token, callback) {
-    localStorage.setItem("token", token);
-    callback();
   }
 
   getUser(token) {

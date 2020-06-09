@@ -1,10 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { GameService } from "../services/game.service";
 import { UserService } from "../services/user.service";
 import { RoomsService } from "../services/rooms.service";
 import { environment } from "../../environments/environment";
-import { Deck } from "./Deck";
-import { Card } from "./Card";
+import {MacaoGameService} from "../services/macao-game.service";
+import {PanGameService} from "../services/pan-game.service";
 
 @Component({
   selector: "app-game-page",
@@ -19,14 +18,18 @@ export class GamePageComponent implements OnInit {
   userName = null;
   userID = null;
   isEnd = false;
+  gameType = 'Macao';
+  gameService;
 
   constructor(
-    private gameService: GameService,
+    private macaoGameService: MacaoGameService,
+    private panGameService: PanGameService,
     private roomsService: RoomsService,
     private userService: UserService
   ) {}
 
   ngOnInit(): void {
+    this.gameService = this.gameType === 'Macao' ?  this.macaoGameService : this.panGameService;
     this.roomID = localStorage.getItem("roomID");
     this.userName = localStorage.getItem("username");
     let adminID;
@@ -49,7 +52,7 @@ export class GamePageComponent implements OnInit {
   initWebSocketGame() {
     this.gameService
       .getServerSendEvent(
-        `${environment.MERCURE_URL}/.well-known/mercure?topic=gameInfo/${this.roomID}`
+        `${environment.MERCURE_URL}/.well-known/mercure?topic=gameInfoCards/${this.roomID}`
       )
       .subscribe(data => {
         // @ts-ignore
@@ -76,7 +79,7 @@ export class GamePageComponent implements OnInit {
   initWebSocketRoom() {
     this.gameService
       .getServerSendEvent(
-        `${environment.MERCURE_URL}/.well-known/mercure?topic=roomInfo/${this.roomID}`
+        `${environment.MERCURE_URL}/.well-known/mercure?topic=roomInfoCards/${this.roomID}`
       )
       .subscribe(data => {
         // @ts-ignore

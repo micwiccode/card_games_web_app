@@ -41,7 +41,6 @@ export class LogInPageComponent implements OnInit {
 
     if (validateResponse.isValid) {
       this.authService.logIn(user).subscribe(data => {
-        console.log(data)
         // @ts-ignore
         const token = data.token;
         if (token) {
