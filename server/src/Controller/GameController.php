@@ -46,12 +46,15 @@ class GameController extends AbstractController
     /**
      * @Route("/room/{id}/start")
      * @param $id
+     * @param Request $request
      * @return MyJsonResponse
      */
-    public function startGame($id)
+    public function startGame($id, Request $request)
     {
         $room = $this->getRoom($id);
-        $this->gameService->startGame($room, Game::MACAO);
+        $content = json_decode($request->getContent());
+        $gameType = $content->gameType;
+        $this->gameService->startGame($room, $gameType);
         $this->em->flush();
         $this->publisherService->startGame($room);
         return new MyJsonResponse(true);
@@ -122,4 +125,25 @@ class GameController extends AbstractController
         return new MyJsonResponse(true);
     }
 
+    /**
+     * @Route("/room/{id}/pan/playCards")
+     * @param $id
+     * @param Request $request
+     */
+    public function playCardsPan($id, Request $request){
+        $room = $this->getRoom($id);
+        if ($room->getGameType()==Game::PAN){
+            $content = json_decode($request->getContent());
+            $cards = $content->cards;
+            /** @var User $user */
+            $user = $this->getUser();
+            $user->removeCards($cards);
+            $room->addUsedCards($cards);
+            $this->getDoctrine()->getManager()->flush();
+            $nextUser = $this->gameService->nextUser($room);
+            $this->publisherService->nextUser($room, $nextUser);
+
+        }
+
+    }
 }

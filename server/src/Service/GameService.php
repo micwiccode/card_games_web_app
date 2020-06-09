@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Utils\Card\Card;
 use App\Utils\Card\SuitDictionary;
 use App\Utils\Card\ValueDictionary;
+use App\Utils\Game\Game;
 use App\Utils\Game\Macao;
 
 class GameService
@@ -21,27 +22,45 @@ class GameService
 
     public function startGame(Room $room, $gameType){
         $room->setIsGameRunning(true);
-        $room->setCurrentDeck($this->createDeck());
-        $room->setUsedDeck([]);
-        $room->getUsersInRoom()[0]->setIsNow(true);
         $room->setGameType($gameType);
-        foreach ($room->getUsersInRoom() as $user){
-            $cards = [];
-            for ($i=0; $i<5; $i++){
-                $cards[] = $room->drawCard();
+        if ($gameType==Game::MACAO)
+        {
+            $room->setCurrentDeck($this->createDeck());
+            $room->setUsedDeck([]);
+            $room->getUsersInRoom()[0]->setIsNow(true);
+            foreach ($room->getUsersInRoom() as $user){
+                $cards = [];
+                for ($i=0; $i<5; $i++){
+                    $cards[] = $room->drawCard();
+                }
+                $user->setCards($cards);
             }
-            $user->setCards($cards);
-        }
 
 
-        $card = $room->drawCard();
-        while (in_array($card->value, ValueDictionary::ACTION_VALUES)){
-            $room->addUsedCards([$card]);
             $card = $room->drawCard();
+            while (in_array($card->value, ValueDictionary::ACTION_VALUES)){
+                $room->addUsedCards([$card]);
+                $card = $room->drawCard();
+            }
+
+            $room->setCurrentCard($card);
         }
-
-        $room->setCurrentCard($card);
-
+        elseif ($gameType==Game::PAN){
+            $deck = $this->createShortDeck();
+            $users = $room->getUsersInRoom();
+            $users_deck = array_chunk($deck, count($users));
+            for ($i =0; $i<count($users_deck); $i++){
+                $users[$i]->setCards($users_deck[$i]);
+            }
+            foreach ($users as $user){
+                /** @var Card $card */
+                foreach ($user->getCards() as $card){
+                    if ($card->__toString() == "9H"){
+                        $user->setIsNow(true);
+                    }
+                }
+            }
+        }
     }
 
     public function createDeck()

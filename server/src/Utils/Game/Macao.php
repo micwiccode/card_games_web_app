@@ -54,24 +54,24 @@ class Macao implements Game
                 if ($content==1){
                     return "Stoisz 1 turę";
                 }else{
-                    return printf("Stoisz %d tury", $content);
+                    return sprintf("Stoisz %d tury", $content);
                 }
             }break;
             case Macao::DRAW_PREVIOUS:
             case Macao::DRAW:{
                 if ($content<5){
-                    return printf("Dobierz %d karty", $content);
+                    return sprintf("Dobierz %d karty", $content);
                 }else{
-                    return printf("Dobierz %d kart", $content);
+                    return sprintf("Dobierz %d kart", $content);
                 }
             }break;
             case Macao::COLOR_CHANGE: {
                 $polishColor = SuitDictionary::getPolishRepresentation($content);
-                return printf("Zamiana koloru na: %s", $polishColor);
+                return sprintf("Zamiana koloru na: %s", $polishColor);
             }
             case Macao::REQUEST: {
                 $polishValue = ValueDictionary::getPolishRepresentation($content);
-                return printf("Żądanie: %s", $polishValue);
+                return sprintf("Żądanie: %s", $polishValue);
             }
         }
         return "";

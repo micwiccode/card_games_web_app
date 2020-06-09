@@ -52,7 +52,9 @@ class PublisherService
             $data['start']['cards'][] = UserInGameResponseStruct::mapFromUser($user);
         }
         $data['start']['turn'] = UserResponseStruct::mapFromUser($room->getCurrentPlayer());
-        $data['start']['startCard'] = $room->getCurrentCard()->__toString();
+        if(!empty($room->getCurrentCard())){
+            $data['start']['startCard'] = $room->getCurrentCard()->__toString();
+        }
         $this->publish($topic, json_encode($data));
     }
 
@@ -72,6 +74,27 @@ class PublisherService
     public function nextUser(Room $room, User $user){
         $topic = self::GAME_TOPIC . $room->getId();
         $data['next'] = ['userId' => $user->getId(),'username' => $user->getUsername()];
+        $this->publish($topic, json_encode($data));
+    }
+
+    public function playCardsPan(Room $room, User $user, $cardsPlayed, $topThreeCards, User $nextUser){
+        $topic = self::GAME_TOPIC . $room->getId();
+        $data['play'] = ['userId' => $user->getId(),
+            'username' => $user->getUsername(),
+            'playedCards' => CardsResponseStruct::mapFromCardsArray($cardsPlayed),
+            'topCards' => CardsResponseStruct::mapFromCardsArray($topThreeCards),
+            'nextUserId' => $nextUser->getId(),
+            'nextUsername' => $nextUser->getUsername()];
+        $this->publish($topic, json_encode($data));
+    }
+
+    public function drawCardsPan(Room $room, User $user, $topThreeCards, User $nextUser){
+        $topic = self::GAME_TOPIC . $room->getId();
+        $data['draw'] = ['userId' => $user->getId(),
+            'username' => $user->getUsername(),
+            'topCards' => CardsResponseStruct::mapFromCardsArray($topThreeCards),
+            'nextUserId' => $nextUser->getId(),
+            'nextUsername' => $nextUser->getUsername()];
         $this->publish($topic, json_encode($data));
     }
 

@@ -94,7 +94,6 @@ class Room
     public function setName(?string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -182,6 +181,20 @@ class Room
     public function addUsedCards(array $usedCards){
 
         $this->usedDeck = array_merge($this->usedDeck, $usedCards);
+    }
+
+    public function getThreeCardsFromUsed(){
+        if (count($this->usedDeck)>3){
+            $cards = array_slice($this->usedDeck, -3);
+        }elseif (count($this->usedDeck)==3){
+            $cards = array_slice($this->usedDeck, -2);
+        }elseif (count($this->usedDeck)==2){
+            $cards = array_slice($this->usedDeck, -1);
+        }else {
+            $cards = [];
+        }
+        $this->usedDeck = array_diff($this->usedDeck, $cards);
+        return $cards;
     }
 
     public function getDraw(): ?int
