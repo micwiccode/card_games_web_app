@@ -99,7 +99,7 @@ export class GamePageComponent implements OnInit {
   }
 
   startGame() {
-    this.gameService.startGame().subscribe(data => {
+    this.gameService.startGame(this.gameType).subscribe(data => {
       // @ts-ignore
       if (data.data === true) this.closeSpinner();
     });

@@ -51,6 +51,7 @@ export class MacaoPlayerPanelComponent implements OnInit {
     this.macaoGameService.isTableCardTaken$.subscribe(
       isTableCardTaken => (this.isTableCardTaken = isTableCardTaken)
     );
+    console.log(this.currentAction)
   }
 
   chooseCard(cardAlias: string, event: any) {
@@ -79,16 +80,13 @@ export class MacaoPlayerPanelComponent implements OnInit {
   makeAction() {
     console.log("akcja: " + this.currentAction.type);
     console.log("akcja: " + this.currentAction.content);
-    if (this.currentAction.type === "Draw") {
+    if (this.currentAction.type === "Draw" || this.currentAction.type === "Draw previous") {
       this.macaoGameService.drawCards(parseInt(this.currentAction.content));
     } else if (
       this.currentAction.type === "Stop" ||
       this.currentAction.type === "Request" ||
       this.currentAction.type === "Color change"
     ) {
-    }
-    else{
-      this.macaoGameService.nextPlayer();
     }
     this.macaoGameService.makeActionDone();
   }

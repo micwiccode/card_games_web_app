@@ -7,16 +7,18 @@ import { SseService } from "./sse-service.service";
 import { Deck } from "../game-page/Deck";
 import { Turn } from "../game-page/turn";
 import { Action } from "../game-page/Action";
-import {GameService} from "./game.service";
+import { GameService } from "./game.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class MacaoGameService {
-  header = new HttpHeaders({
+  header = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
-  });
+    Authorization: `Bearer ${
+      JSON.parse(localStorage.getItem("token")).tokenValue
+    }`
+  };
 
   private playerDeck = new BehaviorSubject<Deck>(null);
   playerDeck$ = this.playerDeck.asObservable();
@@ -48,7 +50,7 @@ export class MacaoGameService {
   constructor(
     private http: HttpClient,
     private sseService: SseService,
-    private zone: NgZone,
+    private zone: NgZone
   ) {}
 
   getServerSendEvent(url: string) {
@@ -67,10 +69,16 @@ export class MacaoGameService {
     });
   }
 
-  startGame() {
+  startGame(gameType: string) {
     this.initStart();
     return this.http
-      .post(`${environment.API_URL}/room/${this.roomID}/start`, this.header)
+      .post(
+        `${environment.API_URL}/room/${this.roomID}/start`,
+        { gameType: gameType },
+        {
+          headers: this.header
+        }
+      )
       .pipe();
   }
 
@@ -79,7 +87,6 @@ export class MacaoGameService {
   }
 
   initGame(incomingData, userID) {
-    console.log('start')
     this.userID = userID;
     const decks = incomingData.cards;
     const turn: Turn = {
@@ -100,12 +107,21 @@ export class MacaoGameService {
   }
 
   initRound(incomingData) {
-    this.changeTableCard(incomingData.topCard);
     if (this.isEnd !== incomingData.isEnd) this.isEnd = incomingData.isEnd;
-    if (incomingData.action.target === this.userID) {
+    this.changeTableCard(incomingData.topCard);
+    this.initNextPlayer(incomingData.action.target);
+    this.changeArrowPosition(
+      null,
+      incomingData.userId,
+      incomingData.playedCards
+    );
+    if (incomingData.action.target.userId === this.userID) {
+      this.isPossibleMove();
       if (incomingData.action.type === "Nothing") {
         this.currentAction.next(null);
       } else {
+        console.log("nowa akcja");
+        console.log(incomingData.action);
         this.currentAction.next(incomingData.action);
       }
     }
@@ -129,6 +145,7 @@ export class MacaoGameService {
     this.turn.next(newTurn);
     this.changeArrowPosition(nextUserId);
     if (nextUserId === this.userID) {
+      this.isPossibleMove();
       this.resetTableCard();
     }
   }
@@ -150,7 +167,7 @@ export class MacaoGameService {
       cards: cards
     };
     this.playerDeck.next(deck);
-    this.isPossibleMove();
+    if (turnPlayerID === playerDeck.userId) this.isPossibleMove();
   }
 
   initOpponentsDeck(opponentsDecks, turnPlayerID) {
@@ -175,13 +192,22 @@ export class MacaoGameService {
     });
   }
 
-  changeArrowPosition(nextUserId: number) {
+  changeArrowPosition(
+    nextUserId: number,
+    previousOpponentID = null,
+    playedCardNumber = 0
+  ) {
     const opponentsDecks: Deck[] = this.opponentsDecks.value;
     const oppDecks: Deck[] = [];
     opponentsDecks.forEach(deck => {
       const currentOpponentDeck: Deck = {
         ...deck,
-        isUserTurn: nextUserId === deck.userID
+        isUserTurn:
+          nextUserId !== null ? nextUserId === deck.userID : deck.isUserTurn,
+        numberOfCards:
+          previousOpponentID === deck.userID
+            ? (deck.numberOfCards -= playedCardNumber)
+            : deck.numberOfCards
       };
       oppDecks.push(currentOpponentDeck);
     });
@@ -189,7 +215,10 @@ export class MacaoGameService {
     const playerDeck: Deck = this.playerDeck.value;
     const deck: Deck = {
       ...playerDeck,
-      isUserTurn: playerDeck.userID === nextUserId
+      isUserTurn:
+        nextUserId !== null
+          ? nextUserId === playerDeck.userID
+          : playerDeck.isUserTurn
     };
     this.playerDeck.next(deck);
   }
@@ -239,8 +268,6 @@ export class MacaoGameService {
   }
 
   playCards(cardsAliasList: string[], demandValue: string) {
-    console.log(cardsAliasList);
-    console.log(demandValue);
     this.http
       .post(
         `${environment.API_URL}/room/${this.roomID}/playCards`,
@@ -250,7 +277,6 @@ export class MacaoGameService {
       .pipe()
       .subscribe();
     this.removeCardsFromDeck(cardsAliasList);
-    this.nextPlayer();
   }
 
   removeCardsFromDeck(cardsAliasList: string[]) {
@@ -285,7 +311,7 @@ export class MacaoGameService {
     if (lastCardAlias === undefined) {
       lastCardAlias = this.currentTableCard.value.value;
       if (currentAction === null)
-        return lastCardAlias.includes(figure) || lastCardAlias.includes(color);
+        return lastCardAlias.includes('Q') || lastCardAlias.includes(figure) || lastCardAlias.includes(color);
       if (currentAction.type === "Draw") {
         if (figure === selectedCardAlias[0] && figure === "K") {
           return color === "S" || color === "H";
@@ -315,16 +341,22 @@ export class MacaoGameService {
     const currentTableCardAlias = this.currentTableCard.value.value;
     const figure = currentTableCardAlias[0];
     const color = currentTableCardAlias[1];
-    const userCards = this.playerDeck.value.cards;
-    userCards.forEach(card => {
-      if (card.value.includes(figure) || card.value.includes(color)) {
-        isPossible = true;
-      }
-    });
+    if (figure === "Q") {
+      isPossible = true;
+    } else {
+      const userCards = this.playerDeck.value.cards;
+      userCards.forEach(card => {
+        if (card.value.includes('Q') || card.value.includes(figure) || card.value.includes(color)) {
+          isPossible = true;
+        }
+      });
+    }
     this.isPossibleMoveFlag.next(isPossible);
   }
 
   nextPlayer() {
+    console.log("next player");
+    this.isTableCardTaken.next(false);
     return this.http
       .post(`${environment.API_URL}/room/${this.roomID}/nextUser`, {
         headers: this.header
