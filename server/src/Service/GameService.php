@@ -20,9 +20,9 @@ class GameService
 
     }
 
-    public function startGame(Room $room, $gameType){
+    public function startGame(Room $room){
         $room->setIsGameRunning(true);
-        $room->setGameType($gameType);
+        $gameType = $room->getGameType();
         if ($gameType==Game::MACAO)
         {
             $room->setCurrentDeck($this->createDeck());

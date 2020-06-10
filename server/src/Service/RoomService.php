@@ -23,7 +23,7 @@ class RoomService
         $this->security = $security;
     }
 
-    public function createRoom($password, $name, $maxPeople): Room {
+    public function createRoom($password, $name, $maxPeople, $gameType): Room {
         $room = new Room();
         /** @var User $user */
         $user = $this->security->getUser();
@@ -32,6 +32,7 @@ class RoomService
         $room->setName($name);
         $room->setMaxPeople($maxPeople);
         $room->addUsersInRoom($user);
+        $room->setGameType($gameType);
         return $room;
     }
 

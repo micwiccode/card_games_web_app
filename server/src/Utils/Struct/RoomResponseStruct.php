@@ -29,6 +29,9 @@ class RoomResponseStruct
     /** @var array  */
     public $usersInRoom = [];
 
+    /** @var string */
+    public $gameType;
+
 
     public static function mapFromRoom(Room $room)
     {
@@ -43,6 +46,7 @@ class RoomResponseStruct
                 $struct->adminId = $user->getId();
             }
         }
+        $struct->gameType = $room->getGameType();
         return $struct;
     }
 

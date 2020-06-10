@@ -51,7 +51,7 @@ class RoomController extends AbstractController
      */
     public function createRoom(Request $request){
         $content = json_decode($request->getContent());
-        $room = $this->roomService->createRoom($content->password, $content->name, $content->maxPeople);
+        $room = $this->roomService->createRoom($content->password, $content->name, $content->maxPeople, $content->gameType);
         $em = $this->getDoctrine()->getManager();
         $em->persist($room);
         $em->flush();
