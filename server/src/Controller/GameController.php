@@ -53,8 +53,7 @@ class GameController extends AbstractController
     {
         $room = $this->getRoom($id);
         $content = json_decode($request->getContent());
-        $gameType = $content->gameType;
-        $this->gameService->startGame($room, $gameType);
+        $this->gameService->startGame($room);
         $this->em->flush();
         $this->publisherService->startGame($room);
         return new MyJsonResponse(true);
