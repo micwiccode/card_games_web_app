@@ -81,6 +81,7 @@ class GameController extends AbstractController
         }else{
             $nextUserAction = $this->gameService->nextUser($room);
         }
+        $this->em->flush();
         $action->target = UserInGameResponseStruct::mapFromUser($nextUserAction);
         if ($this->gameService->checkIfEnd($room, $user)){
             $this->publisherService->playCard($room, $action, $user, count($cards),true);
