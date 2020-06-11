@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Card } from "../../Card";
 import { Turn } from "../../turn";
 import { Action } from "../../Action";
-import {MacaoGameService} from "../../../services/macao-game.service";
+import { MacaoGameService } from "../../../services/macao-game.service";
 
 @Component({
   selector: "app-macao-player-panel",
@@ -51,7 +51,7 @@ export class MacaoPlayerPanelComponent implements OnInit {
     this.macaoGameService.isTableCardTaken$.subscribe(
       isTableCardTaken => (this.isTableCardTaken = isTableCardTaken)
     );
-    console.log(this.currentAction)
+    console.log(this.currentAction);
   }
 
   chooseCard(cardAlias: string, event: any) {
@@ -73,21 +73,29 @@ export class MacaoPlayerPanelComponent implements OnInit {
     }
   }
 
-  nextPlayer(){
+  nextPlayer() {
     this.macaoGameService.nextPlayer();
   }
 
   makeAction() {
     console.log("akcja: " + this.currentAction.type);
     console.log("akcja: " + this.currentAction.content);
-    if (this.currentAction.type === "Draw" || this.currentAction.type === "Draw previous") {
-      this.macaoGameService.drawCards(parseInt(this.currentAction.content));
+    if (
+      this.currentAction.type === "Draw" ||
+      this.currentAction.type === "Draw previous"
+    ) {
+      this.macaoGameService.drawCards(
+        parseInt(this.currentAction.content),
+        true
+      );
     } else if (
       this.currentAction.type === "Stop" ||
       this.currentAction.type === "Request" ||
       this.currentAction.type === "Color change"
     ) {
+      this.nextPlayer();
     }
+    this.nextPlayer();
     this.macaoGameService.makeActionDone();
   }
 

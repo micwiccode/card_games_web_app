@@ -12,6 +12,11 @@
   font-size: 1.4em;
 }
 
+.menu__game_type{
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
 .menu__list__room{
    border:none;
    border-radius: 10px;

@@ -16,6 +16,7 @@ export class CreateGamePageComponent implements OnInit {
   roomName: string;
   maxPlayers = [1, 2, 3, 4];
   selectedNumber = "";
+  gameType = 'Macao';
   password = null;
   constructor(
     private roomsService: RoomsService,
@@ -29,7 +30,8 @@ export class CreateGamePageComponent implements OnInit {
     const newRoom = {
       name: this.roomName,
       maxPeople: this.selectedNumber,
-      password: this.password
+      password: this.password,
+      gameType: this.gameType
     };
     const errorLabel: HTMLElement = document.querySelector(
       ".menu__error"

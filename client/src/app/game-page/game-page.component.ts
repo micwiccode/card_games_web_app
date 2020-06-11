@@ -18,7 +18,7 @@ export class GamePageComponent implements OnInit {
   userName = null;
   userID = null;
   isEnd = false;
-  gameType = 'Macao';
+  gameType = localStorage.getItem('gameType');
   gameService;
 
   constructor(
@@ -29,7 +29,6 @@ export class GamePageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.gameService = this.gameType === 'Macao' ?  this.macaoGameService : this.panGameService;
     this.roomID = localStorage.getItem("roomID");
     this.userName = localStorage.getItem("username");
     let adminID;
@@ -44,6 +43,7 @@ export class GamePageComponent implements OnInit {
         this.isGameAdmin = adminID === this.userID;
       });
     });
+    this.gameService = this.gameType === 'Macao' ?  this.macaoGameService : this.panGameService;
     this.initWebSocketRoom();
     this.initWebSocketGame();
     this.gameService.isEnd$.subscribe(isEnd => (this.isEnd = isEnd));
@@ -99,7 +99,7 @@ export class GamePageComponent implements OnInit {
   }
 
   startGame() {
-    this.gameService.startGame(this.gameType).subscribe(data => {
+    this.gameService.startGame().subscribe(data => {
       // @ts-ignore
       if (data.data === true) this.closeSpinner();
     });

@@ -1,9 +1,29 @@
 <div class="menu">
   <p class="menu__title">Zagraj z innymi</p>
   <h5 class="menu__subtitle">Dostępne pokoje:</h5>
-  <div *ngIf="roomsList.length > 0; then rooms; else noRooms"></div>
-  <ng-template #rooms>
-    <div *ngFor="let room of roomsList">
+  <p class="menu__game_type">Makao</p>
+  <div *ngIf="roomsListMacao.length > 0; then roomsMacao; else noRooms"></div>
+  <ng-template #roomsMacao>
+    <div *ngFor="let room of roomsListMacao">
+      <div class="menu__list__room" (click)="toggleRoom(room.id)">
+        <p>{{ room.name }}</p>
+        <div class="room__info_box">
+          <div *ngIf="room.password !== null">
+            <img
+              class="room__info_box_img"
+              src="../../assets/img/lockIcon.png"
+              alt="lock"
+            />
+          </div>
+          <p>{{ room.peopleInRoom }}/{{ room.maxPeople }}</p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <p class="menu__game_type">Pan</p>
+  <div *ngIf="roomsListPan.length > 0; then roomsPan; else noRooms"></div>
+  <ng-template #roomsPan>
+    <div *ngFor="let room of roomsListPan">
       <div class="menu__list__room" (click)="toggleRoom(room.id)">
         <p>{{ room.name }}</p>
         <div class="room__info_box">
@@ -20,7 +40,9 @@
     </div>
   </ng-template>
   <ng-template #noRooms>
-    <p style="text-align: center">Wygląda na to że nie ma żadnych dostępnych pokoi</p>
+    <p style="text-align: center">
+      Wygląda na to że nie ma żadnych dostępnych pokoi dla tej gry
+    </p>
   </ng-template>
   <button class="button" (click)="checkRoomPassword()">Graj</button>
   <div class="menu__error"></div>

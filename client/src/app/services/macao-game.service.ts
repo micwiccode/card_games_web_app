@@ -7,7 +7,6 @@ import { SseService } from "./sse-service.service";
 import { Deck } from "../game-page/Deck";
 import { Turn } from "../game-page/turn";
 import { Action } from "../game-page/Action";
-import { GameService } from "./game.service";
 
 @Injectable({
   providedIn: "root"
@@ -54,6 +53,7 @@ export class MacaoGameService {
   ) {}
 
   getServerSendEvent(url: string) {
+    console.log("macao service");
     return new Observable(observer => {
       const eventSource = this.sseService.getEventSource(url);
       eventSource.onmessage = event => {
@@ -69,12 +69,12 @@ export class MacaoGameService {
     });
   }
 
-  startGame(gameType: string) {
+  startGame() {
     this.initStart();
     return this.http
       .post(
         `${environment.API_URL}/room/${this.roomID}/start`,
-        { gameType: gameType },
+        {},
         {
           headers: this.header
         }
@@ -223,8 +223,8 @@ export class MacaoGameService {
     this.playerDeck.next(deck);
   }
 
-  drawCards(cardsNumber: number) {
-    if (this.canDrawCard()) {
+  drawCards(cardsNumber: number, isAction:boolean) {
+    if (isAction || this.canDrawCard()) {
       this.setTableCardAsTaken();
       return this.http
         .post(
@@ -244,7 +244,7 @@ export class MacaoGameService {
             cards.push(card);
           });
           this.addCardToDeck(cards);
-          this.isPossibleMove();
+          if(!isAction) this.isPossibleMove();
         });
     }
   }
@@ -267,7 +267,9 @@ export class MacaoGameService {
     this.currentAction.next(null);
   }
 
+
   playCards(cardsAliasList: string[], demandValue: string) {
+    console.log({ cards: cardsAliasList, request: demandValue });
     this.http
       .post(
         `${environment.API_URL}/room/${this.roomID}/playCards`,
@@ -311,7 +313,11 @@ export class MacaoGameService {
     if (lastCardAlias === undefined) {
       lastCardAlias = this.currentTableCard.value.value;
       if (currentAction === null)
-        return lastCardAlias.includes('Q') || lastCardAlias.includes(figure) || lastCardAlias.includes(color);
+        return (
+          lastCardAlias.includes("Q") ||
+          lastCardAlias.includes(figure) ||
+          lastCardAlias.includes(color)
+        );
       if (currentAction.type === "Draw") {
         if (figure === selectedCardAlias[0] && figure === "K") {
           return color === "S" || color === "H";
@@ -346,7 +352,11 @@ export class MacaoGameService {
     } else {
       const userCards = this.playerDeck.value.cards;
       userCards.forEach(card => {
-        if (card.value.includes('Q') || card.value.includes(figure) || card.value.includes(color)) {
+        if (
+          card.value.includes("Q") ||
+          card.value.includes(figure) ||
+          card.value.includes(color)
+        ) {
           isPossible = true;
         }
       });
