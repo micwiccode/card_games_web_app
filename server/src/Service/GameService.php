@@ -48,7 +48,7 @@ class GameService
         elseif ($gameType==Game::PAN){
             $deck = $this->createShortDeck();
             $users = $room->getUsersInRoom();
-            $users_deck = array_chunk($deck, count($users));
+            $users_deck = array_chunk($deck, count($deck)/count($users));
             for ($i =0; $i<count($users_deck); $i++){
                 $users[$i]->setCards($users_deck[$i]);
             }
@@ -97,15 +97,21 @@ class GameService
             $action = Macao::actionCard($card, $choose);
             if (in_array($action->type, [
                 Macao::DRAW,
-                Macao::STOP
+                Macao::STOP,
+                Macao::DRAW_PREVIOUS
             ])){
                 $counter+=$action->content;
             }
 
         }
 
-        $action->content = $counter+$room->getDraw()+$room->getStay();
-        if ($action->type==Macao::DRAW){
+        if ($action->type == Macao::DRAW || $action->type == Macao::DRAW_PREVIOUS){
+            $action->content = $counter+$room->getDraw();
+        }elseif ($action->type == Macao::STOP){
+            $action->content = $counter+$room->getStay();
+        }
+        $action->text = Macao::createText($action->type, $action->content);
+        if ($action->type==Macao::DRAW || $action->content == Macao::DRAW_PREVIOUS){
             $room->setDraw($action->content);
         }elseif($action->type==Macao::STOP){
             $room->setStay($action->content);

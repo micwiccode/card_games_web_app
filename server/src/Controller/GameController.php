@@ -141,9 +141,27 @@ class GameController extends AbstractController
             $room->addUsedCards($cards);
             $this->getDoctrine()->getManager()->flush();
             $nextUser = $this->gameService->nextUser($room);
-            $this->publisherService->nextUser($room, $nextUser);
-
+            $this->publisherService->playCardsPan($room, $user, $cards, $room->lookThreeCardsFromUsed() , $nextUser);
         }
+        return true;
 
     }
+
+    /**
+     * @Route("/room/{id}/pan/drawCards")
+     */
+    public function drawCardsPan($id){
+        $room = $this->getRoom($id);
+        if ($room->getGameType()==Game::PAN){
+            /** @var User $user */
+            $user = $this->getUser();
+            $cards = $room->getThreeCardsFromUsed();
+            $user->addCards($cards);
+            $this->getDoctrine()->getManager()->flush();
+            $nextUser = $this->gameService->nextUser($room);
+            $this->publisherService->drawCardsPan($room, $user, $room->lookThreeCardsFromUsed(), $nextUser);
+        }
+        return true;
+    }
+
 }

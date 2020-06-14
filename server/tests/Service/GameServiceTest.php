@@ -23,16 +23,20 @@ class GameServiceTest extends TestCase
     public function testStartGame()
     {
         $room = new Room();
+        $room->setGameType(Game::MACAO);
         $user1 = new User();
         $user2 = new User();
         $room->addUsersInRoom($user1);
         $room->addUsersInRoom($user2);
-        $this->service->startGame($room, Game::MACAO);
+        $this->service->startGame($room);
         $this->assertTrue($room->getIsGameRunning());
-        $this->assertCount(42, $room->getCurrentDeck());
-        var_dump($room->getCurrentDeck());
         $this->assertCount(5, $user1->getCards());
         $this->assertCount(5, $user2->getCards());
+        $room->setGameType(Game::PAN);
+        $this->service->startGame($room);
+        $this->assertCount(12, $user1->getCards());
+        $this->assertCount(12, $user2->getCards());
+
 
 
     }

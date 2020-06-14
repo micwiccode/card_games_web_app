@@ -11,7 +11,7 @@ interface Game
 {
     public const MACAO = "Macao";
     public const PAN = "Pan";
-    public static function actionCard(string $cardAlias): CardActionStruct;
+    public static function actionCard(string $cardAlias, $choose): CardActionStruct;
 
 
 }

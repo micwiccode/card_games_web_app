@@ -26,7 +26,7 @@ class Macao implements Game
 
 
 
-    public static function actionCard(string $cardAlias, $choose = null): CardActionStruct{
+    public static function actionCard(string $cardAlias, $choose): CardActionStruct{
         $card = Card::getFromAlias($cardAlias);
         switch ($card->value){
             case ValueDictionary::ACE: $action = self::actionOnAce($choose);break;
@@ -44,11 +44,10 @@ class Macao implements Game
             case ValueDictionary::TWO: $action = self::actionOnTwo();break;
             default: $action = null;
         }
-        $action->text = self::createText($action->type, $action->content);
         return $action;
     }
 
-    private static function createText($type, $content){
+    public static function createText($type, $content){
         switch ($type){
             case Macao::STOP: {
                 if ($content==1){
@@ -90,7 +89,7 @@ class Macao implements Game
     {
         $cardAction = new CardActionStruct();
         $cardAction->type = Macao::DRAW;
-        $cardAction->content = 2;
+        $cardAction->content = 3;
         return $cardAction;
     }
 

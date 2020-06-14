@@ -197,6 +197,12 @@ class Room
         return $cards;
     }
 
+    public function lookThreeCardsFromUsed(){
+        if (count($this->usedDeck)>=3) {
+            return array_slice($this->usedDeck, -3);
+        }
+        return $this->usedDeck;
+    }
     public function getDraw(): ?int
     {
         return $this->draw;
