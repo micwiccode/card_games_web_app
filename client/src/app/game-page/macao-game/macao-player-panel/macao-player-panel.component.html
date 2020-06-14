@@ -25,10 +25,10 @@
   </div>
   <div class="control_panel">
     <p class="control_panel__info">Ruch gracza: {{ turn.userName }}</p>
-    <p *ngIf="currentAction !== null" class="control_panel__info">
-      {{ currentAction.text }}
-    </p>
     <div *ngIf="currentAction !== null">
+      <p class="control_panel__info">
+        {{ currentAction.text }}
+      </p>
       <button
         *ngIf="
           currentAction.type === 'Draw' ||
@@ -37,26 +37,45 @@
         class="button"
         (click)="makeAction()"
       >
-        Wykonaj akcję dobierania
+        Dobierz {{ currentAction.content }} kart/y
       </button>
       <button
-        *ngIf="isTableCardTaken || currentAction.type === 'Stop'"
+        *ngIf="
+          currentAction.type === 'Stop' ||
+          currentAction.type === 'Color change' ||
+          currentAction.type === 'Request'
+        "
         class="button"
-        (click)="nextPlayer()"
+        (click)="makeAction()"
       >
         Stój
       </button>
+      <button
+        *ngIf="
+          currentAction.type === 'Color change' ||
+          currentAction.type === 'Request'
+        "
+        class="button"
+        (click)="playCards()"
+      >
+        Zagraj karty
+      </button>
     </div>
-    <p *ngIf="!isPossibleMoveFlag" class="control_panel__info">
-      Brak możliwości ruchu
-    </p>
-    <p
-      *ngIf="!isPossibleMoveFlag && !isTableCardTaken"
-      class="control_panel__info"
-    >
-      Dobierz kartę
-    </p>
-    <button class="button" (click)="playCards()">Zagraj karty</button>
+    <div *ngIf="currentAction === null">
+      <button *ngIf="isTableCardTaken" class="button" (click)="nextPlayer()">
+        Stój
+      </button>
+      <p *ngIf="!isPossibleMoveFlag" class="control_panel__info">
+        Brak możliwości ruchu
+      </p>
+      <p
+        *ngIf="!isPossibleMoveFlag && !isTableCardTaken"
+        class="control_panel__info"
+      >
+        Dobierz kartę
+      </p>
+      <button class="button" (click)="playCards()">Zagraj karty</button>
+    </div>
   </div>
 </div>
 

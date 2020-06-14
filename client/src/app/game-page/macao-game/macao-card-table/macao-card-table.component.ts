@@ -19,6 +19,6 @@ export class MacaoCardTableComponent implements OnInit {
   }
 
   drawCards() {
-    this.macaoGameService.drawCards(1);
+    this.macaoGameService.drawCards(1, false);
   }
 }
