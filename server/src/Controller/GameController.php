@@ -141,7 +141,7 @@ class GameController extends AbstractController
             $room->addUsedCards($cards);
             $this->getDoctrine()->getManager()->flush();
             $nextUser = $this->gameService->nextUser($room);
-            $this->publisherService->playCardsPan($room, $user, $cards, $room->lookThreeCardsFromUsed() , $nextUser);
+            $this->publisherService->playCardsPan($room, $user, $cards, $room->lookThreeCardsFromUsed() , $nextUser, count($cards));
         }
         return true;
 
@@ -159,9 +159,10 @@ class GameController extends AbstractController
             $user->addCards($cards);
             $this->getDoctrine()->getManager()->flush();
             $nextUser = $this->gameService->nextUser($room);
-            $this->publisherService->drawCardsPan($room, $user, $room->lookThreeCardsFromUsed(), $nextUser);
+            $this->publisherService->drawCardsPan($room, $user, $room->lookThreeCardsFromUsed(), $nextUser, count($cards));
+            return CardsResponseStruct::mapFromCardsArray($cards);
         }
-        return true;
+        return null;
     }
 
 }

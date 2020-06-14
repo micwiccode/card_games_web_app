@@ -77,24 +77,26 @@ class PublisherService
         $this->publish($topic, json_encode($data));
     }
 
-    public function playCardsPan(Room $room, User $user, $cardsPlayed, $topThreeCards, User $nextUser){
+    public function playCardsPan(Room $room, User $user, $cardsPlayed, $topThreeCards, User $nextUser, $howMany){
         $topic = self::GAME_TOPIC . $room->getId();
         $data['play'] = ['userId' => $user->getId(),
             'username' => $user->getUsername(),
             'playedCards' => CardsResponseStruct::mapFromCardsArray($cardsPlayed),
             'topCards' => CardsResponseStruct::mapFromCardsArray($topThreeCards),
             'nextUserId' => $nextUser->getId(),
-            'nextUsername' => $nextUser->getUsername()];
+            'nextUsername' => $nextUser->getUsername(),
+            'howMany' => $howMany];
         $this->publish($topic, json_encode($data));
     }
 
-    public function drawCardsPan(Room $room, User $user, $topThreeCards, User $nextUser){
+    public function drawCardsPan(Room $room, User $user, $topThreeCards, User $nextUser, $howMany){
         $topic = self::GAME_TOPIC . $room->getId();
         $data['draw'] = ['userId' => $user->getId(),
             'username' => $user->getUsername(),
             'topCards' => CardsResponseStruct::mapFromCardsArray($topThreeCards),
             'nextUserId' => $nextUser->getId(),
-            'nextUsername' => $nextUser->getUsername()];
+            'nextUsername' => $nextUser->getUsername(),
+            'howMany' => $howMany];
         $this->publish($topic, json_encode($data));
     }
 
