@@ -182,7 +182,7 @@ class GameService
 
     private function findNextUserWithoutStop(Room $room, $index){
         $users = $room->getUsersInRoom();
-        if ($index==count($users)-1){
+        if ($index==(count($users)-1)){
             $i = 0;
         }else{
             $i = $index+1;
@@ -196,7 +196,8 @@ class GameService
                 $users[$i]->setIsNow(true);
                 return $users[$i];
             }
-            if ($i==count($users)-1){
+
+            if ($i==count($users)){
                 $i=0;
             }
         }

@@ -68,6 +68,21 @@ class GameServiceTest extends TestCase
         $this->assertEquals(6, $action->content);
         $this->assertStringContainsString("6", $action->text);
 
+    }
+
+    public function testGetNextUser(){
+        $room = new Room();
+        $room->setGameType(Game::MACAO);
+        $user1 = new User();
+        $user1->setUsername("User1");
+        $user2 = new User();
+        $user2->setUsername("User2");
+        $room->addUsersInRoom($user1);
+        $room->addUsersInRoom($user2);
+        $user1->setIsNow(true);
+        $user2->setStop(2);
+        $nextUser = $this->service->nextUser($room);
+        $this->assertEquals($user1->getUsername(), $nextUser->getUsername());
 
     }
 }
