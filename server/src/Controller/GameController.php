@@ -159,7 +159,7 @@ class GameController extends AbstractController
             $nextUser = $this->gameService->nextUser($room);
             $this->publisherService->playCardsPan($room, $user, $cards, $room->lookThreeCardsFromUsed(), $nextUser, count($cards));
         }
-        return true;
+        return new MyJsonResponse(true);
 
     }
 
@@ -178,7 +178,7 @@ class GameController extends AbstractController
             $this->publisherService->drawCardsPan($room, $user, $room->lookThreeCardsFromUsed(), $nextUser, count($cards));
             return CardsResponseStruct::mapFromCardsArray($cards);
         }
-        return null;
+        return new MyJsonResponse(true);
     }
 
 }
