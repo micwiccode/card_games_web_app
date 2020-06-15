@@ -265,7 +265,7 @@ class Room
         return array_pop($this->currentDeck);
     }
 
-    public function getCurrentCard(): Card
+    public function getCurrentCard(): ?Card
     {
         return $this->currentCard;
     }
