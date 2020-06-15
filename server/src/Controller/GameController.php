@@ -157,7 +157,7 @@ class GameController extends AbstractController
             $room->addUsedCards($cards);
             $this->getDoctrine()->getManager()->flush();
             $nextUser = $this->gameService->nextUser($room);
-            $this->publisherService->playCardsPan($room, $user, $cards, $room->lookThreeCardsFromUsed() , $nextUser, count($cards));
+            $this->publisherService->playCardsPan($room, $user, $cards, $room->lookThreeCardsFromUsed(), $nextUser, count($cards));
         }
         return true;
 

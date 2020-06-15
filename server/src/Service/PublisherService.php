@@ -81,8 +81,8 @@ class PublisherService
         $topic = self::GAME_TOPIC . $room->getId();
         $data['play'] = ['userId' => $user->getId(),
             'username' => $user->getUsername(),
-            'playedCards' => CardsResponseStruct::mapFromCardsArray($cardsPlayed),
-            'topCards' => CardsResponseStruct::mapFromCardsArray($topThreeCards),
+            'playedCards' => $cardsPlayed,
+            'topCards' => $topThreeCards,
             'nextUserId' => $nextUser->getId(),
             'nextUsername' => $nextUser->getUsername(),
             'howMany' => $howMany];
