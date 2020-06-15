@@ -12,10 +12,12 @@ import { Action } from "../game-page/Action";
   providedIn: "root"
 })
 export class PanGameService {
-  header = new HttpHeaders({
+  header = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${JSON.parse(localStorage.getItem('token')).tokenValue}`
-  });
+    Authorization: `Bearer ${
+      JSON.parse(localStorage.getItem("token")).tokenValue
+    }`
+  };
 
   private playerDeck = new BehaviorSubject<Deck>(null);
   playerDeck$ = this.playerDeck.asObservable();
@@ -26,20 +28,14 @@ export class PanGameService {
   private turn = new BehaviorSubject<Turn>(null);
   turn$ = this.turn.asObservable();
 
-  private currentTableCard = new BehaviorSubject<Card>(null);
-  currentTableCard$ = this.currentTableCard.asObservable();
+  private currentTopCards = new BehaviorSubject<Card[]>([]);
+  currentTopCards$ = this.currentTopCards.asObservable();
 
   private isPossibleMoveFlag = new BehaviorSubject<boolean>(true);
   isPossibleMoveFlag$ = this.isPossibleMoveFlag.asObservable();
 
-  private currentAction = new BehaviorSubject<Action>(null);
-  currentAction$ = this.currentAction.asObservable();
-
   private isEnd = new BehaviorSubject<boolean>(false);
   isEnd$ = this.isEnd.asObservable();
-
-  private isTableCardTaken = new BehaviorSubject<boolean>(false);
-  isTableCardTaken$ = this.isTableCardTaken.asObservable();
 
   roomID: string;
   userID: number = null;
@@ -48,7 +44,7 @@ export class PanGameService {
     private http: HttpClient,
     private sseService: SseService,
     private zone: NgZone
-  ) {}
+  ) { }
 
   getServerSendEvent(url: string) {
     return new Observable(observer => {
@@ -89,8 +85,9 @@ export class PanGameService {
       userName: incomingData.turn.username
     };
     this.turn.next(turn);
-    const startCard = incomingData.startCard;
-    this.changeTableCard(startCard);
+    
+    this.changeTopCards([]);
+
     let playerDeck = null;
     let opponentsDecks = [];
     decks.forEach(deck => {
@@ -102,37 +99,41 @@ export class PanGameService {
   }
 
   initRound(incomingData) {
-    this.changeTableCard(incomingData.topCard);
-    if (this.isEnd !== incomingData.isEnd) this.isEnd = incomingData.isEnd;
-    if (incomingData.action.target === this.userID) {
-      if (incomingData.action.type === "Nothing") {
-        this.currentAction.next(null);
-      } else {
-        this.currentAction.next(incomingData.action);
+    this.changeTopCards(incomingData.topCards);    
+
+    const opponentsDecks: Deck[] = this.opponentsDecks.value;
+    opponentsDecks.forEach(deck => {
+      if (deck.userID === incomingData.userId) {
+        deck.numberOfCards -= incomingData.howMany;
       }
+    });
+
+    this.initNextPlayer(incomingData);
+
+    if (this.isEnd !== incomingData.isEnd) {
+      this.isEnd = incomingData.isEnd;
     }
   }
 
   initDraw(incomingData) {
     const opponentsDecks: Deck[] = this.opponentsDecks.value;
     opponentsDecks.forEach(deck => {
-      if ((deck.userID = incomingData.userId)) {
-        deck.numberOfCards += incomingData.newCards;
+      if (deck.userID === incomingData.userId) {
+        deck.numberOfCards += incomingData.howMany;
       }
     });
+
+    this.initNextPlayer(incomingData);
   }
 
   initNextPlayer(incomingData) {
-    const nextUserId = incomingData.userId;
+    const nextUserId = incomingData.nextUserId;
     const newTurn: Turn = {
       id: nextUserId,
-      userName: incomingData.username
+      userName: incomingData.nextUsername
     };
     this.turn.next(newTurn);
     this.changeArrowPosition(nextUserId);
-    if (nextUserId === this.userID) {
-      this.resetTableCard();
-    }
   }
 
   initPlayerDeck(playerDeck, turnPlayerID) {
@@ -170,11 +171,15 @@ export class PanGameService {
     this.opponentsDecks.next(oppDecks);
   }
 
-  changeTableCard(tableCardAlias: string) {
-    this.currentTableCard.next({
-      value: tableCardAlias,
-      image: `https://deckofcardsapi.com/static/img/${tableCardAlias}.png`
-    });
+  changeTopCards(topCardsAliases: string[]) {
+    this.currentTopCards.next(
+      topCardsAliases.map(alias => {
+        return {
+          value: alias,
+          image: `https://deckofcardsapi.com/static/img/${alias}.png`
+        }
+      })
+    );
   }
 
   changeArrowPosition(nextUserId: number) {
@@ -196,17 +201,17 @@ export class PanGameService {
     this.playerDeck.next(deck);
   }
 
-  drawCards(cardsNumber: number) {
+  drawCards() {
     if (this.canDrawCard()) {
-      this.setTableCardAsTaken();
       return this.http
         .post(
-          `${environment.API_URL}/room/${this.roomID}/drawCards`,
-          { cardsNumber },
+          `${environment.API_URL}/room/${this.roomID}/pan/drawCards`,
+          {},
           { headers: this.header }
         )
         .pipe()
         .subscribe(data => {
+          console.log(data);
           const cards: Card[] = [];
           // @ts-ignore
           data.data.cards.forEach(cardAlias => {
@@ -217,42 +222,25 @@ export class PanGameService {
             cards.push(card);
           });
           this.addCardToDeck(cards);
-          this.isPossibleMove();
         });
     }
   }
 
-  canDrawCard(): boolean {
-    if (this.turn.value.id !== this.userID) return false;
-    if (this.isTableCardTaken.value === true) return false;
-    if (this.currentAction.value === null) return true;
-    else {
-      const actionType = this.currentAction.value.type;
-      return !(
-        actionType === "Draw" ||
-        actionType === "Stop" ||
-        actionType === "Draw previous"
-      );
-    }
+  private canDrawCard(): boolean {
+    return this.turn.value.id === this.userID;
   }
 
-  makeActionDone() {
-    this.currentAction.next(null);
-  }
-
-  playCards(cardsAliasList: string[], demandValue: string) {
-    console.log(cardsAliasList);
-    console.log(demandValue);
+  playCards(cardsAliasList: string[]) {
+    console.log({ cards: cardsAliasList });
     this.http
       .post(
-        `${environment.API_URL}/room/${this.roomID}/playCards`,
-        { cards: cardsAliasList, request: demandValue },
+        `${environment.API_URL}/room/${this.roomID}/pan/playCards`,
+        { cards: cardsAliasList },
         { headers: this.header }
       )
       .pipe()
       .subscribe();
     this.removeCardsFromDeck(cardsAliasList);
-    this.nextPlayer();
   }
 
   removeCardsFromDeck(cardsAliasList: string[]) {
@@ -277,69 +265,59 @@ export class PanGameService {
     });
   }
 
-  isCardValid(
-    selectedCardAlias: string,
-    lastCardAlias: string,
-    currentAction: Action
-  ) {
-    const figure = selectedCardAlias[0];
-    const color = selectedCardAlias[1];
-    if (lastCardAlias === undefined) {
-      lastCardAlias = this.currentTableCard.value.value;
-      if (currentAction === null)
-        return lastCardAlias.includes(figure) || lastCardAlias.includes(color);
-      if (currentAction.type === "Draw") {
-        if (figure === selectedCardAlias[0] && figure === "K") {
-          return color === "S" || color === "H";
-        } else {
-          return (
-            figure === lastCardAlias[0] ||
-            (color === lastCardAlias[1] && (figure === "2" || figure === "3"))
-          );
-        }
-      } else if (currentAction.type === "Stop") return figure === "4";
-      else if (currentAction.type === "Request")
-        return figure === currentAction.content;
-      else if (currentAction.type === "Color change")
-        return color === currentAction.content;
-      else if (currentAction.type === "Draw previous")
-        return (
-          selectedCardAlias === "KH" ||
-          selectedCardAlias === "2S" ||
-          selectedCardAlias === "3S"
-        );
-      else return figure === lastCardAlias[0] || color === lastCardAlias[1];
-    } else return figure === lastCardAlias[0];
+  isCardValid(selectedCardAlias: string, previousCardsAliases: string[]) {
+    console.log(previousCardsAliases);
+    if (previousCardsAliases.length === 4) {
+      return false;
+    }
+
+    if (this.currentTopCards.value.length === 0) {
+      return selectedCardAlias === '9H';
+    }
+
+    const topCardAlias = this.currentTopCards.value[this.currentTopCards.value.length - 1].value;
+
+    if (previousCardsAliases.length === 3 && topCardAlias === '9H') {
+      return false;
+    }
+
+    if (previousCardsAliases.length <= 3 && previousCardsAliases.length >= 1) {
+      console.log(selectedCardAlias);
+      return selectedCardAlias[0] === previousCardsAliases[0][0];
+    }
+
+    return this.getNumberFromAlias(selectedCardAlias) >= this.getNumberFromAlias(topCardAlias);
+
+  }
+
+  private getNumberFromAlias(figure: string): number {
+    switch (figure[0]) {
+      case '9':
+        return 9;
+      case '0':
+        return 10;
+      case 'J':
+        return 11;
+      case 'Q':
+        return 12;
+      case 'K':
+        return 13;
+      case 'A':
+        return 14;
+    }
   }
 
   isPossibleMove() {
-    let isPossible = false;
-    const currentTableCardAlias = this.currentTableCard.value.value;
-    const figure = currentTableCardAlias[0];
-    const color = currentTableCardAlias[1];
     const userCards = this.playerDeck.value.cards;
-    userCards.forEach(card => {
-      if (card.value.includes(figure) || card.value.includes(color)) {
-        isPossible = true;
-      }
-    });
-    this.isPossibleMoveFlag.next(isPossible);
-  }
 
-  nextPlayer() {
-    return this.http
-      .post(`${environment.API_URL}/room/${this.roomID}/nextUser`, {
-        headers: this.header
-      })
-      .pipe()
-      .subscribe();
-  }
-
-  setTableCardAsTaken() {
-    this.isTableCardTaken.next(true);
-  }
-
-  resetTableCard() {
-    this.isTableCardTaken.next(false);
+    if (this.currentTopCards.value.length === 0) {
+      this.isPossibleMoveFlag.next(
+        userCards.some(card => card.value === '9H'));      
+    }
+    else {
+      const currentTableCardAlias = this.currentTopCards[0].value.value;      
+      this.isPossibleMoveFlag.next(
+        userCards.some(card => this.getNumberFromAlias(card.value) >= this.getNumberFromAlias(currentTableCardAlias)));      
+    }
   }
 }

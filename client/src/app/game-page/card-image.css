@@ -6,10 +6,6 @@
   height: 100px;
 }
 
-.card__image:hover {
-  filter: invert(10%);
-}
-
 @media only screen and (max-width: 850px){
   .card__image {
     width: 80px;
