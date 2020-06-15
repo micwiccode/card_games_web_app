@@ -74,7 +74,6 @@ class GameController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $action = $this->gameService->playCards($room, $user, $cards, $cardRequest);
-        $this->em->flush();
         if ($action->type == Macao::DRAW_PREVIOUS){
             $nextUserAction = $this->gameService->previousUser($room);
         }else{
@@ -114,6 +113,22 @@ class GameController extends AbstractController
     }
 
     /**
+     * @Route("/room/{id}/stay")
+     */
+    public function stay($id){
+        $room = $this->getRoom($id);
+        /** @var User $user */
+        $user = $this->getUser();
+        $user->setStop($room->getStay());
+        $room->setStay(0);
+        $nextUser = $this->gameService->nextUser($room);
+        $this->em->flush();
+        $this->publisherService->nextUser($room, $nextUser);
+        return new MyJsonResponse(true);
+
+    }
+
+    /**
      * @Route("/room/{id}/nextUser")
      * @param $id
      * @return MyJsonResponse
@@ -121,6 +136,7 @@ class GameController extends AbstractController
     public function nextUser($id){
         $room = $this->getRoom($id);
         $user = $this->gameService->nextUser($room);
+        $this->em->flush();
         $this->publisherService->nextUser($room, $user);
         return new MyJsonResponse(true);
     }

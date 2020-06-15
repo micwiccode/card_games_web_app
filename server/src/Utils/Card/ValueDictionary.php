@@ -32,7 +32,7 @@ class ValueDictionary
 
     public const ACE = 'A';
 
-    public const ACTION_VALUES = [self::TWO, self::THREE, self::FOUR, self::JACK, self::KING, self::ACE];
+    public const ACTION_VALUES = [self::TWO, self::THREE, self::FOUR, self::JACK, self::QUEEN, self::KING, self::ACE];
 
     public static function getValues()
     {

@@ -28,6 +28,8 @@ class GameService
             $room->setCurrentDeck($this->createDeck());
             $room->setUsedDeck([]);
             $room->getUsersInRoom()[0]->setIsNow(true);
+            $room->setStay(0);
+            $room->setDraw(0);
             foreach ($room->getUsersInRoom() as $user){
                 $cards = [];
                 for ($i=0; $i<5; $i++){
@@ -160,14 +162,7 @@ class GameService
         for ($i = 0; $i<count($users); $i++){
             if ($users[$i]->getIsNow()){
                 $users[$i]->setIsNow(false);
-                if ($i==count($users)-1){
-                    $users[0]->setIsNow(true);
-                    return $users[0];
-                }
-                else{
-                    $users[$i+1]->setIsNow(true);
-                    return $users[$i+1];
-                }
+                return $this->findNextUserWithoutStop($room, $i);
             }
 
         }
@@ -178,16 +173,55 @@ class GameService
         for ($i = 0; $i<count($users); $i++){
             if ($users[$i]->getIsNow()){
                 $users[$i]->setIsNow(false);
-                if ($i==0){
-                    $users[count($users)-1]->setIsNow(true);
-                    return $users[count($users)-1];
-                }
-                else{
-                    $users[$i-1]->setIsNow(true);
-                    return $users[$i-1];
-                }
+                return $this->findPrevUserWithoutStop($room, $i);
             }
 
+        }
+        return null;
+    }
+
+    private function findNextUserWithoutStop(Room $room, $index){
+        $users = $room->getUsersInRoom();
+        if ($index==count($users)-1){
+            $i = 0;
+        }else{
+            $i = $index+1;
+        }
+        while (true)
+        {
+            if ($users[$i]->getStop()!=0){
+                $users[$i]->setStop($users[$i]->getStop()-1);
+                $i++;
+            }else{
+                $users[$i]->setIsNow(true);
+                return $users[$i];
+            }
+            if ($i==count($users)-1){
+                $i=0;
+            }
+        }
+        return null;
+    }
+
+    private function findPrevUserWithoutStop(Room $room, $index){
+        $users = $room->getUsersInRoom();
+        if ($index==0){
+            $i = count($users)-1;
+        }else{
+            $i = $index-1;
+        }
+        while (true)
+        {
+            if ($users[$i]->getStop()!=0){
+                $users[$i]->setStop($users[$i]->getStop()-1);
+                $i--;
+            }else{
+                $users[$i]->setIsNow(true);
+                return $users[$i];
+            }
+            if ($i==0){
+                $i=count($users)-1;
+            }
         }
         return null;
     }
