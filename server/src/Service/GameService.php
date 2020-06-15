@@ -137,13 +137,12 @@ class GameService
             }
             $oldDeck = $room->getUsedDeck();
             shuffle($oldDeck);
-            $deck = $oldDeck;
+            $room->setCurrentDeck($oldDeck);
             $room->setUsedDeck([]);
             for ($i=$cardsLeft; $i<$howMany; $i++){
                 $newCards[] = $room->drawCard();
             }
         }
-        $room->setCurrentDeck($deck);
         $user->addCards($newCards);
         return $newCards;
     }
