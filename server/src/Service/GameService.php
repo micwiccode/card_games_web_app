@@ -220,7 +220,7 @@ class GameService
                 $users[$i]->setIsNow(true);
                 return $users[$i];
             }
-            if ($i==0){
+            if ($i==-1){
                 $i=count($users)-1;
             }
         }
