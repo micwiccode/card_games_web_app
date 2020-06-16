@@ -1,31 +1,27 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { environment } from "../../environments/environment";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root"
 })
 export class FriendsService {
   header = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${
+      JSON.parse(localStorage.getItem("token")).tokenValue
+    }`
   });
   constructor(private http: HttpClient) {}
 
   getFriends() {
-    return this.http.get(`${environment.API_URL}/friendList`).pipe();
-  }
-
-  addFriend(friend) {
-    return this.http
-      .post(`${environment.API_URL}/addFriend`, friend, { headers: this.header })
-      .pipe();
+    return this.http.get(`${environment.API_URL}/friendList`, { headers: this.header }).pipe();
   }
 
   deleteFriend(friend) {
     return this.http
       .post(`${environment.API_URL}/removeFriend`, friend, {
-        headers: this.header,
+        headers: this.header
       })
       .pipe();
   }
@@ -39,7 +35,7 @@ export class FriendsService {
   acceptFriendRequest(friend) {
     return this.http
       .post(`${environment.API_URL}/acceptFriendRequest`, friend, {
-        headers: this.header,
+        headers: this.header
       })
       .pipe();
   }
@@ -47,7 +43,7 @@ export class FriendsService {
   sendFriendRequest(friend) {
     return this.http
       .post(`${environment.API_URL}/sendFriendRequest`, friend, {
-        headers: this.header,
+        headers: this.header
       })
       .pipe();
   }
@@ -55,7 +51,7 @@ export class FriendsService {
   rejectFriendRequest(friend) {
     return this.http
       .post(`${environment.API_URL}/rejectFriendRequest`, friend, {
-        headers: this.header,
+        headers: this.header
       })
       .pipe();
   }

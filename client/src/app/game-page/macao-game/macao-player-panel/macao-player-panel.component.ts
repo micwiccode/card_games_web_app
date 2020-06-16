@@ -51,25 +51,26 @@ export class MacaoPlayerPanelComponent implements OnInit {
     this.macaoGameService.isTableCardTaken$.subscribe(
       isTableCardTaken => (this.isTableCardTaken = isTableCardTaken)
     );
-    console.log(this.currentAction);
   }
 
   chooseCard(cardAlias: string, event: any) {
-    const cardAliasIndex = this.selectedCardsAliasList.indexOf(cardAlias);
-    if (cardAliasIndex === -1) {
-      if (
-        this.macaoGameService.isCardValid(
-          cardAlias,
-          this.selectedCardsAliasList[this.selectedCardsAliasList.length - 1],
-          this.currentAction
-        )
-      ) {
-        event.target.classList.add("card__image--selected");
-        this.selectedCardsAliasList.push(cardAlias);
+    if (this.turn.userName === this.userName) {
+      const cardAliasIndex = this.selectedCardsAliasList.indexOf(cardAlias);
+      if (cardAliasIndex === -1) {
+        if (
+          this.macaoGameService.isCardValid(
+            cardAlias,
+            this.selectedCardsAliasList[this.selectedCardsAliasList.length - 1],
+            this.currentAction
+          )
+        ) {
+          event.target.classList.add("card__image--selected");
+          this.selectedCardsAliasList.push(cardAlias);
+        }
+      } else {
+        event.target.classList.remove("card__image--selected");
+        this.selectedCardsAliasList.splice(cardAliasIndex, 1);
       }
-    } else {
-      event.target.classList.remove("card__image--selected");
-      this.selectedCardsAliasList.splice(cardAliasIndex, 1);
     }
   }
 
@@ -78,8 +79,6 @@ export class MacaoPlayerPanelComponent implements OnInit {
   }
 
   makeAction() {
-    console.log("akcja: " + this.currentAction.type);
-    console.log("akcja: " + this.currentAction.content);
     if (
       this.currentAction.type === "Draw" ||
       this.currentAction.type === "Draw previous"
@@ -88,14 +87,15 @@ export class MacaoPlayerPanelComponent implements OnInit {
         parseInt(this.currentAction.content),
         true
       );
+      this.nextPlayer();
+    } else if (this.currentAction.type === "Stop") {
+      this.macaoGameService.makeStopAction();
     } else if (
-      this.currentAction.type === "Stop" ||
-      this.currentAction.type === "Request" ||
-      this.currentAction.type === "Color change"
+      this.currentAction.type === "Color change" ||
+      this.currentAction.type === "Request"
     ) {
       this.nextPlayer();
     }
-    this.nextPlayer();
     this.macaoGameService.makeActionDone();
   }
 
@@ -116,8 +116,9 @@ export class MacaoPlayerPanelComponent implements OnInit {
         this.demandVersion = "A";
         this.isDemand = true;
       } else {
+        this.macaoGameService.makeActionDone();
         this.macaoGameService.playCards(this.selectedCardsAliasList, null);
-        this.selectedCardsAliasList = [];
+        this.clearSelectedCardsAfterPlay();
       }
     }
   }
@@ -126,5 +127,10 @@ export class MacaoPlayerPanelComponent implements OnInit {
     this.isDemand = false;
     this.demandVersion = null;
     this.macaoGameService.playCards(this.selectedCardsAliasList, demandValue);
+    this.clearSelectedCardsAfterPlay();
+  }
+
+  clearSelectedCardsAfterPlay() {
+    this.selectedCardsAliasList = [];
   }
 }

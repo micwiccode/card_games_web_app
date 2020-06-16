@@ -12,14 +12,8 @@ import { FriendsService } from "../services/friends.service";
   ]
 })
 export class FriendsPageComponent implements OnInit {
-  friends = [
-    { name: "ja", id: 1 },
-    { name: "ty", id: 2 }
-  ];
-  friendRequests = [
-    { senderName: "ja", id: 1 },
-    { senderName: "ty", id: 2 }
-  ];
+  friends = [];
+  friendRequests = [];
   isSendFriendRequestBoxVisible = false;
   friendName = null;
   constructor(

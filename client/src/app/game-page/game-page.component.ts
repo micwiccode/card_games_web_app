@@ -44,9 +44,9 @@ export class GamePageComponent implements OnInit {
       });
     });
     this.gameService = this.gameType === 'Macao' ?  this.macaoGameService : this.panGameService;
-    this.initWebSocketRoom();
-    this.initWebSocketGame();
     this.gameService.isEnd$.subscribe(isEnd => (this.isEnd = isEnd));
+    this.initWebSocketGame();
+    this.initWebSocketRoom();
   }
 
   initWebSocketGame() {

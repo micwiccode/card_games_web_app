@@ -42,8 +42,8 @@
       <button
         *ngIf="
           currentAction.type === 'Stop' ||
-          currentAction.type === 'Color change' ||
-          currentAction.type === 'Request'
+          (isTableCardTaken && currentAction.type === 'Color change') ||
+          (isTableCardTaken && currentAction.type === 'Request')
         "
         class="button"
         (click)="makeAction()"
@@ -51,10 +51,7 @@
         Stój
       </button>
       <button
-        *ngIf="
-          currentAction.type === 'Color change' ||
-          currentAction.type === 'Request'
-        "
+        *ngIf="currentAction.type !== 'Stop'"
         class="button"
         (click)="playCards()"
       >
@@ -74,7 +71,9 @@
       >
         Dobierz kartę
       </p>
-      <button class="button" (click)="playCards()">Zagraj karty</button>
+      <button *ngIf="isPossibleMoveFlag" class="button" (click)="playCards()">
+        Zagraj karty
+      </button>
     </div>
   </div>
 </div>

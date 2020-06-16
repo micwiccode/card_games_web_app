@@ -39,11 +39,7 @@ export class RoomsPageComponent implements OnInit {
 
   toggleRoom(roomId) {
     this.currentRoomId = roomId;
-    const index = this.roomsList.findIndex(room => room.id === roomId);
     this.currentRoom = this.roomsList.find(room => room.id === roomId);
-    const rooms = document.querySelectorAll(".menu__list__room");
-    rooms.forEach(room => room.classList.remove("menu__list__room--clicked"));
-    rooms[index].classList.add("menu__list__room--clicked");
   }
 
   enterRoom() {
@@ -57,7 +53,6 @@ export class RoomsPageComponent implements OnInit {
           this.errorLabel.textContent = "Brak miejsca w pokoju";
         } else {
           const currentRoom = this.roomsList.find(room => room.id === this.currentRoomId);
-          console.log(currentRoom)
           // @ts-ignore
           localStorage.setItem("gameType", currentRoom.gameType);
           // @ts-ignore

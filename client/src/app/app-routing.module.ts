@@ -16,23 +16,23 @@ const appRoutes: Routes = [
   { path: "register", component: RegisterPageComponent },
   {
     path: "profile",
-    component: MyProfilePageComponent /*canActivate:[AuthGuardService]*/
+    component: MyProfilePageComponent,canActivate:[AuthGuardService]
   },
   {
     path: "friends",
-    component: FriendsPageComponent /*canActivate:[AuthGuardService]*/
+    component: FriendsPageComponent, canActivate:[AuthGuardService]
   },
   {
     path: "rooms",
-    component: RoomsPageComponent /*canActivate:[AuthGuardService]*/
+    component: RoomsPageComponent, canActivate:[AuthGuardService]
   },
   {
     path: "createGame",
-    component: CreateGamePageComponent /* canActivate:[AuthGuardService]*/
+    component: CreateGamePageComponent, canActivate:[AuthGuardService]
   },
   {
     path: "game",
-    component: GamePageComponent /* canActivate:[AuthGuardService]*/
+    component: GamePageComponent, canActivate:[AuthGuardService]
   },
   { path: "", component: MainPageComponent },
   { path: "**", component: Page404Component }

@@ -12,13 +12,6 @@ import { Action } from "../game-page/Action";
   providedIn: "root"
 })
 export class MacaoGameService {
-  header = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${
-      JSON.parse(localStorage.getItem("token")).tokenValue
-    }`
-  };
-
   private playerDeck = new BehaviorSubject<Deck>(null);
   playerDeck$ = this.playerDeck.asObservable();
 
@@ -53,7 +46,6 @@ export class MacaoGameService {
   ) {}
 
   getServerSendEvent(url: string) {
-    console.log("macao service");
     return new Observable(observer => {
       const eventSource = this.sseService.getEventSource(url);
       eventSource.onmessage = event => {
@@ -76,7 +68,12 @@ export class MacaoGameService {
         `${environment.API_URL}/room/${this.roomID}/start`,
         {},
         {
-          headers: this.header
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("token")).tokenValue
+            }`
+          }
         }
       )
       .pipe();
@@ -107,30 +104,46 @@ export class MacaoGameService {
   }
 
   initRound(incomingData) {
-    if (this.isEnd !== incomingData.isEnd) this.isEnd = incomingData.isEnd;
+    if (incomingData.isEnd) this.isEnd.next(incomingData.isEnd);
+    const target = incomingData.action.target;
+    const nextUserId = target.userId;
+    const newTurn: Turn = {
+      id: nextUserId,
+      userName: target.username
+    };
+    this.turn.next(newTurn);
     this.changeTableCard(incomingData.topCard);
-    this.initNextPlayer(incomingData.action.target);
     this.changeArrowPosition(
-      null,
+      nextUserId,
       incomingData.userId,
       incomingData.playedCards
     );
-    if (incomingData.action.target.userId === this.userID) {
-      this.isPossibleMove();
+    if (incomingData.action.type === "Request") {
+      this.currentAction.next(incomingData.action);
+    }
+    let shouldNewAction = true;
+    if (
+      this.currentAction.value !== null &&
+      this.currentAction.value.type === "Request"
+    ) {
+      shouldNewAction = false;
+    }
+    if (shouldNewAction) {
       if (incomingData.action.type === "Nothing") {
         this.currentAction.next(null);
       } else {
-        console.log("nowa akcja");
-        console.log(incomingData.action);
-        this.currentAction.next(incomingData.action);
+        if (target.userId === this.userID) {
+          this.currentAction.next(incomingData.action);
+        }
       }
+      this.isPossibleMove();
     }
   }
 
   initDraw(incomingData) {
     const opponentsDecks: Deck[] = this.opponentsDecks.value;
     opponentsDecks.forEach(deck => {
-      if ((deck.userID = incomingData.userId)) {
+      if (deck.userID === incomingData.userId) {
         deck.numberOfCards += incomingData.newCards;
       }
     });
@@ -186,10 +199,11 @@ export class MacaoGameService {
   }
 
   changeTableCard(tableCardAlias: string) {
-    this.currentTableCard.next({
+    const newTopCard: Card = {
       value: tableCardAlias,
       image: `https://deckofcardsapi.com/static/img/${tableCardAlias}.png`
-    });
+    };
+    this.currentTableCard.next(newTopCard);
   }
 
   changeArrowPosition(
@@ -202,8 +216,7 @@ export class MacaoGameService {
     opponentsDecks.forEach(deck => {
       const currentOpponentDeck: Deck = {
         ...deck,
-        isUserTurn:
-          nextUserId !== null ? nextUserId === deck.userID : deck.isUserTurn,
+        isUserTurn: nextUserId === deck.userID,
         numberOfCards:
           previousOpponentID === deck.userID
             ? (deck.numberOfCards -= playedCardNumber)
@@ -215,22 +228,26 @@ export class MacaoGameService {
     const playerDeck: Deck = this.playerDeck.value;
     const deck: Deck = {
       ...playerDeck,
-      isUserTurn:
-        nextUserId !== null
-          ? nextUserId === playerDeck.userID
-          : playerDeck.isUserTurn
+      isUserTurn: nextUserId === playerDeck.userID
     };
     this.playerDeck.next(deck);
   }
 
-  drawCards(cardsNumber: number, isAction:boolean) {
+  drawCards(cardsNumber: number, isAction: boolean) {
     if (isAction || this.canDrawCard()) {
       this.setTableCardAsTaken();
       return this.http
         .post(
           `${environment.API_URL}/room/${this.roomID}/drawCards`,
           { cardsNumber },
-          { headers: this.header }
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${
+                JSON.parse(localStorage.getItem("token")).tokenValue
+              }`
+            }
+          }
         )
         .pipe()
         .subscribe(data => {
@@ -244,7 +261,7 @@ export class MacaoGameService {
             cards.push(card);
           });
           this.addCardToDeck(cards);
-          if(!isAction) this.isPossibleMove();
+          if (!isAction) this.isPossibleMove();
         });
     }
   }
@@ -265,16 +282,40 @@ export class MacaoGameService {
 
   makeActionDone() {
     this.currentAction.next(null);
+    this.isPossibleMoveFlag.next(true);
   }
 
+  makeStopAction() {
+    this.http
+      .post(
+        `${environment.API_URL}/room/${this.roomID}/stay`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("token")).tokenValue
+            }`
+          }
+        }
+      )
+      .pipe()
+      .subscribe();
+  }
 
   playCards(cardsAliasList: string[], demandValue: string) {
-    console.log({ cards: cardsAliasList, request: demandValue });
     this.http
       .post(
         `${environment.API_URL}/room/${this.roomID}/playCards`,
         { cards: cardsAliasList, request: demandValue },
-        { headers: this.header }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("token")).tokenValue
+            }`
+          }
+        }
       )
       .pipe()
       .subscribe();
@@ -312,13 +353,15 @@ export class MacaoGameService {
     const color = selectedCardAlias[1];
     if (lastCardAlias === undefined) {
       lastCardAlias = this.currentTableCard.value.value;
-      if (currentAction === null)
-        return (
-          lastCardAlias.includes("Q") ||
-          lastCardAlias.includes(figure) ||
-          lastCardAlias.includes(color)
-        );
-      if (currentAction.type === "Draw") {
+      if (currentAction === null) {
+        if (figure === "Q") return true;
+        else
+          return (
+            lastCardAlias.includes("Q") ||
+            lastCardAlias.includes(figure) ||
+            lastCardAlias.includes(color)
+          );
+      } else if (currentAction.type === "Draw") {
         if (figure === selectedCardAlias[0] && figure === "K") {
           return color === "S" || color === "H";
         } else {
@@ -343,6 +386,7 @@ export class MacaoGameService {
   }
 
   isPossibleMove() {
+    console.log('is possible move')
     let isPossible = false;
     const currentTableCardAlias = this.currentTableCard.value.value;
     const figure = currentTableCardAlias[0];
@@ -361,16 +405,25 @@ export class MacaoGameService {
         }
       });
     }
+    console.log(isPossible)
     this.isPossibleMoveFlag.next(isPossible);
   }
 
   nextPlayer() {
-    console.log("next player");
     this.isTableCardTaken.next(false);
     return this.http
-      .post(`${environment.API_URL}/room/${this.roomID}/nextUser`, {
-        headers: this.header
-      })
+      .post(
+        `${environment.API_URL}/room/${this.roomID}/nextUser`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("token")).tokenValue
+            }`
+          }
+        }
+      )
       .pipe()
       .subscribe();
   }

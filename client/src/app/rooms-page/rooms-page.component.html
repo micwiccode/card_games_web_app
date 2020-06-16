@@ -5,7 +5,7 @@
   <div *ngIf="roomsListMacao.length > 0; then roomsMacao; else noRooms"></div>
   <ng-template #roomsMacao>
     <div *ngFor="let room of roomsListMacao">
-      <div class="menu__list__room" (click)="toggleRoom(room.id)">
+      <div class="menu__list__room" [class.menu__list__room--clicked]="currentRoomId === room.id" (click)="toggleRoom(room.id)">
         <p>{{ room.name }}</p>
         <div class="room__info_box">
           <div *ngIf="room.password !== null">
@@ -24,7 +24,7 @@
   <div *ngIf="roomsListPan.length > 0; then roomsPan; else noRooms"></div>
   <ng-template #roomsPan>
     <div *ngFor="let room of roomsListPan">
-      <div class="menu__list__room" (click)="toggleRoom(room.id)">
+      <div class="menu__list__room" [class.menu__list__room--clicked]="currentRoomId === room.id" (click)="toggleRoom(room.id)">
         <p>{{ room.name }}</p>
         <div class="room__info_box">
           <div *ngIf="room.password !== null">
