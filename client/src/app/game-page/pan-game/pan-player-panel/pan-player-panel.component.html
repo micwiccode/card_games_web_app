@@ -24,37 +24,14 @@
     </div>
   </div>
   <div class="control_panel">
-    <p class="control_panel__info">Ruch gracza: {{ turn.userName }}</p>
-    <p *ngIf="currentAction !== null" class="control_panel__info">
-      {{ currentAction.text }}
-    </p>
-    <div *ngIf="currentAction !== null">
-      <button
-        *ngIf="
-          currentAction.type === 'Draw' ||
-          currentAction.type === 'Draw previous'
-        "
-        class="button"
-        (click)="makeAction()"
-      >
-        Wykonaj akcję dobierania
-      </button>
-      <button
-        *ngIf="isTableCardTaken || currentAction.type === 'Stop'"
-        class="button"
-        (click)="nextPlayer()"
-      >
-        Stój
-      </button>
-    </div>
-    <p *ngIf="!isPossibleMoveFlag" class="control_panel__info">
-      Brak możliwości ruchu
-    </p>
     <p
-      *ngIf="!isPossibleMoveFlag && !isTableCardTaken"
+      *ngIf="turn !== undefined" 
+      class="control_panel__info">Ruch gracza: {{ turn.userName }}</p>
+    <p
+      *ngIf="!isPossibleMoveFlag && isUserTurn"
       class="control_panel__info"
     >
-      Dobierz kartę
+      Dobierz karty
     </p>
     <button class="button" (click)="playCards()">Zagraj karty</button>
   </div>
