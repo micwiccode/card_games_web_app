@@ -62,8 +62,9 @@ class UserService
         if(!empty($email)){
             $user->setEmail($email);
         }
-        if (!empty($password)){
-            $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
+        if (!empty($password) && !empty($oldPassword)){
+            if ($this->passwordEncoder->isPasswordValid($user, $oldPassword))
+                $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
         }
     }
 

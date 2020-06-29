@@ -85,4 +85,26 @@ class GameServiceTest extends TestCase
         $this->assertEquals($user1->getUsername(), $nextUser->getUsername());
 
     }
+
+    public function testStartPlayerPan(){
+        $room = new Room();
+        $room->setGameType(Game::PAN);
+        $user1 = new User();
+        $user2 = new User();
+        $room->addUsersInRoom($user1);
+        $room->addUsersInRoom($user2);
+        $this->service->startGame($room);
+        /** @var Card $card */
+        foreach ($user1->getCards() as $card){
+            if ($card->__toString() == "9H"){
+                $this->assertTrue($user1->getIsNow());
+            }
+        }
+        /** @var Card $card */
+        foreach ($user2->getCards() as $card){
+            if ($card->__toString() == "9H"){
+                $this->assertTrue($user2->getIsNow());
+            }
+        }
+    }
 }
