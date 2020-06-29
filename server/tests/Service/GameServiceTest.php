@@ -66,6 +66,7 @@ class GameServiceTest extends TestCase
         $this->assertStringContainsString("3", $action->text);
         $action = $this->service->playCards($room, $user2, ["3D, 3S"], null);
         $this->assertEquals(6, $action->content);
+        $this->assertEquals(6, $room->getDraw());
         $this->assertStringContainsString("6", $action->text);
 
     }

@@ -33,6 +33,9 @@ class RoomService
         $room->setMaxPeople($maxPeople);
         $room->addUsersInRoom($user);
         $room->setGameType($gameType);
+        $user->setStop(0);
+        $user->setIsNow(0);
+        $user->setCards(null);
         return $room;
     }
 
@@ -41,6 +44,9 @@ class RoomService
         /** @var User $user */
         $user = $this->security->getUser();
         if(count($room->getUsersInRoom())<$room->getMaxPeople() || $room->getUsersInRoom()->contains($user)){
+            $user->setStop(0);
+            $user->setIsNow(0);
+            $user->setCards(null);
             $room->addUsersInRoom($user);
         }else{
             return false;
