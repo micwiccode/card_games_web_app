@@ -40,7 +40,7 @@ class RoomService
 
         /** @var User $user */
         $user = $this->security->getUser();
-        if(count($room->getUsersInRoom())<$room->getMaxPeople()){
+        if(count($room->getUsersInRoom())<$room->getMaxPeople() || $room->getUsersInRoom()->contains($user)){
             $room->addUsersInRoom($user);
         }else{
             return false;

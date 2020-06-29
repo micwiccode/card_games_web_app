@@ -68,7 +68,7 @@ class UserService
     }
 
     public function addFriendToCurrentUser(FriendRequest $friendRequest){
-        $friend = $friendRequest->getFriend();
+        $friend = $friendRequest->getUser();
         $this->em->remove($friendRequest);
         /** @var User $user */
         $user = $this->security->getUser();
