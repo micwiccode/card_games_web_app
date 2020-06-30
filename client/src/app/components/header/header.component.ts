@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit, DoCheck {
   ngOnInit(): void {}
 
   ngDoCheck(): void {
+    if (this.link !== this.router.url) this.isSideMenuActive = false;
     this.link = this.router.url;
   }
 
@@ -24,7 +25,7 @@ export class HeaderComponent implements OnInit, DoCheck {
     this.authService.logOut();
   }
 
-  activateSideMenu() {
+  toggleSideMenu() {
     this.isSideMenuActive = !this.isSideMenuActive;
   }
 }

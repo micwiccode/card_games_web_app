@@ -71,6 +71,9 @@
     </div>
   </form>
   <div class="menu__error"></div>
-  <button class="button" routerLink="/profile">Powrót</button>
+  <button class="button" routerLink="/">Powrót</button>
 </div>
 
+<div *ngIf="isLoading === true">
+  <app-loading-spinner></app-loading-spinner>
+</div>

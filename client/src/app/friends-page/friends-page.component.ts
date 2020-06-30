@@ -12,6 +12,7 @@ import { FriendsService } from "../services/friends.service";
   ]
 })
 export class FriendsPageComponent implements OnInit {
+  isLoading = true;
   friends = [];
   friendRequests = [];
   isSendFriendRequestBoxVisible = false;
@@ -29,19 +30,22 @@ export class FriendsPageComponent implements OnInit {
     this.friendsService.getFriends().subscribe(data => {
       // @ts-ignore
       this.friends = data.data;
-    });
-    this.friendsService.getFriendRequest().subscribe(data => {
-      // @ts-ignore
-      this.friendRequests = data.data;
+      this.friendsService.getFriendRequest().subscribe(data => {
+        // @ts-ignore
+        this.friendRequests = data.data;
+        this.isLoading = false;
+      });
     });
   }
 
   removeFriend(id) {
+    this.isLoading = true;
     this.friendsService.deleteFriend({ friendId: id }).subscribe(data => {});
     this.getLists();
   }
 
   acceptFriendRequest(id) {
+    this.isLoading = true;
     this.friendsService
       .acceptFriendRequest({ friendRequestId: id })
       .subscribe(data => {});
@@ -49,6 +53,7 @@ export class FriendsPageComponent implements OnInit {
   }
 
   rejectFriendRequest(id) {
+    this.isLoading = true;
     this.friendsService
       .rejectFriendRequest({ friendRequestId: id })
       .subscribe(data => {});
@@ -56,6 +61,7 @@ export class FriendsPageComponent implements OnInit {
   }
 
   sendFriendRequest() {
+    this.isLoading = true;
     const errorLabel: HTMLElement = document.querySelector(
       ".menu__error"
     ) as HTMLElement;
@@ -68,6 +74,7 @@ export class FriendsPageComponent implements OnInit {
       this.friendsService
         .sendFriendRequest({ friendName: this.friendName })
         .subscribe(data => {
+          this.isLoading = false;
           // @ts-ignore
           if (data.data === true) {
             errorLabel.style.display = "block";

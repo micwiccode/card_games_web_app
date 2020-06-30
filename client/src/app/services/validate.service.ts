@@ -21,8 +21,8 @@ export class ValidateService {
     ) {
       return { isValid: false, msg: 'Uzupełnij wszystkie pola' };
     }
-    const emialValidator = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!emialValidator.test(String(user.email).toLowerCase())) {
+    const emailValidator = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailValidator.test(String(user.email).toLowerCase())) {
       return { isValid: false, msg: 'Podaj poprawny adres email' };
     }
     if (user.password.length < 5) {
@@ -38,20 +38,20 @@ export class ValidateService {
   }
 
   validateUserUpdate(user, passwordNewRepeat) {
-    const emialValidator = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!emialValidator.test(String(user.email).toLowerCase())) {
+    const emailValidator = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailValidator.test(String(user.email).toLowerCase())) {
       return { isValid: false, msg: 'Podaj poprawny adres email' };
     }
     if (
-      (user.passwordOld === undefined && user.passwordNew !== undefined) ||
-      (user.passwordOld !== undefined && user.passwordNew === undefined)
+      (user.passwordOld === null && user.passwordNew !== null) ||
+      (user.passwordOld !== null && user.passwordNew === null)
     ) {
       return {
         isValid: false,
         msg: 'Podaj stare i nowe hasło aby zmienić hasło',
       };
     }
-    if (user.passwordNew !== undefined) {
+    if (user.passwordNew !== null) {
       if (user.passwordNew.length < 5) {
         return {
           isValid: false,

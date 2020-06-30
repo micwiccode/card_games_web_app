@@ -6,36 +6,50 @@ import { environment } from "../../environments/environment";
   providedIn: "root"
 })
 export class FriendsService {
-  header = new HttpHeaders({
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${
-      JSON.parse(localStorage.getItem("token")).tokenValue
-    }`
-  });
   constructor(private http: HttpClient) {}
 
   getFriends() {
-    return this.http.get(`${environment.API_URL}/friendList`, { headers: this.header }).pipe();
+    return this.http.get(`${environment.API_URL}/friendList`, { headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${
+          JSON.parse(localStorage.getItem("token")).tokenValue
+        }`
+      } }).pipe();
   }
 
   deleteFriend(friend) {
     return this.http
       .post(`${environment.API_URL}/removeFriend`, friend, {
-        headers: this.header
+        headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${
+      JSON.parse(localStorage.getItem("token")).tokenValue
+    }`
+  }
       })
       .pipe();
   }
 
   getFriendRequest() {
     return this.http
-      .get(`${environment.API_URL}/friendRequestList`, { headers: this.header })
+      .get(`${environment.API_URL}/friendRequestList`, { headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${
+      JSON.parse(localStorage.getItem("token")).tokenValue
+    }`
+  } })
       .pipe();
   }
 
   acceptFriendRequest(friend) {
     return this.http
       .post(`${environment.API_URL}/acceptFriendRequest`, friend, {
-        headers: this.header
+        headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${
+      JSON.parse(localStorage.getItem("token")).tokenValue
+    }`
+  }
       })
       .pipe();
   }
@@ -43,7 +57,12 @@ export class FriendsService {
   sendFriendRequest(friend) {
     return this.http
       .post(`${environment.API_URL}/sendFriendRequest`, friend, {
-        headers: this.header
+        headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${
+      JSON.parse(localStorage.getItem("token")).tokenValue
+    }`
+  }
       })
       .pipe();
   }
@@ -51,7 +70,12 @@ export class FriendsService {
   rejectFriendRequest(friend) {
     return this.http
       .post(`${environment.API_URL}/rejectFriendRequest`, friend, {
-        headers: this.header
+        headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${
+      JSON.parse(localStorage.getItem("token")).tokenValue
+    }`
+  }
       })
       .pipe();
   }

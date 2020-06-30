@@ -20,10 +20,11 @@ export class PanPlayerPanelComponent implements OnInit {
   isUserTurn: boolean = false;
   turn: Turn;
   currentTopCards: Card[];
+  errorMessage: string = '';
   isPossibleMoveFlag: boolean = true;
   selectedCardsAliasList: string[] = [];
 
-  constructor(private panGameService: PanGameService) { }
+  constructor(private panGameService: PanGameService) {}
 
   ngOnInit(): void {
     this.panGameService.playerDeck$.subscribe(deck => {
@@ -31,9 +32,12 @@ export class PanPlayerPanelComponent implements OnInit {
       this.userName = deck.userName;
       this.isUserTurn = deck.isUserTurn;
     });
-    this.panGameService.currentTopCards$.subscribe(
-      cards => (this.currentTopCards = cards)
-    );
+    this.panGameService.currentTopCards$.subscribe(cards => {
+      this.currentTopCards = cards;
+    });
+    this.panGameService.turn$.subscribe(turn => {
+      this.turn = turn;
+    });
     this.panGameService.isPossibleMoveFlag$.subscribe(
       isPossibleMoveFlag => (this.isPossibleMoveFlag = isPossibleMoveFlag)
     );
@@ -43,28 +47,41 @@ export class PanPlayerPanelComponent implements OnInit {
     if (this.isUserTurn) {
       const cardAliasIndex = this.selectedCardsAliasList.indexOf(cardAlias);
       if (cardAliasIndex === -1) {
-        if (this.panGameService.isCardValid(cardAlias, this.selectedCardsAliasList)) {
+        if (
+          this.panGameService.isCardValid(
+            cardAlias,
+            this.selectedCardsAliasList
+          )
+        ) {
           event.target.classList.add("card__image--selected");
           this.selectedCardsAliasList.push(cardAlias);
         }
-      }
-      else {
+      } else {
         event.target.classList.remove("card__image--selected");
         this.selectedCardsAliasList.splice(cardAliasIndex, 1);
       }
     }
   }
 
+  drawCards() {
+    this.panGameService.drawCards();
+  }
+
   playCards() {
     if (this.isUserTurn) {
-      if (this.selectedCardsAliasList.length === 1 ||
-        (this.selectedCardsAliasList.length === 3 && this.currentTopCards.length === 1 && this.currentTopCards[0].value == '9H') ||
-        this.selectedCardsAliasList.length === 4) {
-
+      if (
+        this.selectedCardsAliasList.length === 1 ||
+        (this.selectedCardsAliasList.length === 3 &&
+          this.currentTopCards.length === 1 &&
+          this.currentTopCards[0].value == "9H") ||
+        this.selectedCardsAliasList.length === 4
+      ) {
         this.panGameService.playCards(this.selectedCardsAliasList);
         this.selectedCardsAliasList = [];
       }
+      else{
+        this.errorMessage = 'Zły ruch. zagraj 1 lub 4 karty danej figury'
+      }
     }
   }
-
 }
