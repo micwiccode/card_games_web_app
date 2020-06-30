@@ -157,6 +157,8 @@ class GameController extends AbstractController
             $room->addUsedCards($cards);
             $this->getDoctrine()->getManager()->flush();
             $nextUser = $this->gameService->nextUser($room);
+            $this->getDoctrine()->getManager()->flush();
+
             $this->publisherService->playCardsPan($room, $user, $cards, $room->lookThreeCardsFromUsed(), $nextUser, count($cards));
         }
         return new MyJsonResponse(true);
@@ -177,6 +179,7 @@ class GameController extends AbstractController
             $user->addCards($cards);
             $this->getDoctrine()->getManager()->flush();
             $nextUser = $this->gameService->nextUser($room);
+            $this->getDoctrine()->getManager()->flush();
             $this->publisherService->drawCardsPan($room, $user, $room->lookThreeCardsFromUsed(), $nextUser, count($cards));
             return new MyJsonResponse($cards);
         }

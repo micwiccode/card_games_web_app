@@ -80,10 +80,15 @@ class GameServiceTest extends TestCase
         $user2->setUsername("User2");
         $room->addUsersInRoom($user1);
         $room->addUsersInRoom($user2);
-        $user1->setIsNow(true);
-        $user2->setStop(2);
+        $user1->setIsNow(false);
+        $user2->setIsNow(true);
+//        $user2->setStop(2);
+        $nextUser = $this->service->nextUser($room);
+        $this->assertEquals($user2->getUsername(), $nextUser->getUsername());
         $nextUser = $this->service->nextUser($room);
         $this->assertEquals($user1->getUsername(), $nextUser->getUsername());
+        $nextUser = $this->service->nextUser($room);
+        $this->assertEquals($user2->getUsername(), $nextUser->getUsername());
 
     }
 
