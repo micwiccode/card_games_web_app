@@ -20,7 +20,7 @@ export class PanPlayerPanelComponent implements OnInit {
   isUserTurn: boolean = false;
   turn: Turn;
   currentTopCards: Card[];
-  errorMessage: string = '';
+  errorMessage: string = "";
   isPossibleMoveFlag: boolean = true;
   selectedCardsAliasList: string[] = [];
 
@@ -64,12 +64,16 @@ export class PanPlayerPanelComponent implements OnInit {
   }
 
   drawCards() {
+    this.errorMessage = "";
     this.panGameService.drawCards();
   }
 
   playCards() {
     if (this.isUserTurn) {
-      if (
+      if (this.selectedCardsAliasList.length === 0) {
+        this.errorMessage = "Wskaż karty do zagrania";
+      }
+      else if (
         this.selectedCardsAliasList.length === 1 ||
         (this.selectedCardsAliasList.length === 3 &&
           this.currentTopCards.length === 1 &&
@@ -78,9 +82,9 @@ export class PanPlayerPanelComponent implements OnInit {
       ) {
         this.panGameService.playCards(this.selectedCardsAliasList);
         this.selectedCardsAliasList = [];
-      }
-      else{
-        this.errorMessage = 'Zły ruch. zagraj 1 lub 4 karty danej figury'
+        this.errorMessage = "";
+      } else {
+        this.errorMessage = "Zły ruch. zagraj 1 lub 4 karty danej figury";
       }
     }
   }
