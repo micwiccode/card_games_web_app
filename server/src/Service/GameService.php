@@ -55,6 +55,9 @@ class GameService
                 $users[$i]->setCards($users_deck[$i]);
             }
             foreach ($users as $user){
+                $user->setIsNow(false);
+            }
+            foreach ($users as $user){
                 /** @var Card $card */
                 foreach ($user->getCards() as $card){
                     if ($card->__toString() == "9H"){
@@ -62,6 +65,9 @@ class GameService
                     }
                 }
             }
+            $room->setUsedDeck([]);
+            $room->setCurrentDeck([]);
+
         }
     }
 
