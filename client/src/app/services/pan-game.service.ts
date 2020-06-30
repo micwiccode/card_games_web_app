@@ -12,13 +12,6 @@ import { Action } from "../game-page/Action";
   providedIn: "root"
 })
 export class PanGameService {
-  header = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${
-      JSON.parse(localStorage.getItem("token")).tokenValue
-    }`
-  };
-
   private playerDeck = new BehaviorSubject<Deck>(null);
   playerDeck$ = this.playerDeck.asObservable();
 
@@ -44,7 +37,7 @@ export class PanGameService {
     private http: HttpClient,
     private sseService: SseService,
     private zone: NgZone
-  ) { }
+  ) {}
 
   getServerSendEvent(url: string) {
     return new Observable(observer => {
@@ -69,7 +62,12 @@ export class PanGameService {
   startGame() {
     this.initStart();
     return this.http
-      .post(`${environment.API_URL}/room/${this.roomID}/start`, this.header)
+      .post(`${environment.API_URL}/room/${this.roomID}/start`, {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${
+          JSON.parse(localStorage.getItem("token")).tokenValue
+        }`
+      })
       .pipe();
   }
 
@@ -85,7 +83,7 @@ export class PanGameService {
       userName: incomingData.turn.username
     };
     this.turn.next(turn);
-    
+
     this.changeTopCards([]);
 
     let playerDeck = null;
@@ -99,17 +97,16 @@ export class PanGameService {
   }
 
   initRound(incomingData) {
-    this.changeTopCards(incomingData.topCards);    
-
+    console.log('next round')
+    this.changeTopCards(incomingData.topCards);
+    this.isPossibleMove()
     const opponentsDecks: Deck[] = this.opponentsDecks.value;
     opponentsDecks.forEach(deck => {
       if (deck.userID === incomingData.userId) {
         deck.numberOfCards -= incomingData.howMany;
       }
     });
-
     this.initNextPlayer(incomingData);
-
     if (this.isEnd !== incomingData.isEnd) {
       this.isEnd = incomingData.isEnd;
     }
@@ -125,6 +122,8 @@ export class PanGameService {
 
     this.initNextPlayer(incomingData);
   }
+
+
 
   initNextPlayer(incomingData) {
     const nextUserId = incomingData.nextUserId;
@@ -177,7 +176,7 @@ export class PanGameService {
         return {
           value: alias,
           image: `https://deckofcardsapi.com/static/img/${alias}.png`
-        }
+        };
       })
     );
   }
@@ -207,7 +206,14 @@ export class PanGameService {
         .post(
           `${environment.API_URL}/room/${this.roomID}/pan/drawCards`,
           {},
-          { headers: this.header }
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${
+                JSON.parse(localStorage.getItem("token")).tokenValue
+              }`
+            }
+          }
         )
         .pipe()
         .subscribe(data => {
@@ -227,16 +233,23 @@ export class PanGameService {
   }
 
   private canDrawCard(): boolean {
-    return this.turn.value.id === this.userID;
+    return this.turn.value.id === this.userID && this.currentTopCards.value.length > 0 ;
   }
 
   playCards(cardsAliasList: string[]) {
-    console.log({ cards: cardsAliasList });
+    console.log('zagrano: '+ cardsAliasList)
     this.http
       .post(
         `${environment.API_URL}/room/${this.roomID}/pan/playCards`,
         { cards: cardsAliasList },
-        { headers: this.header }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("token")).tokenValue
+            }`
+          }
+        }
       )
       .pipe()
       .subscribe();
@@ -266,58 +279,55 @@ export class PanGameService {
   }
 
   isCardValid(selectedCardAlias: string, previousCardsAliases: string[]) {
-    console.log(previousCardsAliases);
-    if (previousCardsAliases.length === 4) {
-      return false;
+    if (
+      this.currentTopCards.value.length === 0 &&
+      previousCardsAliases.length === 0
+    ) {
+      return selectedCardAlias === "9H";
     }
 
-    if (this.currentTopCards.value.length === 0) {
-      return selectedCardAlias === '9H';
-    }
+    const topCardAlias =
+      previousCardsAliases.length > 0
+        ? previousCardsAliases[previousCardsAliases.length - 1]
+        : this.currentTopCards.value[this.currentTopCards.value.length - 1]
+            .value;
 
-    const topCardAlias = this.currentTopCards.value[this.currentTopCards.value.length - 1].value;
-
-    if (previousCardsAliases.length === 3 && topCardAlias === '9H') {
-      return false;
-    }
-
-    if (previousCardsAliases.length <= 3 && previousCardsAliases.length >= 1) {
-      console.log(selectedCardAlias);
-      return selectedCardAlias[0] === previousCardsAliases[0][0];
-    }
-
-    return this.getNumberFromAlias(selectedCardAlias) >= this.getNumberFromAlias(topCardAlias);
-
+    return (
+      this.getNumberFromAlias(selectedCardAlias) >=
+      this.getNumberFromAlias(topCardAlias)
+    );
   }
 
   private getNumberFromAlias(figure: string): number {
     switch (figure[0]) {
-      case '9':
+      case "9":
         return 9;
-      case '0':
+      case "0":
         return 10;
-      case 'J':
+      case "J":
         return 11;
-      case 'Q':
+      case "Q":
         return 12;
-      case 'K':
+      case "K":
         return 13;
-      case 'A':
+      case "A":
         return 14;
     }
   }
 
   isPossibleMove() {
     const userCards = this.playerDeck.value.cards;
-
     if (this.currentTopCards.value.length === 0) {
+      this.isPossibleMoveFlag.next(userCards.some(card => card.value === "9H"));
+    } else {
+      const currentTableCardAlias = this.currentTopCards.value[0].value;
       this.isPossibleMoveFlag.next(
-        userCards.some(card => card.value === '9H'));      
-    }
-    else {
-      const currentTableCardAlias = this.currentTopCards[0].value.value;      
-      this.isPossibleMoveFlag.next(
-        userCards.some(card => this.getNumberFromAlias(card.value) >= this.getNumberFromAlias(currentTableCardAlias)));      
+        userCards.some(
+          card =>
+            this.getNumberFromAlias(card.value) >=
+            this.getNumberFromAlias(currentTableCardAlias)
+        )
+      );
     }
   }
 }

@@ -1,6 +1,6 @@
 <div class="grid">
     <h1 class="title">Pan</h1>
-    <div class="table" (click)="drawCards()">
+    <div class="table">
         <div class="card__row" [ngStyle]="rowStyle()">
             <img class="card__image back__card" *ngIf="moreThanThreeCardsOnTable()" src="https://deckofcardsapi.com/static/img/9H.png">
             <img class="card__image" *ngFor="let card of currentTopCards; let i = index"

@@ -52,3 +52,7 @@
   transform: rotate(180deg);
 }
 
+.control_panel__info--error{
+  font-weight: bold;
+}
+

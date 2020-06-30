@@ -18,10 +18,6 @@ export class PanCardTableComponent implements OnInit {
     );
   }
 
-  drawCards() {
-    this.panGameService.drawCards();
-  }
-
   rowStyle() {
     if (this.moreThanThreeCardsOnTable()) {
       return {

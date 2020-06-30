@@ -9,6 +9,7 @@ import { Router } from "@angular/router";
   styleUrls: ["../../css/button.css", "./rooms-page.component.css"]
 })
 export class RoomsPageComponent implements OnInit {
+  isLoading = true;
   currentRoomId = null;
   currentRoom = null;
   targetRoomPassword = "";
@@ -17,7 +18,6 @@ export class RoomsPageComponent implements OnInit {
   roomsListMacao = [];
   roomsListPan = [];
   roomsList = [];
-  isLoading = true;
   constructor(
     private roomsService: RoomsService,
     private validateService: ValidateService,

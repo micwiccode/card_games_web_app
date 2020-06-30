@@ -24,15 +24,21 @@
     </div>
   </div>
   <div class="control_panel">
+    <p class="control_panel__info control_panel__info--error">
+      {{ this.errorMessage }}
+    </p>
+    <p *ngIf="turn !== undefined" class="control_panel__info">
+      Ruch gracza: {{ turn.userName }}
+    </p>
     <p
-      *ngIf="turn !== undefined" 
-      class="control_panel__info">Ruch gracza: {{ turn.userName }}</p>
-    <p
-      *ngIf="!isPossibleMoveFlag && isUserTurn"
+      *ngIf="isPossibleMoveFlag === false && isUserTurn === true"
       class="control_panel__info"
     >
-      Dobierz karty
+      Brak możliwości ruchu. Dobierz karty
     </p>
+    <button class="button" (click)="drawCards()">
+      Dobierz karty
+    </button>
     <button class="button" (click)="playCards()">Zagraj karty</button>
   </div>
 </div>

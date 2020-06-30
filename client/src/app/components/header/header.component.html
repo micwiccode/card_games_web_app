@@ -17,40 +17,39 @@
   <ul
     *ngIf="link !== '/game'"
     class="header__nav"
-    [ngClass]="{ 'header__nav--active': isSideMenuActive === true }"
+    [ngClass]="{ 'header__nav--active': isSideMenuActive == false }"
   >
     <div *ngIf="isLogged; then loggedUserBlock; else guestBlock"></div>
     <ng-template #loggedUserBlock>
       <li class="header__nav__link">
         <a
           class="link"
-          (click)="activateSideMenu()"
           routerLink="/"
           (click)="onLogOutClick()"
           >Wyloguj się</a
         >
       </li>
       <li class="header__nav__link">
-        <a class="link" (click)="activateSideMenu()" routerLink="/profile"
+        <a class="link" routerLink="/profile"
           >Twój profil</a
         >
       </li>
     </ng-template>
     <ng-template #guestBlock>
       <li class="header__nav__link">
-        <a class="link" (click)="activateSideMenu()" routerLink="/register"
+        <a class="link" routerLink="/register"
           >Zarejestruj się</a
         >
       </li>
       <li class="header__nav__link">
-        <a class="link" (click)="activateSideMenu()" routerLink="/login"
+        <a class="link" routerLink="/login"
           >Zaloguj się</a
         >
       </li>
     </ng-template>
   </ul>
 
-  <button *ngIf="link !== '/game'" class="hamburger" (click)="activateSideMenu()">
+  <button *ngIf="link !== '/game'" class="hamburger" (click)="toggleSideMenu()">
     <span class="hamburger__icon">
       <span class="hamburger__line"></span>
     </span>

@@ -40,18 +40,24 @@ export class LogInPageComponent implements OnInit {
     const validateResponse = this.validateService.validateLogin(user);
 
     if (validateResponse.isValid) {
-      this.authService.logIn(user).subscribe(data => {
-        // @ts-ignore
-        const token = data.token;
-        if (token) {
-          this.authService.auth(token);
-        } else {
-          errorLabel.style.display = 'block';
-          errorLabel.textContent = 'Nieprawidłowe dane';
+      this.authService.logIn(user).subscribe(
+        data => {
+          // @ts-ignore
+          const token = data.token;
+          if (token) {
+            this.authService.auth(token);
+          } else {
+            errorLabel.style.display = "block";
+            errorLabel.textContent = "Nieprawidłowe dane";
+          }
+        },
+        error => {
+          errorLabel.style.display = "block";
+          errorLabel.textContent = "Nieprawidłowe dane";
         }
-      });
+      );
     } else {
-      errorLabel.style.display = 'block';
+      errorLabel.style.display = "block";
       errorLabel.textContent = validateResponse.msg;
     }
   }

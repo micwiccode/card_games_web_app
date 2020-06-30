@@ -96,7 +96,7 @@ export class MacaoGameService {
     let playerDeck = null;
     let opponentsDecks = [];
     decks.forEach(deck => {
-      if (deck.userId === userID) playerDeck = deck;
+      if (deck.userId === userID) playerDeck = deck.deck;
       else opponentsDecks.push(deck);
     });
     this.initPlayerDeck(playerDeck, turn.id);
@@ -386,7 +386,6 @@ export class MacaoGameService {
   }
 
   isPossibleMove() {
-    console.log('is possible move')
     let isPossible = false;
     const currentTableCardAlias = this.currentTableCard.value.value;
     const figure = currentTableCardAlias[0];
@@ -405,7 +404,6 @@ export class MacaoGameService {
         }
       });
     }
-    console.log(isPossible)
     this.isPossibleMoveFlag.next(isPossible);
   }
 
