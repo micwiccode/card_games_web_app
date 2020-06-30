@@ -54,8 +54,9 @@ class UserService
     /**
      * @param $email
      * @param $password
+     * @param $oldPassword
      */
-    public function updateCurrentUser($email, $password){
+    public function updateCurrentUser($email, $password, $oldPassword){
         /** @var User $user */
         $user = $this->security->getUser();
 

@@ -27,6 +27,9 @@ class GameService
         {
             $room->setCurrentDeck($this->createDeck());
             $room->setUsedDeck([]);
+            foreach ($room->getUsersInRoom() as $user){
+                $user->setIsNow(false);
+            }
             $room->getUsersInRoom()[0]->setIsNow(true);
             $room->setStay(0);
             $room->setDraw(0);
