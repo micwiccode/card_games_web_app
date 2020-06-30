@@ -42,6 +42,7 @@ class UserController extends AbstractController
      * @Route("/getUser", methods={"GET"})
      */
     public function getCurrentUser(){
+        $i = 1;
         return new MyJsonResponse($this->userService->getCurrentUserData());
     }
 

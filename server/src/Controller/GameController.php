@@ -165,6 +165,8 @@ class GameController extends AbstractController
 
     /**
      * @Route("/room/{id}/pan/drawCards")
+     * @param $id
+     * @return MyJsonResponse|CardsResponseStruct
      */
     public function drawCardsPan($id){
         $room = $this->getRoom($id);
@@ -176,7 +178,7 @@ class GameController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
             $nextUser = $this->gameService->nextUser($room);
             $this->publisherService->drawCardsPan($room, $user, $room->lookThreeCardsFromUsed(), $nextUser, count($cards));
-            return CardsResponseStruct::mapFromCardsArray($cards);
+            return new MyJsonResponse($cards);
         }
         return new MyJsonResponse(true);
     }
