@@ -119,11 +119,9 @@ export class PanGameService {
         deck.numberOfCards += incomingData.howMany;
       }
     });
-
+    this.changeTopCards(incomingData.topCards)
     this.initNextPlayer(incomingData);
   }
-
-
 
   initNextPlayer(incomingData) {
     const nextUserId = incomingData.nextUserId;
@@ -217,17 +215,17 @@ export class PanGameService {
         )
         .pipe()
         .subscribe(data => {
-          console.log(data);
           const cards: Card[] = [];
           // @ts-ignore
-          data.data.cards.forEach(cardAlias => {
+          data.data.forEach(cardAlias => {
             const card: Card = {
               value: cardAlias,
               image: `https://deckofcardsapi.com/static/img/${cardAlias}.png`
             };
             cards.push(card);
           });
-          this.addCardToDeck(cards);
+          this.addCardToDeck(cards)
+          // this.changeTopCards()
         });
     }
   }

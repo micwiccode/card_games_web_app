@@ -147,6 +147,7 @@ export class MacaoGameService {
         deck.numberOfCards += incomingData.newCards;
       }
     });
+    // this.initNextPlayer(incomingData);
   }
 
   initNextPlayer(incomingData) {
