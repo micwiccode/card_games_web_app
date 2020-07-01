@@ -77,7 +77,7 @@ class PublisherService
         $this->publish($topic, json_encode($data));
     }
 
-    public function playCardsPan(Room $room, User $user, $cardsPlayed, $topThreeCards, User $nextUser, $howMany){
+    public function playCardsPan(Room $room, User $user, $cardsPlayed, $topThreeCards, User $nextUser, $howMany, $isEnd = false){
         $topic = self::GAME_TOPIC . $room->getId();
         $data['play'] = ['userId' => $user->getId(),
             'username' => $user->getUsername(),
@@ -85,7 +85,8 @@ class PublisherService
             'topCards' => $topThreeCards,
             'nextUserId' => $nextUser->getId(),
             'nextUsername' => $nextUser->getUsername(),
-            'howMany' => $howMany];
+            'howMany' => $howMany,
+            'isEnd' => $isEnd];
         $this->publish($topic, json_encode($data));
     }
 
