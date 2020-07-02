@@ -47,6 +47,7 @@ class RoomService
             $user->setStop(0);
             $user->setIsNow(0);
             $user->setCards(null);
+            $user->setIsRoomAdmin(false);
             $room->addUsersInRoom($user);
         }else{
             return false;

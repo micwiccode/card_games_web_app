@@ -104,6 +104,20 @@ class RoomController extends AbstractController
         return new MyJsonResponse(true);
     }
 
+    /**
+     * @Route("/room/{id}/sendMessage")
+     * @param $id
+     * @param Request $request
+     * @return MyJsonResponse
+     */
+    public function sendMessage($id, Request $request){
+        $content = json_decode($request->getContent());
+        /** @var Room $room */
+        $room = $this->getDoctrine()->getManager()->getRepository(Room::class)->find($id);
+        $this->publisherService->sendMessage($room, $this->getUser(), $content->message);
+        return new MyJsonResponse(true);
+    }
+
 
 
 
