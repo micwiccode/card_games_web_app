@@ -43,7 +43,9 @@ export class MacaoGameService {
     private http: HttpClient,
     private sseService: SseService,
     private zone: NgZone
-  ) {}
+  ) {
+
+  }
 
   getServerSendEvent(url: string) {
     return new Observable(observer => {
@@ -96,7 +98,7 @@ export class MacaoGameService {
     let playerDeck = null;
     let opponentsDecks = [];
     decks.forEach(deck => {
-      if (deck.userId === userID) playerDeck = deck.deck;
+      if (deck.userId === userID) playerDeck = deck;
       else opponentsDecks.push(deck);
     });
     this.initPlayerDeck(playerDeck, turn.id);
@@ -433,5 +435,9 @@ export class MacaoGameService {
 
   resetTableCard() {
     this.isTableCardTaken.next(false);
+  }
+
+  restart(){
+    this.isEnd.next(false)
   }
 }

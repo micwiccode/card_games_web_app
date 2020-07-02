@@ -25,7 +25,7 @@
   </div>
   <div class="control_panel">
     <p class="control_panel__info">Ruch gracza: {{ turn.userName }}</p>
-    <div *ngIf="currentAction !== null">
+    <div class="control_panel" *ngIf="currentAction !== null">
       <p class="control_panel__info">
         {{ currentAction.text }}
       </p>

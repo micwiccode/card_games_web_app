@@ -110,6 +110,7 @@ export class GamePageComponent implements OnInit {
   }
 
   exitGame(){
+    if(this.isEnd) this.macaoGameService.restart()
     this.roomsService.exitRoom().subscribe()
   }
 }

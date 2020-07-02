@@ -97,7 +97,6 @@ export class PanGameService {
   }
 
   initRound(incomingData) {
-    console.log('next round')
     this.changeTopCards(incomingData.topCards);
     this.isPossibleMove()
     const opponentsDecks: Deck[] = this.opponentsDecks.value;
@@ -107,8 +106,9 @@ export class PanGameService {
       }
     });
     this.initNextPlayer(incomingData);
-    if (this.isEnd !== incomingData.isEnd) {
-      this.isEnd = incomingData.isEnd;
+    if (incomingData.isEnd === true) {
+      console.log('isend')
+      this.isEnd.next(incomingData.isEnd);
     }
   }
 
