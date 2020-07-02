@@ -107,7 +107,6 @@ export class PanGameService {
     });
     this.initNextPlayer(incomingData);
     if (incomingData.isEnd === true) {
-      console.log('isend')
       this.isEnd.next(incomingData.isEnd);
     }
   }
@@ -235,7 +234,6 @@ export class PanGameService {
   }
 
   playCards(cardsAliasList: string[]) {
-    console.log('zagrano: '+ cardsAliasList)
     this.http
       .post(
         `${environment.API_URL}/room/${this.roomID}/pan/playCards`,
