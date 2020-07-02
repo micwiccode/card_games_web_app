@@ -57,8 +57,6 @@ export class GamePageComponent implements OnInit {
       .subscribe(data => {
         // @ts-ignore
         const incomingData = JSON.parse(data.data);
-        console.log("game");
-        console.log(incomingData);
         if (incomingData.start !== undefined) {
           this.gameService.initStart();
           this.gameService.initGame(incomingData.start, this.userID);
@@ -84,8 +82,6 @@ export class GamePageComponent implements OnInit {
       .subscribe(data => {
         // @ts-ignore
         const incomingData = JSON.parse(data.data);
-        console.log("room");
-        console.log(incomingData);
         if (this.isGameAdmin === false && this.waitingForStart === true) {
           if (incomingData.start !== undefined) {
             this.waitingForStart = false;
@@ -110,6 +106,7 @@ export class GamePageComponent implements OnInit {
   }
 
   exitGame(){
+    if(this.isEnd) this.macaoGameService.restart()
     this.roomsService.exitRoom().subscribe()
   }
 }
