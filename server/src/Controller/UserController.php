@@ -53,9 +53,9 @@ class UserController extends AbstractController
      */
     public function updateUser(Request $request){
         $content = json_decode($request->getContent());
-        $this->userService->updateCurrentUser($content->email, $content->passwordNew, $content->passwordOld);
+        $success = $this->userService->updateCurrentUser($content->email, $content->passwordNew, $content->passwordOld);
         $this->getDoctrine()->getManager()->flush();
-        return new MyJsonResponse(true);
+        return new MyJsonResponse($success);
     }
 
     /**

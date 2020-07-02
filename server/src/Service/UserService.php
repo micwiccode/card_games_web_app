@@ -66,7 +66,10 @@ class UserService
         if (!empty($password) && !empty($oldPassword)){
             if ($this->passwordEncoder->isPasswordValid($user, $oldPassword))
                 $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
+            else
+                return false;
         }
+        return true;
     }
 
     public function addFriendToCurrentUser(FriendRequest $friendRequest){
