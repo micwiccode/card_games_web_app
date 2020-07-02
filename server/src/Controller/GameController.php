@@ -120,7 +120,7 @@ class GameController extends AbstractController
         $room = $this->getRoom($id);
         /** @var User $user */
         $user = $this->getUser();
-        $user->setStop($room->getStay());
+        $user->setStop($room->getStay()-1);
         $room->setStay(0);
         $nextUser = $this->gameService->nextUser($room);
         $this->em->flush();

@@ -158,8 +158,7 @@ class GameService
         return $newCards;
     }
 
-    public function
-    checkIfEnd(Room $room, User $user){
+    public function checkIfEnd(Room $room, User $user){
         if (count($user->getCards())==0){
             $room->setIsGameRunning(false);
             return true;
