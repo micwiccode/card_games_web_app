@@ -40,6 +40,8 @@ import {MacaoGameService} from "./services/macao-game.service";
 import {PanGameService} from "./services/pan-game.service";
 import {MacaoCardTableComponent} from "./game-page/macao-game/macao-card-table/macao-card-table.component";
 import {PanOpponentPanelComponent} from "./game-page/pan-game/pan-opponent-panel/pan-opponent-panel.component";
+import {ChatComponent} from "./components/chat/chat.component";
+import {ChatService} from "./services/chat.service";
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import {PanOpponentPanelComponent} from "./game-page/pan-game/pan-opponent-panel
     PanPlayerPanelComponent,
     PanCardTableComponent,
     PanOpponentPanelComponent,
-    MacaoOpponentPanelComponent
+    MacaoOpponentPanelComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +86,8 @@ import {PanOpponentPanelComponent} from "./game-page/pan-game/pan-opponent-panel
     FriendsService,
     SseService,
     MacaoGameService,
-    PanGameService
+    PanGameService,
+    ChatService
   ],
   bootstrap: [AppComponent]
 })

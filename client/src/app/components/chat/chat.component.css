@@ -1,0 +1,131 @@
+.chatBox {
+  position: absolute;
+  bottom: 0;
+  left: -30vw;
+  height: 100%;
+  width: 30vw;
+  background-color: white;
+  border-radius: 5px 5px 0 0;
+  z-index: 10000000000000000;
+  transition: transform 0.5s ease-in-out;
+}
+
+.chatBox__header {
+  background-color: black;
+  padding: 8px 20px;
+  color: white;
+  border-radius: 5px 5px 0 0;
+  font-weight: bold;
+  height: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatBox__header__cross {
+  position: relative;
+  right: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.chatBox__header__cross:hover {
+  opacity: 1;
+}
+.chatBox__header__cross:before,
+.chatBox__header__cross:after {
+  position: absolute;
+  right: 10px;
+  top: -5px;
+  content: ' ';
+  height: 33px;
+  width: 2px;
+  background-color: white;
+}
+.chatBox__header__cross:before {
+  transform: rotate(45deg);
+}
+.chatBox__header__cross:after {
+  transform: rotate(-45deg);
+}
+
+.chatBox__content {
+  overflow-y: auto;
+  width: 100%;
+  height: 85%;
+}
+
+.chatBox__input {
+  height: 5%;
+  width: 100%;
+  z-index: 6;
+  border: none;
+  border-top: #707070 1px solid;
+  padding-left: 5px;
+}
+
+.message_box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  word-wrap: break-word;
+}
+
+.message_box_own {
+  display: flex;
+  justify-content: flex-end;
+  word-wrap: break-word;
+}
+
+.chatBox__content__msg__text {
+  background-color: #a1b0af;
+  color: white;
+  max-width: 60%;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.8em;
+  margin: 5px 5px 0 5px;
+  text-align: left;
+}
+
+.own_message {
+  text-align: right;
+  background-color: black;
+}
+
+.chatBox__content__msg__sender {
+  color: grey;
+  padding: 4px;
+  font-size: 0.7em;
+  margin: 0 5px 5px 5px;
+}
+
+.chatBox_icon {
+  width: 80px;
+  height: 80px;
+  background-color: white;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  border-radius: 0 10px 0 0;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.chatBox_icon__img {
+  width: 60%;
+  height: auto;
+}
+
+@media only screen and (max-width: 800px) {
+  .chatBox {
+    width: 100vw;
+    left: -100vw;
+  }
+}

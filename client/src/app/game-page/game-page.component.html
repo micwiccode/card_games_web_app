@@ -44,6 +44,7 @@
   <div class="score__board">
     <app-score-board></app-score-board>
   </div>
+  <app-chat [roomID]="roomID" [userName]="userName"></app-chat>
 </div>
 
 <div *ngIf="waitingForStart === true">

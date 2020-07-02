@@ -1,0 +1,47 @@
+<div class="chatBox">
+  <div class="chatBox__header">
+    <p>Czat</p>
+    <div class="chatBox__header__btn">
+      <div class="chatBox__header__cross" (click)="closeChatBox()"></div>
+    </div>
+  </div>
+  <div class="chatBox__content">
+    <div *ngFor="let msg of chatMessages">
+      <div
+        *ngIf="msg.sender === userName; then myMessage; else othersMessage"
+      ></div>
+      <ng-template #myMessage>
+        <div class="message_box_own">
+          <p class="chatBox__content__msg__text own_message">
+            {{ msg.message }}
+          </p>
+        </div>
+      </ng-template>
+      <ng-template #othersMessage>
+        <div class="message_box">
+          <p class="chatBox__content__msg__text">
+            {{ msg.message }}
+          </p>
+          <p class="chatBox__content__msg__sender">{{ msg.sender }}</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <form (submit)="onMessageSubmit()" class="chatBox__form">
+    <input
+      class="chatBox__input"
+      [(ngModel)]="chatMessage"
+      type="text"
+      name="chatMessage"
+      placeholder="Wiadomość..."
+    />
+  </form>
+</div>
+
+<div class="chatBox_icon" (click)="openChatBox()">
+  <img
+    class="chatBox_icon__img"
+    src="../../assets/img/chatbox_img.png"
+    alt="chatbox_img"
+  />
+</div>
